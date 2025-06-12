@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Series Comparison</title>
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+      text-align: center;
+    }
+    #math-container div {
+      margin: 1em auto;
+      font-size: 20px;
+    }
+    #next-btn {
+      margin-top: 2em;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Series Comparison Test</h2>
+
+  <div id="math-container">
+    <div>\\[ \\frac{1}{n^2 + 1} \\leq \\frac{1}{n^2} \\]</div>
+  </div>
+
+
+  <button id="next-btn">Next Step</button>
+
+  <script>
+    let step = 0;
+    const mathContainer = document.getElementById('math-container');
+    const plotDiv = document.getElementById('plot');
+    const button = document.getElementById('next-btn');
+
+    button.onclick = function () {
+      step++;
+
+      if (step === 1) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = '\\[ \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} < \\sum_{n=1}^{k} \\frac{1}{n^2} \\]';
+        mathContainer.appendChild(nextLine);
+        MathJax.typeset();
+      }
+      else if (step == 2) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'Show scatter plot graph comparison between 1/n^2 and 1/(n^2+1) to show convergence...';
+        mathContainer.appendChild(nextLine);
+        MathJax.typeset();
+      }
+      else if (step == 3) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'Comparison Test: If the bigger series converges, the smaller series converges. If the smaller series diverges, the bigger series diverges.';
+        mathContainer.appendChild(nextLine);
+        MathJax.typeset();
+      }
+    };
+
+    MathJax.typeset(); // Render initial LaTeX
+  </script>
+
+</body>
+</html>

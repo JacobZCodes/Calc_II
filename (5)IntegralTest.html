@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Two Graphs: f(x) = 1/x</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- MathJax config -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    #plots-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .plot-box {
+      flex: 1 1 45%;
+      min-width: 300px;
+    }
+
+    #plot2-box {
+      display: none;
+    }
+
+    #animate-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Integral Test</h2>
+
+  <div id="plots-container">
+    <div class="plot-box">
+      <h3>Plot 1: Points & Left-Endpoint Rectangles</h3>
+      <div id="plot1"></div>
+    </div>
+
+    <div class="plot-box" id="plot2-box">
+      <h3>Plot 2: Curve & Right-Endpoint Rectangles</h3>
+      <div id="plot2"></div>
+    </div>
+  </div>
+
+  <button id="animate-button">Continue Animation</button>
+
+  <script>
+    let clickCount = 0;
+
+    const intX = [], intY = [];
+    for (let i = 1; i <= 6; i++) {
+      intX.push(i);
+      intY.push(1 / i);
+    }
+
+    const pointTrace = {
+      x: intX,
+      y: intY,
+      mode: 'markers',
+      name: 'Points at Integers',
+      marker: { size: 8, color: 'blue' },
+      type: 'scatter'
+    };
+
+    Plotly.newPlot('plot1', [pointTrace], {
+      margin: { t: 20 },
+      xaxis: { title: 'x', range: [0, 7] },
+      yaxis: { title: 'f(x)', range: [0, 1.2] }
+    });
+
+    document.getElementById('animate-button').onclick = function () {
+      clickCount++;
+
+      if (clickCount === 1) {
+        const realX = [], realY = [];
+        for (let x = 1; x <= 6; x += 0.05) {
+          realX.push(x);
+          realY.push(1 / x);
+        }
+
+        const curve = {
+          x: realX,
+          y: realY,
+          mode: 'lines',
+          name: 'f(x) = 1/x (Curve)',
+          line: { color: 'red' },
+          type: 'scatter'
+        };
+
+        Plotly.addTraces('plot1', curve);
+        this.innerText = 'Draw Left-Endpoint Rectangles';
+      }
+
+      else if (clickCount === 2) {
+        const barX = [], barY = [];
+        for (let i = 1; i <= 5; i++) {
+          barX.push(i + 0.5);
+          barY.push(1 / i);
+        }
+
+        const leftRects = {
+          x: barX,
+          y: barY,
+          type: 'bar',
+          name: 'Left-Endpoint Rectangles',
+          width: 1,
+          marker: { color: 'green', opacity: 0.4 }
+        };
+
+        Plotly.addTraces('plot1', leftRects);
+        this.innerText = 'Show New Graph with Right Endpoints';
+      }
+
+      else if (clickCount === 3) {
+        document.getElementById('plot2-box').style.display = 'block';
+
+        const realX = [], realY = [];
+        for (let x = 1; x <= 6; x += 0.05) {
+          realX.push(x);
+          realY.push(1 / x);
+        }
+
+        const curve2 = {
+          x: realX,
+          y: realY,
+          mode: 'lines',
+          name: 'f(x) = 1/x (Curve)',
+          line: { color: 'red' },
+          type: 'scatter'
+        };
+
+        Plotly.newPlot('plot2', [curve2], {
+          margin: { t: 20 },
+          xaxis: { title: 'x', range: [0, 7] },
+          yaxis: { title: 'f(x)', range: [0, 1.2] }
+        });
+
+        this.innerText = 'Draw Right-Endpoint Rectangles';
+      }
+
+      else if (clickCount === 4) {
+        const barX = [], barY = [];
+        for (let i = 2; i <= 6; i++) {
+          barX.push(i - 0.5);
+          barY.push(1 / i);
+        }
+
+        const rightRects = {
+          x: barX,
+          y: barY,
+          type: 'bar',
+          name: 'Right-Endpoint Rectangles',
+          width: 1,
+          marker: { color: 'orange', opacity: 0.4 }
+        };
+
+        Plotly.addTraces('plot2', rightRects);
+        this.innerText = 'Wrap Up';
+      }
+
+      else if (clickCount === 5) {
+        const message = document.createElement('div');
+        message.innerHTML = `
+          <div style="margin-top: 20px; font-size: 18px; text-align: left;">
+            \\( \\sum_{i=1}^{n} a_i \\) > \\( \\int_{a}^{b} \\frac{1}{x} \\, dx \\).
+          </div>
+        `;
+        document.body.appendChild(message);
+        MathJax.typeset(); // Rerender MathJax
+      }
+      else if (clickCount === 6) {
+        const message = document.createElement('div');
+        message.innerHTML = `
+          <div style="margin-top: 20px; font-size: 18px; text-align: right;">
+            \\( \\sum_{i=2}^{n} a_i \\) < \\( \\int_{a}^{b} \\frac{1}{x} \\, dx \\).
+          </div>
+        `;
+        document.body.appendChild(message);
+        MathJax.typeset(); // Rerender MathJax
+      }
+      else if (clickCount === 7) {
+        const message = document.createElement('div');
+        message.innerHTML = `
+          <div style="margin-top: 20px; font-size: 18px; text-align: bottom;">
+            \\( \\int_{a}^{b} \\frac{1}{x} \\, dx \\) < \\( \\sum_{i=1}^{n} a_i \\) < \\( \\int_{a}^{b} \\frac{1}{x} \\, dx \\).
+          </div>
+        `;
+        document.body.appendChild(message);
+        MathJax.typeset(); // Rerender MathJax
+      }
+            else if (clickCount === 8) {
+        const message = document.createElement('div');
+        message.innerHTML = `
+          <div style="margin-top: 20px; font-size: 18px; text-align: bottom;">
+            "Integral Test": If a valid f converges or diverges, so does the series.
+          </div>
+        `;
+        document.body.appendChild(message);
+        MathJax.typeset(); // Rerender MathJax
+      }
+    };
+  </script>
+
+</body>
+</html>

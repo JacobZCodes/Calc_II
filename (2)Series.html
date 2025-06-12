@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Series Animation Example</title>
+  <style>
+    .hovered {
+      text-decoration: underline;
+      cursor: help;
+      position: relative;
+    }
+
+    .hovered::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #333;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      top: 1.5em;
+      left: 0;
+      font-size: 0.9em;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+    }
+
+    .hovered:hover::after {
+      display: block;
+    }
+
+    #sentences {
+      margin-top: 1em;
+    }
+
+    #user-input {
+      margin-top: 1em;
+      display: none;
+    }
+  </style>
+
+  <!-- ✅ MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <h1>Series</h1>
+  <p id="sentence1"></p>
+  <button onclick="showNext()">Click to show next sentence</button>
+  <div id="sentences"></div>
+
+  <div id="user-input-arithmetic" style="display: none">
+    <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="arithmeticInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <button onclick="checkArithmetic()">Check Sequence</button>
+  </div>
+
+  <div id="user-input-geometric" style="display: none">
+    <p>Enter your own geometric sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 8, 16, 32">
+    <button onclick="checkGeometric()">Check Sequence</button>
+  </div>
+
+  <script>
+    function underlineWord(word) {
+      return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
+    }
+
+    function formatSentence(raw) {
+      return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
+    }
+
+    const sentenceList = [
+      'A "partial sum" is the summation of the first "n" terms of our sequence.',
+      'If our sequence is 10,20,30,40,50,60,70,80,90,100, then:',
+      'A partial sum of the first 3 terms is: 10 + 20 + 30 = 60',
+      'A partial sum of the first 5 terms is: 10 + 20 + 30 + 40 + 50 = 150',
+      'In general, we denote a partial sum as S_n, where "n" is the number of terms in the sequence that we are adding.<br><br>$$S_n = \\sum_{i=1}^{n} a_i$$ where a_i denotes our sequence',
+      'But a question arises: How do we sum up an "infinite" number of terms?',
+      'We take the limit of our partial sum as n approaches infinity.<br><br>$$\\lim_{n \\to \\infty} S_n = \\lim_{n \\to \\infty} \\sum_{i=1}^{n} a_i$$',
+      'This special partial sum is called an infinite series (hereafter series)',
+      'Mathematicians are very concered as to whether a series "converges" or "diverges"',
+      'Informally, a series diverges when the series will never stop growing, while converges corresponds to a series that eventually stops growing',
+      '(show a nice intuitive animation here)',
+      'The next lesson will formally define convergence and divergence',
+    ];
+
+    let currentIndex = 0;
+
+    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
+
+    function showNext() {
+      currentIndex++;
+      if (currentIndex < sentenceList.length) {
+        const p = document.createElement("p");
+        p.innerHTML = formatSentence(sentenceList[currentIndex]);
+        document.getElementById("sentences").appendChild(p);
+        MathJax.typeset();  // ✅ Re-render LaTeX after update
+      } 
+    }
+
+  </script>
+
+</body>
+</html>

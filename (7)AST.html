@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AST</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    #container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .plot-box {
+      width: 45%;
+    }
+    #math-container {
+      margin-top: 40px;
+      padding: 0 40px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h3>AST</h3>
+  <label for="termsSlider">Number of terms (n): <span id="termCount">5</span></label>
+  <input type="range" id="termsSlider" min="1" max="50" value="5" />
+
+  <div id="container">
+    <div class="plot-box">
+      <h4>Alternating Harmonic Series</h4>
+      <div id="plotAlt"></div>
+    </div>
+    <div class="plot-box">
+      <h4>Harmonic Series</h4>
+      <div id="plotHarm"></div>
+    </div>
+  </div>
+
+  <!-- Explanation below the graphs -->
+  <div id="math-container">
+    <h4>Explanation:</h4>
+    <p>
+      The <strong>harmonic series</strong> is defined as:
+      <br><br>
+      \( H_n = \sum_{k=1}^n \frac{1}{k} \)
+      <br><br>
+      This series <em>diverges</em> as \( n \to \infty \), meaning it grows without bound.
+      <br><br>
+      The <strong>alternating harmonic series</strong> is defined as:
+      <br><br>
+      \( A_n = \sum_{k=1}^n \frac{(-1)^{k+1}}{k} \)
+      <br><br>
+      This series <em>converges</em> to \( \ln(2) \) as \( n \to \infty \), because the terms decrease in magnitude and alternate in sign.
+      <br><br>
+      Thus we define the <strong><em>alternating series test (AST)</em></strong>:<br>
+      An alternating series converges if the terms are growing smaller and the infinitiest term is 0
+    </p>
+  </div>
+
+  <script>
+    const slider = document.getElementById('termsSlider');
+    const termCountDisplay = document.getElementById('termCount');
+
+    function computeAlternatingHarmonic(n) {
+      const sums = [];
+      let sum = 0;
+      for (let k = 1; k <= n; k++) {
+        const term = 1 / k;
+        sum += (k % 2 === 0) ? -term : term;
+        sums.push(sum);
+      }
+      return sums;
+    }
+
+    function computeHarmonic(n) {
+      const sums = [];
+      let sum = 0;
+      for (let k = 1; k <= n; k++) {
+        sum += 1 / k;
+        sums.push(sum);
+      }
+      return sums;
+    }
+
+    function buildTraces(y, color) {
+      const traces = [];
+      for (let i = 0; i < y.length - 1; i++) {
+        traces.push({
+          x: [i, i + 1],
+          y: [y[i], y[i + 1]],
+          mode: 'lines+markers',
+          line: { color: color },
+          marker: { size: 6 },
+          showlegend: false
+        });
+      }
+      return traces;
+    }
+
+    function buildLayout(n) {
+      return {
+        xaxis: {
+          tickvals: Array.from({ length: n }, (_, i) => i),
+          ticktext: Array.from({ length: n }, (_, i) => `S${i + 1}`),
+          title: "Partial Sum Index",
+          zeroline: false
+        },
+        yaxis: {
+          title: "Value",
+          zeroline: false
+        },
+        margin: { t: 30 },
+        showlegend: false
+      };
+    }
+
+    function updatePlots(n) {
+      const yAlt = computeAlternatingHarmonic(n);
+      const yHarm = computeHarmonic(n);
+
+      Plotly.newPlot('plotAlt', buildTraces(yAlt, 'blue'), buildLayout(n));
+      Plotly.newPlot('plotHarm', buildTraces(yHarm, 'red'), buildLayout(n));
+    }
+
+    slider.addEventListener('input', () => {
+      const n = parseInt(slider.value);
+      termCountDisplay.textContent = n;
+      updatePlots(n);
+    });
+
+    updatePlots(parseInt(slider.value)); // Initial render
+  </script>
+</body>
+</html>

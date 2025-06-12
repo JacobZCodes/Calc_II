@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Series Animation Example</title>
+  <style>
+    .hovered {
+      text-decoration: underline;
+      cursor: help;
+      position: relative;
+    }
+
+    .hovered::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #333;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      top: 1.5em;
+      left: 0;
+      font-size: 0.9em;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+    }
+
+    .hovered:hover::after {
+      display: block;
+    }
+
+    #sentences {
+      margin-top: 1em;
+    }
+
+    #user-input {
+      margin-top: 1em;
+      display: none;
+    }
+  </style>
+
+  <!-- ✅ MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <h1>Divergence Test</h1>
+  <p id="sentence1"></p>
+  <button onclick="showNext()">Click to show next sentence</button>
+  <div id="sentences"></div>
+
+  <div id="user-input-arithmetic" style="display: none">
+    <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="arithmeticInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <button onclick="checkArithmetic()">Check Sequence</button>
+  </div>
+
+  <div id="user-input-geometric" style="display: none">
+    <p>Enter your own geometric sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 8, 16, 32">
+    <button onclick="checkGeometric()">Check Sequence</button>
+  </div>
+
+  <script>
+    function underlineWord(word) {
+      return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
+    }
+
+    function formatSentence(raw) {
+      return raw
+        .replace(/"([^"]+)"/g, (_, word) => underlineWord(word))
+        .replace(/\$\$([^$]+)\$\$/g, (_, expr) => `\\(${expr}\\)`)  // inline LaTeX
+        .replace(/\n/g, '<br>');
+    }
+
+    const sentenceList = [
+      "Assume $$\\sum a_n$$ converges. Then:",
+      "$$\\lim_{k \\to \\infty} a_k = \\lim_{k \\to \\infty} (S_k - S_{k-1}) = \\lim_{k \\to \\infty} (S_k) - \\lim_{k \\to \\infty} (S_{k-1}) = S - S = 0$$",
+      "$$\\lim_{k \\to \\infty} a_k = 0 $$",
+      "This leads to our claim: **If $$\\sum a_n$$ converges, then $$a_n \\to 0$$** \\(\\equiv\\) **If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.**  \\not\\equiv **If $$a_n \\to 0$$, then $$\\sum a_n$$ converges**",
+      "Now we will prove the falsehood of this last claim by examining the famous harmonic series (do later).",
+    ];
+
+    const latexSums = [
+      `s_1 = 1`,
+      `s_2 = 1 + \\frac{1}{2} = \\frac{3}{2}`,
+      `s_3 = 1 + \\frac{1}{2} + \\frac{1}{4} = \\frac{7}{4}`,
+      `s_4 = 1 + \\frac{1}{2} + \\frac{1}{4} + \\frac{1}{8} = \\frac{15}{8}`,
+      `s_5 = 1 + \\frac{1}{2} + \\frac{1}{4} + \\frac{1}{8} + \\frac{1}{16} = \\frac{31}{16}`
+    ];
+
+    let currentIndex = 0;
+
+    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
+
+    function showNext() {
+      currentIndex++;
+      if (currentIndex < sentenceList.length) {
+        const p = document.createElement("p");
+        p.innerHTML = formatSentence(sentenceList[currentIndex]);
+        document.getElementById("sentences").appendChild(p);
+
+        MathJax.typeset();  // Re-render inline math
+      }
+    }
+  </script>
+
+</body>
+</html>

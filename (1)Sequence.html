@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Series Animation Example</title>
+  <style>
+    .hovered {
+      text-decoration: underline;
+      cursor: help;
+      position: relative;
+    }
+
+    .hovered::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #333;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      top: 1.5em;
+      left: 0;
+      font-size: 0.9em;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+    }
+
+    .hovered:hover::after {
+      display: block;
+    }
+
+    #sentences {
+      margin-top: 1em;
+    }
+
+    #user-input {
+      margin-top: 1em;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1><b>Intro To Sequences</b></h1>
+  <p id="sentence1"></p>
+  <button onclick="showNext()">Click to show next sentence</button>
+  <div id="sentences"></div>
+
+  <div id="user-input-arithmetic" style="display: none">
+    <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="arithmeticInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <button onclick="checkArithmetic()">Check Sequence</button>
+  </div>
+
+<div id="user-input-geometric" style="display: none">
+    <p>Enter your own geometric sequence (at least 5 numbers, separated by commas):</p>
+    <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <button onclick="checkGeometric()">Check Sequence</button>
+  </div>
+
+  <script>
+    function underlineWord(word) {
+      return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
+    }
+
+    function formatSentence(raw) {
+      return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
+    }
+
+    const sentenceList = [
+      'A "sequence" is an ordering of numbers.',
+      'If each term of the sequence is separated by addition, the sequence is "arithmetic".\nEx: 4,6,8,10,12...',
+      'If each term of the sequence is separated by multiplication, the sequence is "geometric".\nEx: 4,8,16,32,64...',
+    ];
+
+    let currentIndex = 0;
+
+    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
+
+    function showNext() {
+      currentIndex++;
+      if (currentIndex < sentenceList.length) {
+        const p = document.createElement("p");
+        p.innerHTML = formatSentence(sentenceList[currentIndex]);
+        document.getElementById("sentences").appendChild(p);
+      } else {
+        document.getElementById("user-input-arithmetic").style.display = "block";
+      }
+    }
+
+    function checkArithmetic() {
+      const input = document.getElementById("arithmeticInput").value;
+      const nums = input.split(',').map(x => parseFloat(x.trim()));
+
+      if (nums.length < 5 || nums.some(isNaN)) {
+        alert("Please enter at least 5 valid numbers.");
+        return;
+      }
+
+      const diff = nums[1] - nums[0];
+      for (let i = 2; i < nums.length; i++) {
+        if (Math.abs((nums[i] - nums[i - 1]) - diff) > 1e-6) {
+          alert("That's not a valid arithmetic sequence.");
+          return;
+        }
+      }
+      alert("✅ Great job! That is a valid arithmetic sequence.");
+      document.getElementById("user-input-geometric").style.display = "block";
+    }
+    function checkGeometric() {
+      const input = document.getElementById("geometricInput").value;
+      const nums = input.split(',').map(x => parseFloat(x.trim()));
+
+      if (nums.length < 5 || nums.some(isNaN)) {
+        alert("Please enter at least 5 valid numbers.");
+        return;
+      }
+
+      const ratio = nums[1] / nums[0];
+      for (let i = 2; i < nums.length; i++) {
+        if (Math.abs((nums[i] / nums[i - 1]) != ratio)) {
+          alert("That's not a valid geometric sequence.");
+          return;
+        }
+      }
+      alert("✅ Great job! That is a valid geometric sequence.");
+      alertComplete();
+    }
+
+    function alertComplete() {
+        alert("You have completed this lesson!")
+    }
+      
+  </script>
+
+</body>
+</html>
