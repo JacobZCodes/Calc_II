@@ -1,190 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Series Animation Example</title>
-  <style>
-    .hovered {
-      text-decoration: underline;
-      cursor: help;
-      position: relative;
-    }
+  <head>
+    <meta charset="UTF-8">
+    <title>Series Animation Example</title>
+    <style>
+      .hovered {
+        text-decoration: underline;
+        cursor: help;
+        position: relative;
+      }
 
-    .hovered::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      background: #333;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      top: 1.5em;
-      left: 0;
-      font-size: 0.9em;
-      white-space: nowrap;
-      display: none;
-      z-index: 10;
-    }
+      .hovered::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        background: #333;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        top: 1.5em;
+        left: 0;
+        font-size: 0.9em;
+        white-space: nowrap;
+        display: none;
+        z-index: 10;
+      }
 
-    .hovered:hover::after {
-      display: block;
-    }
+      .hovered:hover::after {
+        display: block;
+      }
 
-    #sentences {
-      margin-top: 1em;
-    }
+      #sentences {
+        margin-top: 1em;
+      }
 
-    #user-input {
-      margin-top: 1em;
-      display: none;
-    }
-  </style>
-
-  <!-- ✅ MathJax for LaTeX rendering -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head>
-<body>
-  <h1>Divergence</h1>
-  <p id="sentence1"></p>
-  <button onclick="showNext()">Click to show next sentence</button>
-  <div id="sentences"></div>
-
-  <div id="user-input-arithmetic" style="display: none">
-    <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
-    <input type="text" id="arithmeticInput" placeholder="e.g. 2, 4, 6, 8, 10">
-    <button onclick="checkArithmetic()">Check Sequence</button>
-  </div>
-
-  <div id="user-input-sequence" style="display: none">
-    <p>Enter a sequence of at least 5 numbers, separated by commas:</p>
-    <input type="text" id="sequenceInput" placeholder="e.g. 2, 4, 8, 16, 32">
-    <button onclick="showNext()">Input Sequence</button>
-  </div>
-
+      #user-input {
+        margin-top: 1em;
+        display: none;
+      }
+    </style>
+    <!-- ✅ MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body>
+    <h1>Divergence</h1>
+    <p id="sentence1"></p>
+    <div id="sentences"></div>
+    <div id="user-input-sequence" style="display: none">
+      <p>Enter a sequence of at least 5 numbers, separated by commas (arithmetic only):</p>
+      <input type="text" id="sequenceInput" placeholder="e.g. 2, 4, 8, 16, 32">
+      <button onclick="storeSequenceAndShowNext()">Input Sequence</button>
+    </div>
     <div id="user-input-series" style="display: none">
-    <p>Enter your sequence in series notation:</p>
-    <label>\( \sum_{n=1}^{\infty} \)<input type="text" id="seriesInput" placeholder="n^2"></label>
-    <button onclick="showNext()">Input Series</button>
-  </div>
-
-      <div id="graph" style="display: none">
-    
-  </div>
+      <p>Enter your sequence in series notation (please enter it exactly as a computer should read it, ie 2n+3 => 2*n+3):</p>
+      <label>\( \sum_{n=1}^{\infty} \) <input type="text" id="seriesInput" placeholder="n^2">
+      </label>
+      <button onclick="storeSeriesAndShowNext()">Input Series</button>
+    </div>
+    <!-- <div id="graph" style="display: none"></div><div id="graphMore" style="display: none"></div> -->
+    <!-- <div id="graph-container" style="display: none; display: flex; justify-content: space-around; gap: 2em;">
+      <div id="graph" style="flex: 1;"></div>
+      <div id="graphMore" style="flex: 1;"></div>
+    </div> -->
+    <div id="graph-container" style="display: none; justify-content: space-around; gap: 2em;">
+      <div id="graph" style="flex: 1;"></div>
+      <div id="graphMore" style="flex: 1; display: none;"></div>
+    </div>
     <div id="user-input-psums" style="display: none">
-    <p>Enter the partial sums for your series:</p>
-    <label>S1<input type="text" id="S1"></label>
-    <label>S2<input type="text" id="S2"></label>
-    <label>S3<input type="text" id="S3"></label>
-    <label>S4<input type="text" id="S4"></label> 
-    <label>S5<input type="text" id="S5"></label>
-    <button onclick="showNext()">Input Partial Sums</button>
-  </div>
+      <p>Enter the partial sums for your series:</p>
+      <label>S1 <input type="text" id="S1">
+      </label>
+      <label>S2 <input type="text" id="S2">
+      </label>
+      <label>S3 <input type="text" id="S3">
+      </label>
+      <label>S4 <input type="text" id="S4">
+      </label>
+      <label>S5 <input type="text" id="S5">
+      </label>
+      <button onclick="storePsumsAndShowNext()">Input Partial Sums</button>
+    </div>
+    <div id="user-input-guess" style="display: none">
 
-      <div id="user-input-guess" style="display: none">
-    <p>What do you think the series will do?</p>
-  <label><input type="radio" name="seriesGuess" value="converge"> Converge</label><br>
-  <label><input type="radio" name="seriesGuess" value="diverge"> Diverge</label><br><br>
-  </div>
-
-  <script>
-    function underlineWord(word) {
-      return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
-    }
-
-    function formatSentence(raw) {
-      return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
-    }
-
-const sentenceList = [
-  'We have the sequence \\( a_n = 1, \\frac{1}{2}, \\frac{1}{4}, \\frac{1}{8}, \\frac{1}{16}, \\ldots \\)',
-  'Now let us list the partial sums:',
-  '(Have the student guess the partial sums instead of showing them.)',
-  'Now we can construct a new sequence of partial sums: \\( S = \\{ S_1, S_2, S_3, \\ldots, S_n \\} \\)',
-  'If \\( \\lim_{n \\to \\infty} S_n \\) is some real number, we define \\( S \\) as the sum of the series \\( \\sum a_n \\), and say the series is **convergent**.',
-  'If \\( \\lim_{n \\to \\infty} S_n = \\infty \\), then we say the series **diverges**.',
-  'Express this in series notation (prompt)',
-  'Write out the partial sums (prompt)',
-  'Graph series if diverges',
-  'Let us revisit our original sequence: \\( a_n = 1, \\frac{1}{2}, \\frac{1}{4}, \\frac{1}{8}, \\frac{1}{16}, \\ldots \\)',
-  'Question: Does sigma notation a_n = 1 + 1/2 + 1/4 + 1/8 + 1/16... converge or diverge.',
-  'We can examine this visually; (have student plot (S_1, 1), (S_2,2) etc and have them guess if we are converging or not)...',
-  'Counter-intuitively, this series will actually diverge.',
-  'It is not at all obvious as to whether a series will converge or diverge. The bulk of studying series is learning about the different types of mathematical tests we can apply to a given series in order to test whether our series diverges or converges.',
-  'We will now examine the first test: the divergence test',  
-
-];
-
-    const latexSums = [
-      `s_1 = 1`,
-      `s_2 = 1 + \\frac{1}{2} = \\frac{3}{2}`,
-      `s_3 = 1 + \\frac{1}{2} + \\frac{1}{4} = \\frac{7}{4}`,
-      `s_4 = 1 + \\frac{1}{2} + \\frac{1}{4} + \\frac{1}{8} = \\frac{15}{8}`,
-      `s_5 = 1 + \\frac{1}{2} + \\frac{1}{4} + \\frac{1}{8} + \\frac{1}{16} = \\frac{31}{16}`
-    ];
-
-    let currentIndex = 0;
-
-    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
-
-    function showNext() {
-      console.log(currentIndex);
-      currentIndex++;
-      if (currentIndex == 6) { // sequence 
-          const seqInput = document.getElementById('user-input-sequence');
-          seqInput.style.display = 'block';  // ✅ make it visible
-          document.getElementById("sentences").appendChild(seqInput);
+    </div>
+    <div id="explanation" style="display: none"> <!--convergence vs divergence-->
+    </div>
+    <div id="finalExplanation" style="display: none">
+      <p>So it might seem that we can easily tell whether or not a series converges or diverges: we can just start computing partial sums and follow the pattern.
+        But sometimes this pattern is not always obvious, or predictable, or easy at all to compute (give an example of such a difficult computation). So that is why mathematicians have created a series of tests
+        to examine series in order that we do not need to sit all day computing partial sums. The first test is the <strong>divergence test</strong>.
+      </p>
+    </div>
+    <div id="divergenceExplain" style="display: none">
+    </div>
+    <script>
+      function computePartialSum(n, series) { // computes S_n
+          let sum = 0;
+          for (let i = 1; i <= n; i++) {
+            sum += series(i);
+          }
+          return sum;
       }
-      if (currentIndex == 7) { // series notation
-          const seriesInput = document.getElementById('user-input-series');
-          seriesInput.style.display = 'block';  // ✅ make it visible
-          document.getElementById("sentences").appendChild(seriesInput);
+
+      function formatSentence(raw) {
+        return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, ' < br > ');
       }
-      if (currentIndex == 8) { // psums 
-          const psumsInput = document.getElementById('user-input-psums');
-          psumsInput.style.display = 'block';  // ✅ make it visible
-          document.getElementById("sentences").appendChild(psumsInput);
-      }
-      if (currentIndex == 9) { // guess
-          const guessInput = document.getElementById('user-input-guess');
-          guessInput.style.display = 'block';  // ✅ make it visible
-          document.getElementById("sentences").appendChild(guessInput);
-      }
-      if (currentIndex == 10) { // graph
-          const graph = document.getElementById('graph');
-          graph.style.display = 'block';  // ✅ make it visible
-          document.getElementById("sentences").appendChild(graph);
+        const sentenceList = [];
+        let currentIndex = 0;
+        let userSequence = []; // Global list to store the sequence
+        function storeSequenceAndShowNext() {
+          const input = document.getElementById("sequenceInput").value;
+          // Parse by either spaces OR commas
+          userSequence = input.split(/[\s,]+/) // Split on space or comma
+            .map(x => parseFloat(x)) // Convert strings to numbers
+            .filter(x => !isNaN(x)); // Remove any non-numbers
+          console.log("Parsed sequence:", userSequence);
+          // Advance to next stage (optional)
+          showNext();
+        }
+        let userSeries = []; // Global list to store the series
+        function storeSeriesAndShowNext() {
+          const input = document.getElementById("seriesInput").value;
+          userSeries = input;
+          console.log("User series: ", userSeries);
+          showNext();
+        }
+        let userPsums = []
+
+        function storePsumsAndShowNext() {
+          const input = document.getElementById("S1").value;
+          userPsums = [document.getElementById("S1").value, document.getElementById("S2").value,
+            document.getElementById("S3").value, document.getElementById("S4").value, document.getElementById("S5").value
+          ]
+          console.log("User Psums: ", userPsums);
+          showNext();
+        }
+        const seqInput = document.getElementById('user-input-sequence');
+        seqInput.style.display = 'block'; // ✅ make it visible
+        document.getElementById("sentences").appendChild(seqInput);
+
+        function showNext() {
+          console.log(currentIndex);
+          currentIndex++;
+          if (currentIndex == 1) { // series notation
+            const seriesInput = document.getElementById('user-input-series');
+            seriesInput.style.display = 'block'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(seriesInput);
+          }
+          if (currentIndex == 2) { // psums 
+            const psumsInput = document.getElementById('user-input-psums');
+            psumsInput.style.display = 'block'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(psumsInput);
+          }
+          if (currentIndex == 3) { // convergence vs divergence
+            const explanation = document.getElementById("explanation");
+            explanation.innerHTML = `
+              <p>
+                We can form a sequence of your partial sums: S: {${userPsums.join(", ")}}
+                <br>
+                If <em>this</em> sequence approaches infinity, we say your series <em>diverges</em>.
+                Otherwise, we say your series <em>converges</em>
+                <button onclick="showNext()">Plot Partial Sums!</button>
+                
+              </p>`;
+            explanation.style.display = 'block';
+            document.getElementById("sentences").appendChild(explanation);
+          }
+          if (currentIndex == 5) { // guess
+            const guessInput = document.getElementById('user-input-guess');
+            guessInput.innerHTML = `
+                  <p>What do you think the series will do?</p>
+                  <label>
+        <input type="radio" name="seriesGuess" value="converge"> Converge </label>
+      <br>
+      <label>
+        <input type="radio" name="seriesGuess" value="diverge"> Diverge </label>
+      <br>
+      <button onclick="showNext()">Submit Guess</button>
+            `
+
+            guessInput.style.display = 'block'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(guessInput);
+          }
+          if (currentIndex == 6) { // explain divergence more
+            divergenceExplain.style.display = 'block';
+            divergenceExplain.innerHTML = `      <p> It's a bit hard to tell just from graphing the first five terms whether or not the series will converge or diverge. Here is your graph with some more partial sums computed: </p>
+ <br> <button onclick="showNext()">Show Graph</button>`
+            document.getElementById('sentences').appendChild(divergenceExplain);
+          }
+          if (currentIndex == 4) { // graph user
+            const graphContainer = document.getElementById('graph-container');
+            const graph = document.getElementById('graph');
+            graphContainer.style.display = 'block';
+            graph.style.display = 'block'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(graph);
+            const nextBtn = document.createElement("button");
+            nextBtn.textContent = "Continue";
+            nextBtn.onclick = showNext;
+            document.getElementById("sentences").appendChild(nextBtn);
+            const xVals = userPsums.map((_, i) => i + 1);
+            const yVals = userPsums.map(val => parseFloat(val)).filter(v => !isNaN(v));
             Plotly.newPlot('graph', [{
-              x: [...Array(10).keys()].map(i => i + 1),
-              y: [...Array(10).keys()].map(i => i + 1),
+              x: xVals,
+              y: yVals,
               mode: 'markers',
               type: 'scatter',
-              marker: { size: 8 }
+              marker: {
+                size: 8
+              }
+            }], {
+              title: `Scatter Plot of ${userSeries}`,
+              xaxis: {
+                title: 'S_n',
+                dtick: 1
+              },
+              yaxis: {
+                title: 'Series Value',
+                dtick: 1
+              }
+            });
+          }
+          if (currentIndex == 7) { // graph user + more points
+            const graphMore = document.getElementById('graphMore');
+            const graphContainer = document.getElementById('graph-container');
+            graphMore.style.display = 'block';
+            graphContainer.style.display = 'flex'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(graphContainer);
+            const nextBtn = document.createElement("button");
+            nextBtn.textContent = "Continue";
+            nextBtn.onclick = showNext;
+            document.getElementById("sentences").appendChild(nextBtn);
+            const xVals = Array.from({
+              length: 30
+            }, (_, i) => i + 1);
+            let yVals = [];
+            try {
+              const seriesFunc = new Function("n", "return " + userSeries);
+              yVals = xVals.map(n => computePartialSum(n, seriesFunc));
+            } catch (e) {
+              alert("There was an error parsing your series function.");
+              console.error(e);
+            }
+            Plotly.newPlot('graphMore', [{
+              x: xVals,
+              y: yVals,
+              mode: 'markers',
+              type: 'scatter',
+              marker: {
+                size: 8
+              }
             }], {
               title: 'Scatter Plot of f(x) = x',
-              xaxis: { title: 'x', dtick: 1 },
-              yaxis: { title: 'f(x)', dtick: 1 }
+              xaxis: {
+                title: 'x',
+                dtick: 1
+              },
+              yaxis: {
+                title: 'f(x)',
+                dtick: 1
+              }
             });
-      }
-      if (currentIndex < sentenceList.length) {
-        const p = document.createElement("p");
-        p.innerHTML = formatSentence(sentenceList[currentIndex]);
-        document.getElementById("sentences").appendChild(p);
-
-        // ✅ After "Now let us list the partial sums:", show LaTeX lines
-        if (currentIndex === 1) {
-          latexSums.forEach(expr => {
-            const div = document.createElement("div");
-            div.innerHTML = `$$${expr}$$`;
-            document.getElementById("sentences").appendChild(div);
-          });
+          }
+           if (currentIndex == 8) { // final explaination
+            finalExplanation.style.display = 'block'; // ✅ make it visible
+            document.getElementById("sentences").appendChild(finalExplanation);
+          }
+          if (currentIndex < sentenceList.length) {
+            const p = document.createElement("p");
+            p.innerHTML = formatSentence(sentenceList[currentIndex]);
+            document.getElementById("sentences").appendChild(p);
+            MathJax.typeset(); // Re-render LaTeX after update
+          }
         }
-
-        MathJax.typeset();  // Re-render LaTeX after update
-      }
-    }
-  </script>
-
-</body>
+    </script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  </body>
 </html>
