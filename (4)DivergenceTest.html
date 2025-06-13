@@ -46,6 +46,11 @@
     <h1>Divergence Test</h1>
     <div id="divergence-test" style="display: none"></div>
     <div id="converse" style="display: none"></div>
+    <!-- Add this slider inside <body> -->
+    <div id="slider-container" style="display:none; margin-top: 1em;">
+      <label for="term-slider">Number of Terms: <span id="term-count">1</span></label>
+      <input type="range" id="term-slider" min="1" max="1000" value="1">
+    </div>
     <canvas id="stacked-box-canvas" width="400" height="600" style="display:none; border:1px solid #000;"></canvas>
     <script>
       const divergenceTest = document.getElementById('divergence-test');
@@ -62,54 +67,89 @@
         MathJax.typeset()
       };
 
-      function showDivergenceGraph() {
+function showDivergenceGraph() {
   const canvas = document.getElementById('stacked-box-canvas');
-  canvas.style.display = 'block';
-  const ctx = canvas.getContext('2d');
+  const sliderContainer = document.getElementById('slider-container');
+  const slider = document.getElementById('term-slider');
+  const termCountLabel = document.getElementById('term-count');
 
-  // Sequence definition
-  const a_n = (n) => Math.pow(2, n - 1);
-  const numTerms = 5;
+  canvas.style.display = 'block';
+  sliderContainer.style.display = 'block';
+
+  const ctx = canvas.getContext('2d');
+  const a_n = (n) => Math.pow(1.01, n - 1);
   const boxWidth = 100;
   const baseX = canvas.width / 2 - boxWidth / 2;
-  const scaleY = 20;
 
-  // Calculate partial sums
-  let partialSums = [];
-  let sum = 0;
-  for (let i = 1; i <= numTerms; i++) {
-    sum += a_n(i);
-    partialSums.push(sum);
+  let boxes = [];
+  let currentTermCount = 1;
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  // Animation vars
-  let i = 0;
-  let currentY = canvas.height;
-
-  function drawNextBox() {
-    if (i >= partialSums.length) return;
-
-    const height = partialSums[i] * scaleY;
-    currentY -= height;
-
-    // Draw box
-    ctx.fillStyle = `rgba(0, 100, 255, 0.6)`;
-    ctx.fillRect(baseX, currentY, boxWidth, height);
-
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(baseX, currentY, boxWidth, height);
-    // Add label
-    ctx.fillStyle = 'black';
-    ctx.font = '16px sans-serif';
-    ctx.fillText(`S_${i + 1} = ${partialSums[i]}`, baseX + 5, currentY + 20);
-
-    i++;
-    setTimeout(() => requestAnimationFrame(drawNextBox), 600); // controls animation speed
+  function updateBoxes(n) {
+    boxes = [];
+    let y = canvas.height;
+    for (let i = 1; i <= n; i++) {
+      const value = a_n(i);
+      boxes.push({ index: i, value, targetHeight: value, currentHeight: 0, y }); // currentHeight animates up
+      y -= 1; // initial dummy height, gets fixed during animation
+    }
   }
 
-  drawNextBox();
+  function animate() {
+    clearCanvas();
+
+    // Determine dynamic scale to fit everything
+    const totalHeight = boxes.reduce((sum, box) => sum + box.value, 0);
+    const scaleY = canvas.height / (totalHeight * 1.1); // pad by 10%
+    let y = canvas.height;
+
+    // Update and draw each box
+    for (let box of boxes) {
+      const fullHeight = box.value * scaleY;
+      if (box.currentHeight < fullHeight) {
+        box.currentHeight += (fullHeight - box.currentHeight) * 0.1; // smooth step up
+        if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
+          box.currentHeight = fullHeight;
+        }
+      }
+
+      y -= box.currentHeight;
+
+      ctx.fillStyle = 'rgba(0, 100, 255, 0.6)';
+      ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
+
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
+
+      ctx.fillStyle = 'black';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(`a_${box.index} = ${box.value.toFixed(2)}`, baseX + 5, y + 16);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Initial
+  updateBoxes(currentTermCount);
+  animate();
+
+  // Slider interaction
+  slider.addEventListener('input', () => {
+    const n = parseInt(slider.value);
+    termCountLabel.textContent = n;
+    if (n !== currentTermCount) {
+      currentTermCount = n;
+      updateBoxes(n);
+    }
+  });
 }
+
+
+
 
     </script>
   </body>
