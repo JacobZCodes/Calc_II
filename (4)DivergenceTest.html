@@ -70,11 +70,25 @@
   <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
     <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
   </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
   <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
     <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
   </div>
+  <button id="canvas2-button" style="margin-top: 0.5em; display: none;" onclick="explainGraphs()">Continue</button>
+  <p id="graph-explanation" style="display: none; max-width: 400px; margin-top: 0.5em; text-align: center;">
+  Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
+</p>
+
+</div>
+
 </div>
     <script>
+      function explainGraphs() {
+  const para = document.getElementById("graph-explanation");
+  para.style.display = "block";
+  MathJax.typeset(); // render LaTeX in the new paragraph
+}
+
       const divergenceTest = document.getElementById("divergence-test");
       divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** 
         
@@ -101,6 +115,7 @@
 
   wrapper1.style.display = "block";
   wrapper2.style.display = "block";
+  document.getElementById("canvas2-button").style.display = "inline-block";
   sliderContainer.style.display = "block";
 
   const contexts = [
