@@ -50,131 +50,140 @@
         display: block;
       }
     </style>
-
     <!-- ✅ MathJax for LaTeX rendering -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-    ></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
     <h1>Divergence Test</h1>
     <div id="divergence-test" style="display: none"></div>
     <div id="converse" style="display: none"></div>
-
     <div id="slider-container" style="display: none; margin-top: 1em">
-      <label for="term-slider">Number of Terms: <span id="term-count">1</span></label>
+      <label for="term-slider">Number of Terms: <span id="term-count">1</span>
+      </label>
       <input type="range" id="term-slider" min="1" max="1000" value="1" />
     </div>
-
-    <div id="canvas-wrapper">
+    <!-- <div id="canvas-wrapper">
       <canvas id="stacked-box-canvas" width="400" height="3000"></canvas>
-    </div>
-
+    </div> -->
+    <div style="display: flex; gap: 1em; margin-top: 1em;">
+  <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+    <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
+  </div>
+  <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+    <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
+  </div>
+</div>
     <script>
       const divergenceTest = document.getElementById("divergence-test");
       divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** 
-        <button onclick="showConverse()">Continue</button>`;
+        
+			<button onclick="showConverse()">Continue</button>`;
       divergenceTest.style.display = "block";
       MathJax.typeset();
 
       function showConverse() {
         const converse = document.getElementById("converse");
         converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
-          <button onclick="showDivergenceGraph()">Continue</button>`;
+          
+			<button onclick="showDivergenceGraph()">Continue</button>`;
         converse.style.display = "block";
         MathJax.typeset();
       }
-
       function showDivergenceGraph() {
-        const canvasWrapper = document.getElementById("canvas-wrapper");
-        const canvas = document.getElementById("stacked-box-canvas");
-        const sliderContainer = document.getElementById("slider-container");
-        const slider = document.getElementById("term-slider");
-        const termCountLabel = document.getElementById("term-count");
+  const canvas1 = document.getElementById("stacked-box-canvas-1");
+  const canvas2 = document.getElementById("stacked-box-canvas-2");
+  const wrapper1 = document.getElementById("canvas-wrapper-1");
+  const wrapper2 = document.getElementById("canvas-wrapper-2");
+  const sliderContainer = document.getElementById("slider-container");
+  const slider = document.getElementById("term-slider");
+  const termCountLabel = document.getElementById("term-count");
 
-        canvasWrapper.style.display = "block";
-        sliderContainer.style.display = "block";
+  wrapper1.style.display = "block";
+  wrapper2.style.display = "block";
+  sliderContainer.style.display = "block";
 
-        const ctx = canvas.getContext("2d");
-        const a_n = (n) => Math.pow(1.01, n - 1);
-        const boxWidth = 100;
-        const baseX = canvas.width / 2 - boxWidth / 2;
+  const contexts = [
+    { canvas: canvas1, ctx: canvas1.getContext("2d"), a_n: n => Math.pow(1.01, n - 1) },
+    { canvas: canvas2, ctx: canvas2.getContext("2d"), a_n: n => Math.pow(0.99, n - 1) }
+  ];
 
-        let boxes = [];
-        let currentTermCount = 1;
+  const boxWidth = 100;
+  let currentTermCount = 1;
+  const baseX = 150; // centered in each canvas
 
-        function clearCanvas() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const states = contexts.map(() => ({ boxes: [] }));
+
+  function clearCanvas(ctx, canvas) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function updateBoxes(index, n) {
+    const { a_n } = contexts[index];
+    const canvas = contexts[index].canvas;
+    const boxes = [];
+    let y = canvas.height;
+    for (let i = 1; i <= n; i++) {
+      const value = a_n(i);
+      boxes.push({ index: i, value, targetHeight: value, currentHeight: 0, y });
+      y -= 1;
+    }
+    states[index].boxes = boxes;
+  }
+
+  function animate(index) {
+    const { ctx, canvas } = contexts[index];
+    const boxes = states[index].boxes;
+
+    clearCanvas(ctx, canvas);
+
+    const totalHeight = boxes.reduce((sum, box) => sum + box.value, 0);
+    const scaleY = canvas.height / (totalHeight * 1.1);
+    let y = canvas.height;
+
+    for (let box of boxes) {
+      const fullHeight = box.value * scaleY;
+      if (box.currentHeight < fullHeight) {
+        box.currentHeight += (fullHeight - box.currentHeight) * 0.1;
+        if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
+          box.currentHeight = fullHeight;
         }
-
-        function updateBoxes(n) {
-          boxes = [];
-          let y = canvas.height;
-          for (let i = 1; i <= n; i++) {
-            const value = a_n(i);
-            boxes.push({
-              index: i,
-              value,
-              targetHeight: value,
-              currentHeight: 0,
-              y,
-            });
-            y -= 1;
-          }
-        }
-
-        function animate() {
-          clearCanvas();
-
-          const totalHeight = boxes.reduce((sum, box) => sum + box.value, 0);
-          const scaleY = canvas.height / (totalHeight * 1.1);
-          let y = canvas.height;
-
-          for (let box of boxes) {
-            const fullHeight = box.value * scaleY;
-            if (box.currentHeight < fullHeight) {
-              box.currentHeight += (fullHeight - box.currentHeight) * 0.1;
-              if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
-                box.currentHeight = fullHeight;
-              }
-            }
-
-            y -= box.currentHeight;
-
-            ctx.fillStyle = "rgba(0, 100, 255, 0.6)";
-            ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
-
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
-
-            ctx.fillStyle = "black";
-            ctx.font = "12px sans-serif";
-            ctx.fillText(
-              `a_${box.index} = ${box.value.toFixed(2)}`,
-              baseX + 5,
-              y + 16
-            );
-          }
-
-          requestAnimationFrame(animate);
-        }
-
-        updateBoxes(currentTermCount);
-        animate();
-
-        slider.addEventListener("input", () => {
-          const n = parseInt(slider.value);
-          termCountLabel.textContent = n;
-          if (n !== currentTermCount) {
-            currentTermCount = n;
-            updateBoxes(n);
-          }
-        });
       }
+
+      y -= box.currentHeight;
+
+      ctx.fillStyle = "rgba(0, 100, 255, 0.6)";
+      ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
+
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
+
+      ctx.fillStyle = "black";
+      ctx.font = "12px sans-serif";
+      ctx.fillText(`a_${box.index} = ${box.value.toFixed(2)}`, baseX + 5, y + 16);
+    }
+
+    requestAnimationFrame(() => animate(index));
+  }
+
+  // Initialize both graphs
+  [0, 1].forEach(i => {
+    updateBoxes(i, currentTermCount);
+    animate(i);
+  });
+
+  // Slider interaction
+  slider.addEventListener("input", () => {
+    const n = parseInt(slider.value);
+    termCountLabel.textContent = n;
+    if (n !== currentTermCount) {
+      currentTermCount = n;
+      [0, 1].forEach(i => updateBoxes(i, n));
+    }
+  });
+}
+
     </script>
   </body>
 </html>
