@@ -18,31 +18,73 @@
       };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-      }
+<style>
+  body {
+    background-color: #000;
+    color: #00ccff;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 2em;
+  }
 
-      #plots-container {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-      }
+  h2, h3 {
+    color: #00ccff;
+  }
 
-      .plot-box {
-        flex: 1 1 45%;
-        min-width: 300px;
-      }
+  #plots-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
 
-      #animate-button {
-        margin-top: 30px;
-        padding: 10px 20px;
-        font-size: 16px;
-      }
-    </style>
+  .plot-box {
+    flex: 1 1 45%;
+    min-width: 300px;
+    border: 1px solid #00ccff;
+    background-color: #111;
+    padding: 1em;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00ccff44;
+  }
+
+  #animate-button {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    background-color: #00ccff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
+
+  #animate-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ccff;
+  }
+
+  #animate-button:active {
+    transform: scale(0.95);
+  }
+
+  p {
+    color: #00ccff;
+  }
+
+  em {
+    color: #66ddee;
+  }
+
+  #inequality1, #inequality2 {
+    margin-top: 1em;
+    font-size: 18px;
+  }
+</style>
+
   </head>
   <body>
     <h2>Integral Test</h2>

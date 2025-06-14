@@ -3,53 +3,95 @@
   <head>
     <meta charset="UTF-8" />
     <title>Series Animation Example</title>
-    <style>
-      .hovered {
-        text-decoration: underline;
-        cursor: help;
-        position: relative;
-      }
+<style>
+  body {
+    background-color: #000;
+    color: #00ccff;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 2em;
+  }
 
-      .hovered::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        background: #333;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        top: 1.5em;
-        left: 0;
-        font-size: 0.9em;
-        white-space: nowrap;
-        display: none;
-        z-index: 10;
-      }
+  .hovered {
+    text-decoration: underline;
+    cursor: help;
+    position: relative;
+    color: #33ddff;
+  }
 
-      .hovered:hover::after {
-        display: block;
-      }
+  .hovered::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: #222;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    top: 1.5em;
+    left: 0;
+    font-size: 0.9em;
+    white-space: nowrap;
+    display: none;
+    z-index: 10;
+  }
 
-      #sentences {
-        margin-top: 1em;
-      }
+  .hovered:hover::after {
+    display: block;
+  }
 
-      #user-input {
-        margin-top: 1em;
-        display: none;
-      }
+  button {
+    margin-top: 1em;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    background-color: #00ccff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
 
-      #canvas-wrapper {
-        width: 420px;
-        height: 600px;
-        overflow-y: scroll;
-        border: 1px solid black;
-        display: none;
-      }
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ccff;
+  }
 
-      #stacked-box-canvas {
-        display: block;
-      }
-    </style>
+  button:active {
+    transform: scale(0.95);
+  }
+
+  input[type="range"] {
+    width: 60%;
+    margin-top: 1em;
+    accent-color: #00ccff;
+  }
+
+  #sentences {
+    margin-top: 1em;
+  }
+
+  #user-input {
+    margin-top: 1em;
+    display: none;
+  }
+
+  #canvas-wrapper,
+  #canvas-wrapper-1,
+  #canvas-wrapper-2 {
+    border: 1px solid #00ccff;
+    background-color: #111;
+  }
+
+  #graph-explanation {
+    color: #00ccff;
+  }
+
+  label {
+    color: #00ccff;
+    font-weight: bold;
+  }
+</style>
+
     <!-- ✅ MathJax for LaTeX rendering -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
