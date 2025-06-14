@@ -3,41 +3,88 @@
   <head>
     <meta charset="UTF-8">
     <title>Series Animation Example</title>
-    <style>
-      .hovered {
-        text-decoration: underline;
-        cursor: help;
-        position: relative;
-      }
+      <style>
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
 
-      .hovered::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        background: #333;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        top: 1.5em;
-        left: 0;
-        font-size: 0.9em;
-        white-space: nowrap;
-        display: none;
-        z-index: 10;
-      }
+    .hovered {
+      text-decoration: underline;
+      cursor: help;
+      position: relative;
+      color: #33ddff;
+    }
 
-      .hovered:hover::after {
-        display: block;
-      }
+    .hovered::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #222;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      top: 1.5em;
+      left: 0;
+      font-size: 0.9em;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+    }
 
-      #sentences {
-        margin-top: 1em;
-      }
+    .hovered:hover::after {
+      display: block;
+    }
 
-      #user-input {
-        margin-top: 1em;
-        display: none;
-      }
-    </style>
+    button {
+      margin-top: 1em;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #00ccff;
+      border-radius: 5px;
+      background-color: #111;
+      color: #00ccff;
+      width: 60%;
+    }
+
+    #sentences {
+      margin-top: 1em;
+    }
+
+    #user-input {
+      margin-top: 1em;
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      margin-top: 0.5em;
+      color: #00ccff;
+    }
+  </style>
     <!-- ✅ MathJax for LaTeX rendering -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

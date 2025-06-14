@@ -4,16 +4,25 @@
   <meta charset="UTF-8">
   <title>Series Animation Example</title>
   <style>
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+
     .hovered {
       text-decoration: underline;
       cursor: help;
       position: relative;
+      color: #33ddff;
     }
 
     .hovered::after {
       content: attr(data-tooltip);
       position: absolute;
-      background: #333;
+      background: #222;
       color: white;
       padding: 4px 8px;
       border-radius: 4px;
@@ -29,26 +38,58 @@
       display: block;
     }
 
-    #sentences {
+    p {
       margin-top: 1em;
     }
 
-    #user-input {
-      margin-top: 1em;
-      display: none;
+    button {
+      margin-top: 2em;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #00ccff;
+      border-radius: 5px;
+      background-color: #111;
+      color: #00ccff;
+      width: 60%;
+    }
+
+    #user-input-arithmetic,
+    #user-input-geometric {
+      margin-top: 2em;
     }
   </style>
 
-  <!-- ✅ MathJax for LaTeX rendering -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-  <h1>Series</h1>
-  <p id="sentence1"></p>
-  <button onclick="showNext()">Click to show next sentence</button>
-  <div id="sentences"></div>
+  <h1><b>Series</b></h1>
+  <div id="sentences">
+    <p id="sentence0"></p>
+  </div>
+  <button id="next-btn" onclick="showNext()">Click to show next sentence</button>
 
   <div id="user-input-arithmetic" style="display: none">
     <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
@@ -80,15 +121,14 @@
       'But a question arises: How do we sum up an "infinite" number of terms?',
       'We take the limit of our partial sum as n approaches infinity.<br><br>$$\\lim_{n \\to \\infty} S_n = \\lim_{n \\to \\infty} \\sum_{i=1}^{n} a_i$$',
       'This special partial sum is called an infinite series (hereafter series)',
-      'Mathematicians are very concered as to whether a series "converges" or "diverges"',
+      'Mathematicians are very concerned as to whether a series "converges" or "diverges"',
       'Informally, a series diverges when the series will never stop growing, while converges corresponds to a series that eventually stops growing',
       '(show a nice intuitive animation here)',
       'The next lesson will formally define convergence and divergence',
     ];
 
     let currentIndex = 0;
-
-    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
+    document.getElementById("sentence0").innerHTML = formatSentence(sentenceList[currentIndex]);
 
     function showNext() {
       currentIndex++;
@@ -96,11 +136,11 @@
         const p = document.createElement("p");
         p.innerHTML = formatSentence(sentenceList[currentIndex]);
         document.getElementById("sentences").appendChild(p);
-        MathJax.typeset();  // ✅ Re-render LaTeX after update
-      } 
+        MathJax.typeset();
+      } else {
+        document.getElementById("next-btn").style.display = "none";
+      }
     }
-
   </script>
-
 </body>
 </html>
