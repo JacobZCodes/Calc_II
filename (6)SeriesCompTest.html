@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Series Comparison</title>
 
+  <!-- MathJax -->
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -12,22 +13,53 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
+  <!-- Plotly -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+  <!-- Styles -->
   <style>
     body {
+      background-color: #000;
+      color: #00ccff;
       font-family: sans-serif;
-      margin: 2em;
       text-align: center;
+      padding: 2em;
     }
+
+    h2 {
+      color: #00ccff;
+      margin-bottom: 1em;
+    }
+
     #math-container div {
-      margin: 1em auto;
+      margin: 1.2em auto;
       font-size: 20px;
     }
+
     #next-btn {
       margin-top: 2em;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    #next-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+    }
+
+    #next-btn:active {
+      transform: scale(0.95);
+    }
+
+    #plot {
+      margin-top: 2em;
     }
   </style>
 </head>
@@ -39,6 +71,7 @@
     <div>\\[ \\frac{1}{n^2 + 1} \\leq \\frac{1}{n^2} \\]</div>
   </div>
 
+  <div id="plot"></div>
 
   <button id="next-btn">Next Step</button>
 
@@ -47,6 +80,22 @@
     const mathContainer = document.getElementById('math-container');
     const plotDiv = document.getElementById('plot');
     const button = document.getElementById('next-btn');
+
+    const darkLayout = {
+      paper_bgcolor: '#000',
+      plot_bgcolor: '#000',
+      font: { color: '#00ccff' },
+      xaxis: {
+        title: 'n',
+        gridcolor: '#222',
+        zerolinecolor: '#444'
+      },
+      yaxis: {
+        title: 'Term Value',
+        gridcolor: '#222',
+        zerolinecolor: '#444'
+      }
+    };
 
     button.onclick = function () {
       step++;
@@ -57,13 +106,44 @@
         mathContainer.appendChild(nextLine);
         MathJax.typeset();
       }
-      else if (step == 2) {
-        const nextLine = document.createElement('div');
-        nextLine.innerHTML = 'Show scatter plot graph comparison between 1/n^2 and 1/(n^2+1) to show convergence...';
-        mathContainer.appendChild(nextLine);
-        MathJax.typeset();
-      }
-      else if (step == 3) {
+
+else if (step === 2) {
+  const nextLine = document.createElement('div');
+  nextLine.innerHTML = 'Comparison between \\( \\frac{1}{n^2} \\) (larger) and \\( \\frac{1}{n^2+1} \\) (smaller):';
+  mathContainer.appendChild(nextLine);
+  MathJax.typeset();
+
+  // Ensure plot is visible and clear its content
+  plotDiv.innerHTML = '';  // Prevent redraw issues
+
+  const n = Array.from({ length: 20 }, (_, i) => i + 1);
+  const seq1 = n.map(i => 1 / (i ** 2));
+  const seq2 = n.map(i => 1 / (i ** 2 + 1));
+
+  const trace1 = {
+    x: n,
+    y: seq1,
+    mode: 'markers+lines',
+    name: '1/n²',
+    marker: { color: '#00ccff' },
+    line: { color: '#00ccff' }
+  };
+
+  const trace2 = {
+    x: n,
+    y: seq2,
+    mode: 'markers+lines',
+    name: '1/(n²+1)',
+    marker: { color: '#ffcc00' },
+    line: { color: '#ffcc00' }
+  };
+
+  // Re-render plot
+  Plotly.newPlot(plotDiv, [trace1, trace2], darkLayout);
+}
+
+
+      else if (step === 3) {
         const nextLine = document.createElement('div');
         nextLine.innerHTML = 'Comparison Test: If the bigger series converges, the smaller series converges. If the smaller series diverges, the bigger series diverges.';
         mathContainer.appendChild(nextLine);
@@ -71,7 +151,7 @@
       }
     };
 
-    MathJax.typeset(); // Render initial LaTeX
+    MathJax.typeset(); // initial render
   </script>
 
 </body>
