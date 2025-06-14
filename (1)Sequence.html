@@ -5,8 +5,8 @@
   <title>Sequence</title>
   <style>
     @font-face {
-    font-family: 'TangoSans_Bold';
-    src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+      font-family: 'TangoSans_Bold';
+      src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
     }
     body {
       background-color: #000;
@@ -40,6 +40,15 @@
 
     .hovered:hover::after {
       display: block;
+    }
+
+    .sentence-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      margin-top: 1em;
+      animation: fadeIn 1s forwards;
     }
 
     p, input {
@@ -99,9 +108,12 @@
 
 <body>
   <h1><b>Intro To Sequences</b></h1>
-  <p id="sentence1"></p>
-  <button onclick="showNext()">Click to show next sentence</button>
-  <div id="sentences"></div>
+  <div id="sentences">
+    <div class="sentence-line">
+      <p id="sentence1"></p>
+      <button id="next-btn" onclick="showNext()">Click to show next sentence</button>
+    </div>
+  </div>
 
   <div id="user-input-arithmetic" style="display: none">
     <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
@@ -133,16 +145,24 @@
     ];
 
     let currentIndex = 0;
-
     document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
 
     function showNext() {
       currentIndex++;
       if (currentIndex < sentenceList.length) {
+        const sentenceDiv = document.createElement("div");
+        sentenceDiv.className = "sentence-line";
+
         const p = document.createElement("p");
         p.innerHTML = formatSentence(sentenceList[currentIndex]);
-        document.getElementById("sentences").appendChild(p);
+
+        const btn = document.getElementById("next-btn");
+        sentenceDiv.appendChild(p);
+        sentenceDiv.appendChild(btn);
+
+        document.getElementById("sentences").appendChild(sentenceDiv);
       } else {
+        document.getElementById("next-btn").style.display = "none";
         const arithmeticInput = document.getElementById("user-input-arithmetic");
         arithmeticInput.style.display = "block";
         arithmeticInput.style.animation = "fadeIn 1s forwards";
