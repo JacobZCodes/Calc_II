@@ -109,6 +109,24 @@
       <canvas id="stacked-box-canvas" width="400" height="3000"></canvas>
     </div> -->
     <div style="display: flex; gap: 1em; margin-top: 1em;">
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <h3 id="canvas1-title"style="color: #00ccff; margin-bottom: 0.3em;">Divergent Series: \\(a_n = 1.01^{n-1}\\)</h3>
+    <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+      <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <h3 id="canvas2-title" style="color: #00ccff; margin-bottom: 0.3em;">Convergent Series: \\(a_n = 0.99^{n-1}\\)</h3>
+    <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+      <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
+    </div>
+    <button id="canvas2-button" style="margin-top: 0.5em; display: none;" onclick="explainGraphs()">Continue</button>
+    <p id="graph-explanation" style="display: none; max-width: 400px; margin-top: 0.5em; text-align: center;">
+      Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
+    </p>
+  </div>
+</div>
+
   <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
     <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
   </div>
@@ -124,123 +142,143 @@
 </div>
 
 </div>
-    <script>
-      function explainGraphs() {
-  const para = document.getElementById("graph-explanation");
-  para.style.display = "block";
-  MathJax.typeset(); // render LaTeX in the new paragraph
-}
-
-      const divergenceTest = document.getElementById("divergence-test");
-      divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** 
-        
-			<button onclick="showConverse()">Continue</button>`;
-      divergenceTest.style.display = "block";
-      MathJax.typeset();
-
-      function showConverse() {
-        const converse = document.getElementById("converse");
-        converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
-          
-			<button onclick="showDivergenceGraph()">Continue</button>`;
-        converse.style.display = "block";
-        MathJax.typeset();
-      }
-      function showDivergenceGraph() {
-  const canvas1 = document.getElementById("stacked-box-canvas-1");
-  const canvas2 = document.getElementById("stacked-box-canvas-2");
-  const wrapper1 = document.getElementById("canvas-wrapper-1");
-  const wrapper2 = document.getElementById("canvas-wrapper-2");
-  const sliderContainer = document.getElementById("slider-container");
-  const slider = document.getElementById("term-slider");
-  const termCountLabel = document.getElementById("term-count");
-
-  wrapper1.style.display = "block";
-  wrapper2.style.display = "block";
-  document.getElementById("canvas2-button").style.display = "inline-block";
-  sliderContainer.style.display = "block";
-
-  const contexts = [
-    { canvas: canvas1, ctx: canvas1.getContext("2d"), a_n: n => Math.pow(1.01, n - 1) },
-    { canvas: canvas2, ctx: canvas2.getContext("2d"), a_n: n => Math.pow(0.99, n - 1) }
-  ];
-
-  const boxWidth = 100;
-  let currentTermCount = 1;
-  const baseX = 150; // centered in each canvas
-
-  const states = contexts.map(() => ({ boxes: [] }));
-
-  function clearCanvas(ctx, canvas) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+<!-- 🧠 ONLY the <script> section is changed below your original code -->
+<script>
+  function explainGraphs() {
+    const para = document.getElementById("graph-explanation");
+    para.style.display = "block";
+    MathJax.typeset();
   }
 
-  function updateBoxes(index, n) {
-    const { a_n } = contexts[index];
-    const canvas = contexts[index].canvas;
-    const boxes = [];
-    let y = canvas.height;
-    for (let i = 1; i <= n; i++) {
-      const value = a_n(i);
-      boxes.push({ index: i, value, targetHeight: value, currentHeight: 0, y });
-      y -= 1;
+  const divergenceTest = document.getElementById("divergence-test");
+  divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** 
+    <button onclick="showConverse()">Continue</button>`;
+  divergenceTest.style.display = "block";
+  MathJax.typeset();
+
+  function showConverse() {
+    const converse = document.getElementById("converse");
+    converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
+      <button onclick="showDivergenceGraph()">Continue</button>`;
+    converse.style.display = "block";
+    MathJax.typeset();
+  }
+
+  function showDivergenceGraph() {
+    const canvas1 = document.getElementById("stacked-box-canvas-1");
+    const canvas2 = document.getElementById("stacked-box-canvas-2");
+    const wrapper1 = document.getElementById("canvas-wrapper-1");
+    const wrapper2 = document.getElementById("canvas-wrapper-2");
+    const sliderContainer = document.getElementById("slider-container");
+    const slider = document.getElementById("term-slider");
+    const termCountLabel = document.getElementById("term-count");
+
+    wrapper1.style.display = "block";
+    wrapper2.style.display = "block";
+    document.getElementById("canvas2-button").style.display = "inline-block";
+    sliderContainer.style.display = "block";
+    MathJax.typeset(); 
+
+
+    const contexts = [
+      { canvas: canvas1, ctx: canvas1.getContext("2d"), a_n: n => Math.pow(1.01, n - 1) },
+      { canvas: canvas2, ctx: canvas2.getContext("2d"), a_n: n => Math.pow(0.99, n - 1) }
+    ];
+
+    const boxWidth = 100;
+    let currentTermCount = 1;
+    const baseX = 150;
+
+    const states = contexts.map(() => ({ boxes: [] }));
+    let globalMaxTotalHeight = 0;
+
+    function clearCanvas(ctx, canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    states[index].boxes = boxes;
-  }
 
-  function animate(index) {
-    const { ctx, canvas } = contexts[index];
-    const boxes = states[index].boxes;
+    function computeGlobalMaxHeight(n) {
+      const totals = contexts.map(({ a_n }) =>
+        Array.from({ length: n }, (_, i) => a_n(i + 1)).reduce((a, b) => a + b, 0)
+      );
+      globalMaxTotalHeight = Math.max(...totals);
+    }
 
-    clearCanvas(ctx, canvas);
+    function updateBoxes(index, n) {
+      const { a_n } = contexts[index];
+      const boxes = [];
+      for (let i = 1; i <= n; i++) {
+        const value = a_n(i);
+        boxes.push({ index: i, value, targetHeight: value, currentHeight: 0 });
+      }
+      states[index].boxes = boxes;
+      computeGlobalMaxHeight(n);
+    }
 
-    const totalHeight = boxes.reduce((sum, box) => sum + box.value, 0);
-    const scaleY = canvas.height / (totalHeight * 1.1);
-    let y = canvas.height;
+    function animate(index) {
+      const { ctx, canvas } = contexts[index];
+      const boxes = states[index].boxes;
 
-    for (let box of boxes) {
-      const fullHeight = box.value * scaleY;
-      if (box.currentHeight < fullHeight) {
-        box.currentHeight += (fullHeight - box.currentHeight) * 0.1;
-        if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
-          box.currentHeight = fullHeight;
+      clearCanvas(ctx, canvas);
+
+      const scaleY = canvas.height / (globalMaxTotalHeight * 1.1);
+      let y = canvas.height;
+
+      for (let box of boxes) {
+        const fullHeight = box.value * scaleY;
+        if (box.currentHeight < fullHeight) {
+          box.currentHeight += (fullHeight - box.currentHeight) * 0.1;
+          if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
+            box.currentHeight = fullHeight;
+          }
         }
+
+        y -= box.currentHeight;
+
+        ctx.fillStyle = "rgba(0, 100, 255, 0.6)";
+        ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
+
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
+
+        ctx.fillStyle = "black";
+        ctx.font = "12px sans-serif";
+        ctx.fillText(`a_${box.index} = ${box.value.toFixed(2)}`, baseX + 5, y + 16);
       }
 
-      y -= box.currentHeight;
-
-      ctx.fillStyle = "rgba(0, 100, 255, 0.6)";
-      ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
-
-      ctx.strokeStyle = "black";
-      ctx.lineWidth = 1;
-      ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
-
-      ctx.fillStyle = "black";
-      ctx.font = "12px sans-serif";
-      ctx.fillText(`a_${box.index} = ${box.value.toFixed(2)}`, baseX + 5, y + 16);
+      requestAnimationFrame(() => animate(index));
     }
 
-    requestAnimationFrame(() => animate(index));
+    // Initialize both graphs
+    [0, 1].forEach(i => {
+      updateBoxes(i, currentTermCount);
+      animate(i);
+    });
+    // Initialize canvas titles
+document.getElementById("canvas1-title").innerHTML = `\\(a_1 = 1.0000\\)`;
+document.getElementById("canvas2-title").innerHTML = `\\(a_1 = 1.0000\\)`;
+MathJax.typeset();
+
+
+slider.addEventListener("input", () => {
+  const n = parseInt(slider.value);
+  termCountLabel.textContent = n;
+
+  // Update canvas titles with a_n values
+  const a1 = Math.pow(1.01, n - 1).toFixed(4);
+  const a2 = Math.pow(0.99, n - 1).toFixed(4);
+  document.getElementById("canvas1-title").innerHTML = `\\(a_${n}= ${a1}\\not\\to 0\\), then \\(\\sum a_n\\) diverges`;
+  document.getElementById("canvas2-title").innerHTML = `\\(a_${n} = ${a2}\\to 0\\), then \\(\\sum a_n\\) ?`;
+  MathJax.typeset();
+
+  if (n !== currentTermCount) {
+    currentTermCount = n;
+    [0, 1].forEach(i => updateBoxes(i, n));
   }
+});
 
-  // Initialize both graphs
-  [0, 1].forEach(i => {
-    updateBoxes(i, currentTermCount);
-    animate(i);
-  });
+  }
+</script>
 
-  // Slider interaction
-  slider.addEventListener("input", () => {
-    const n = parseInt(slider.value);
-    termCountLabel.textContent = n;
-    if (n !== currentTermCount) {
-      currentTermCount = n;
-      [0, 1].forEach(i => updateBoxes(i, n));
-    }
-  });
-}
-
-    </script>
   </body>
 </html>

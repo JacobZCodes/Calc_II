@@ -247,25 +247,41 @@
             document.getElementById("sentences").appendChild(nextBtn);
             const xVals = userPsums.map((_, i) => i + 1);
             const yVals = userPsums.map(val => parseFloat(val)).filter(v => !isNaN(v));
-            Plotly.newPlot('graph', [{
-              x: xVals,
-              y: yVals,
-              mode: 'markers',
-              type: 'scatter',
-              marker: {
-                size: 8
-              }
-            }], {
-              title: `Scatter Plot of ${userSeries}`,
-              xaxis: {
-                title: 'S_n',
-                dtick: 1
-              },
-              yaxis: {
-                title: 'Series Value',
-                dtick: 1
-              }
-            });
+Plotly.newPlot('graph', [{
+  x: xVals,
+  y: yVals,
+  mode: 'markers',
+  type: 'scatter',
+  marker: {
+    size: 8,
+    color: '#00ccff'
+  }
+}], {
+  title: {
+    text: `Scatter Plot of ${userSeries}`,
+    font: { color: '#00ccff' }
+  },
+  plot_bgcolor: '#111',
+  paper_bgcolor: '#000',
+  font: { color: '#00ccff' },
+  xaxis: {
+    title: { text: 'S_n', font: { color: '#00ccff' } },
+    dtick: 1,
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  },
+  yaxis: {
+    title: { text: 'Series Value', font: { color: '#00ccff' } },
+    dtick: 1,
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  }
+});
+
           }
           if (currentIndex == 7) { // graph user + more points
             const graphMore = document.getElementById('graphMore');
@@ -288,25 +304,43 @@
               alert("There was an error parsing your series function.");
               console.error(e);
             }
-            Plotly.newPlot('graphMore', [{
-              x: xVals,
-              y: yVals,
-              mode: 'markers',
-              type: 'scatter',
-              marker: {
-                size: 8
-              }
-            }], {
-              title: 'Scatter Plot of f(x) = x',
-              xaxis: {
-                title: 'x',
-                dtick: 1
-              },
-              yaxis: {
-                title: 'f(x)',
-                dtick: 1
-              }
-            });
+Plotly.newPlot('graphMore', [{
+  x: xVals,
+  y: yVals,
+  mode: 'markers',
+  type: 'scatter',
+  marker: {
+    size: 8,
+    color: '#00ccff'
+  }
+}], {
+  title: {
+    text: `Scatter Plot of ${userSeries}`,
+    font: { color: '#00ccff' }
+  },
+  plot_bgcolor: '#111',
+  paper_bgcolor: '#000',
+  font: { color: '#00ccff' },
+  xaxis: {
+    title: { text: 'S_n', font: { color: '#00ccff' } },
+    dtick: 1,
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  },
+  yaxis: {
+    title: { text: 'Series Value', font: { color: '#00ccff' } },
+    dtick: 1,
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  }
+});
+
+
+;
           }
            if (currentIndex == 8) { // final explaination
             finalExplanation.style.display = 'block'; // ✅ make it visible
