@@ -2,18 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Series Animation Example</title>
+  <title>Sequence</title>
   <style>
+    @font-face {
+    font-family: 'TangoSans_Bold';
+    src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+    }
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: 'TangoSans_Bold', sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+
     .hovered {
       text-decoration: underline;
       cursor: help;
       position: relative;
+      color: #33ddff;
     }
 
     .hovered::after {
       content: attr(data-tooltip);
       position: absolute;
-      background: #333;
+      background: #222;
       color: white;
       padding: 4px 8px;
       border-radius: 4px;
@@ -29,16 +42,61 @@
       display: block;
     }
 
+    p, input {
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
     #sentences {
       margin-top: 1em;
     }
 
-    #user-input {
+    #user-input-arithmetic,
+    #user-input-geometric {
+      margin-top: 2em;
+      animation: fadeIn 1s forwards;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #00ccff;
+      border-radius: 5px;
+      background-color: #111;
+      color: #00ccff;
+      width: 60%;
+    }
+
+    button {
       margin-top: 1em;
-      display: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
+
 <body>
   <h1><b>Intro To Sequences</b></h1>
   <p id="sentence1"></p>
@@ -48,12 +106,14 @@
   <div id="user-input-arithmetic" style="display: none">
     <p>Enter your own arithmetic sequence (at least 5 numbers, separated by commas):</p>
     <input type="text" id="arithmeticInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <br>
     <button onclick="checkArithmetic()">Check Sequence</button>
   </div>
 
-<div id="user-input-geometric" style="display: none">
+  <div id="user-input-geometric" style="display: none">
     <p>Enter your own geometric sequence (at least 5 numbers, separated by commas):</p>
-    <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 6, 8, 10">
+    <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 8, 16, 32">
+    <br>
     <button onclick="checkGeometric()">Check Sequence</button>
   </div>
 
@@ -83,7 +143,9 @@
         p.innerHTML = formatSentence(sentenceList[currentIndex]);
         document.getElementById("sentences").appendChild(p);
       } else {
-        document.getElementById("user-input-arithmetic").style.display = "block";
+        const arithmeticInput = document.getElementById("user-input-arithmetic");
+        arithmeticInput.style.display = "block";
+        arithmeticInput.style.animation = "fadeIn 1s forwards";
       }
     }
 
@@ -104,8 +166,12 @@
         }
       }
       alert("✅ Great job! That is a valid arithmetic sequence.");
-      document.getElementById("user-input-geometric").style.display = "block";
+
+      const geometricInput = document.getElementById("user-input-geometric");
+      geometricInput.style.display = "block";
+      geometricInput.style.animation = "fadeIn 1s forwards";
     }
+
     function checkGeometric() {
       const input = document.getElementById("geometricInput").value;
       const nums = input.split(',').map(x => parseFloat(x.trim()));
@@ -117,7 +183,7 @@
 
       const ratio = nums[1] / nums[0];
       for (let i = 2; i < nums.length; i++) {
-        if (Math.abs((nums[i] / nums[i - 1]) != ratio)) {
+        if (Math.abs((nums[i] / nums[i - 1]) - ratio) > 1e-6) {
           alert("That's not a valid geometric sequence.");
           return;
         }
@@ -127,10 +193,8 @@
     }
 
     function alertComplete() {
-        alert("You have completed this lesson!")
+      alert("🎉 You have completed this lesson!");
     }
-      
   </script>
-
 </body>
 </html>
