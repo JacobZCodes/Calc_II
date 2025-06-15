@@ -3,19 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>Series Comparison</title>
-
     <!-- MathJax -->
     <script>
       window.MathJax = {
-        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-        svg: { fontCache: 'global' }
+        tex: {
+          inlineMath: [
+            ['$', '$'],
+            ['\\(', '\\)']
+          ]
+        },
+        svg: {
+          fontCache: 'global'
+        }
       };
     </script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-      async
-    ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
     <!-- Styles -->
     <style>
       body {
@@ -79,31 +81,29 @@
         font-size: 20px;
       }
 
-      #plot, #plot2, #plot3 {
+      #plot,
+      #plot2,
+      #plot3 {
         margin-top: 2em;
       }
     </style>
   </head>
   <body>
     <h2>Series Visualization</h2>
-
     <div class="flex-container">
       <!-- LEFT COLUMN -->
       <div class="column">
         <div id="math-container"></div>
         <div id="plot"></div>
       </div>
-
       <!-- RIGHT COLUMN -->
       <div class="column">
         <div id="right-math"></div>
-
         <div class="row-flex">
           <!-- Plot of 1/sqrt(n) -->
           <div>
             <div id="plot2"></div>
           </div>
-
           <!-- Step 7 text and next plot -->
           <div>
             <div id="right-next-text"></div>
@@ -112,170 +112,238 @@
         </div>
       </div>
     </div>
-
     <button id="next-btn">Next Step</button>
-
     <script>
-          let step = 0;
-          const mathContainer = document.getElementById('math-container');
-          const rightMath = document.getElementById('right-math');
-          const rightNextText = document.getElementById('right-next-text');
-          const plotDiv = document.getElementById('plot');
-          const plot2Div = document.getElementById('plot2');
-          const plot3Div = document.getElementById('plot3');
-          const button = document.getElementById('next-btn');
-
-          const darkLayout = {
-            paper_bgcolor: '#000',
-            plot_bgcolor: '#000',
-            font: { color: '#00ccff' },
-            xaxis: {
-              title: 'n',
-              gridcolor: '#222',
-              zerolinecolor: '#444'
-            },
-            yaxis: {
-              title: 'Partial Sum',
-              gridcolor: '#222',
-              zerolinecolor: '#444'
-            }
-          };
-          const initialLine = document.createElement('div');
-          initialLine.innerHTML = 'Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} \\text{ and } \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} \\]';
-          mathContainer.appendChild(initialLine);
+      let step = 0;
+      const mathContainer = document.getElementById('math-container');
+      const rightMath = document.getElementById('right-math');
+      const rightNextText = document.getElementById('right-next-text');
+      const plotDiv = document.getElementById('plot');
+      const plot2Div = document.getElementById('plot2');
+      const plot3Div = document.getElementById('plot3');
+      const button = document.getElementById('next-btn');
+      const darkLayout = {
+        paper_bgcolor: '#000',
+        plot_bgcolor: '#000',
+        font: {
+          color: '#00ccff'
+        },
+        xaxis: {
+          title: 'n',
+          gridcolor: '#222',
+          zerolinecolor: '#444'
+        },
+        yaxis: {
+          title: 'Partial Sum',
+          gridcolor: '#222',
+          zerolinecolor: '#444'
+        }
+      };
+      const initialLine = document.createElement('div');
+      initialLine.innerHTML = 'Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} \\text{ and } \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} \\]';
+      mathContainer.appendChild(initialLine);
+      // MathJax.typeset();
+      button.onclick = function() {
+        step++;
+        if (step === 1) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = 'We know that \\( \\frac{1}{n^2} > \\frac{1}{n^2 + 10} \\). Now we plot the partial sums of these series.';
+          mathContainer.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 2) {
+          // const nextLine = document.createElement('div');
+          // nextLine.innerHTML = 'Graph of partial sums for \\( \\frac{1}{n^2} \\) and \\( \\frac{1}{n^2 + 1} \\):';
+          // mathContainer.appendChild(nextLine);
           // MathJax.typeset();
-          button.onclick = function () {
-
-            step++;
-
-            if (step === 1) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = 'We know that \\( \\frac{1}{n^2} > \\frac{1}{n^2 + 10} \\). Now we plot the partial sums of these series.';
-              mathContainer.appendChild(nextLine);
-              MathJax.typeset();
-            }
-
-            else if (step === 2) {
-              // const nextLine = document.createElement('div');
-              // nextLine.innerHTML = 'Graph of partial sums for \\( \\frac{1}{n^2} \\) and \\( \\frac{1}{n^2 + 1} \\):';
-              // mathContainer.appendChild(nextLine);
-              // MathJax.typeset();
-
-              plotDiv.innerHTML = '';
-
-              const n = Array.from({ length: 30 }, (_, i) => i + 1);
-              let sum1 = 0;
-              let sum2 = 0;
-              const partial1 = [];
-              const partial2 = [];
-
-              n.forEach(i => {
-                sum1 += 1 / (i ** 2);
-                sum2 += 1 / (i ** 2 + 1);
-                partial1.push(sum1);
-                partial2.push(sum2);
-              });
-
-              const trace1 = {
-                x: n,
-                y: partial1,
-                mode: 'markers+lines',
-                name: 'Partial Sums of 1/n²',
-                marker: { color: '#00ccff' },
-                line: { color: '#00ccff' }
-              };
-
-              const trace2 = {
-                x: n,
-                y: partial2,
-                mode: 'markers+lines',
-                name: 'Partial Sums of 1/(n²+1)',
-                marker: { color: '#ffcc00' },
-                line: { color: '#ffcc00' }
-              };
-
-              Plotly.newPlot(plotDiv, [trace1, trace2], darkLayout);
-            }
-
-            else if (step === 3) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = 'The Divergence Test tells us that if a larger series converges, then a series smaller than it must also converge. This is evident by looking at the graphs of the partial sums.';
-              mathContainer.appendChild(nextLine);
-              MathJax.typeset();
-            }
-
-            else if (step === 4) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = nextLine.innerHTML = 'Now consider the two series: \\[ \\sum_{n=1}^{\\infty} \\frac{1}{n} \\quad \\text{and} \\quad \\sum_{n=1}^{\\infty} \\frac{1}{\\sqrt{n}} \\]';
-              rightMath.appendChild(nextLine);
-              MathJax.typeset();
-            }
-
-            else if (step === 5) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = 'We know that \\( \\frac{1}{n} \\lt \\frac{1}{\\sqrt{n}} \\)';
-              rightMath.appendChild(nextLine);
-              MathJax.typeset();
-            }
-
-            else if (step === 6) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = 'We again plot partial sum of the greater series,  \\( \\frac{1}{\\sqrt{n}} \\)';
-              rightMath.appendChild(nextLine);
-              MathJax.typeset();
-              plot2Div.innerHTML = '';
-
-              const n = Array.from({ length: 300 }, (_, i) => i + 1);
-              let sum = 0;
-              const partial = [];
-
-              n.forEach(i => {
-                sum += 1 / Math.sqrt(i);
-                partial.push(sum);
-              });
-
-              const trace = {
-                x: n,
-                y: partial,
-                mode: 'markers+lines',
-                name: 'Partial Sums of 1/√n',
-                marker: { color: '#00ccff' },
-                line: { color: '#00ccff' }
-              };
-
-              Plotly.newPlot(plot2Div, [trace], darkLayout);
-            }
-
-            else if (step === 7) {
-              const nextLine = document.createElement('div');
-              nextLine.innerHTML = 'Despite being larger term-by-term, \\( \\sum \\frac{1}{\\sqrt{n}} \\) also diverges.';
-              rightNextText.appendChild(nextLine);
-              MathJax.typeset();
-
-              plot3Div.innerHTML = '';
-
-              const n = Array.from({ length: 300 }, (_, i) => i + 1);
-              const diverging = [];
-              let sum = 0;
-              n.forEach(i => {
-                sum += 1 / Math.sqrt(i);
-                diverging.push(sum);
-              });
-
-              const trace = {
-                x: n,
-                y: diverging,
-                mode: 'lines',
-                name: 'Visual of Diverging Series',
-                marker: { color: '#ff4444' },
-                line: { color: '#ff4444' }
-              };
-
-              Plotly.newPlot(plot3Div, [trace], darkLayout);
+          plotDiv.innerHTML = '';
+          const n = Array.from({
+            length: 30
+          }, (_, i) => i + 1);
+          let sum1 = 0;
+          let sum2 = 0;
+          const partial1 = [];
+          const partial2 = [];
+          n.forEach(i => {
+            sum1 += 1 / (i ** 2);
+            sum2 += 1 / (i ** 2 + 1);
+            partial1.push(sum1);
+            partial2.push(sum2);
+          });
+          const trace1 = {
+            x: n,
+            y: partial1,
+            mode: 'markers+lines',
+            name: 'Partial Sums of 1/n²',
+            marker: {
+              color: '#00ccff'
+            },
+            line: {
+              color: '#00ccff'
             }
           };
-
-          // MathJax.typeset(); // initial render
+          const trace2 = {
+            x: n,
+            y: partial2,
+            mode: 'markers+lines',
+            name: 'Partial Sums of 1/(n²+1)',
+            marker: {
+              color: '#ffcc00'
+            },
+            line: {
+              color: '#ffcc00'
+            }
+          };
+          Plotly.newPlot(plotDiv, [trace1, trace2], darkLayout);
+        } else if (step === 3) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = 'We examine the larger series. The Divergence Test tells us that if a larger series converges, then a series smaller than it must also converge. This is evident by looking at the graphs of the partial sums.';
+          mathContainer.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 4) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = nextLine.innerHTML = nextLine.innerHTML = 'Now we consider the three series: \\[ \\sum_{n=1}^{\\infty} 2 \\cdot 2^{n-1} \\quad , \\quad \\sum_{n=1}^{\\infty} \\left( 2 + 2(n-1) \\right) \\quad , \\quad \\sum_{n=1}^{\\infty} 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\]';
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 5) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = `
+    
+			<div>Use the slider to compare the value of each function as \\(n\\) increases:</div>
+			<br>
+				<label for="n-slider">n = 
+					<span id="slider-value">1</span>
+				</label>
+				<input type="range" min="1" max="20" value="1" id="n-slider" style="width: 100%;">
+					<br>
+						<br>
+							<div id="function-values">
+      \\( a_n = 2 \\cdot 2^{n-1} = 2 \\cdot 2^{0} = 2 \\)
+								<br>
+      \\( b_n = 2 + 2(n - 1) = 2 + 2(0) = 2 \\)
+									<br>
+      \\( c_n = 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} = 2 \\cdot \\left( \\frac{1}{2} \\right)^{0} = 2 \\)
+    
+									</div>
+  `;
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+          const slider = document.getElementById('n-slider');
+          const displayValue = document.getElementById('slider-value');
+          const functionValues = document.getElementById('function-values');
+          slider.addEventListener('input', () => {
+            const n = parseInt(slider.value);
+            displayValue.textContent = n;
+            const a = 2 * (2 ** (n - 1));
+            const b = 2 + 2 * (n - 1);
+            const c = 2 * (0.5 ** (n - 1));
+            functionValues.innerHTML = `
+      \\( a_n = 2 \\cdot 2^{${n - 1}} = ${a} \\)
+									<br>
+      \\( b_n = 2 + 2(${n - 1}) = ${b} \\)
+										<br>
+      \\( c_n = 2 \\cdot \\left( \\frac{1}{2} \\right)^{${n - 1}} = ${c.toFixed(4)} \\)
+    `;
+            MathJax.typeset();
+          });
+        } else if (step == 6) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = 'We see that \\( 2 \\cdot 2^{n-1} > 2 + 2(n-1) > 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\)';
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 7) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = 'We again plot the partial sums of our three series: \\[ \\sum_{n=1}^{\\infty} 2 \\cdot 2^{n-1} \\quad , \\quad \\sum_{n=1}^{\\infty} \\left( 2 + 2(n-1) \\right) \\quad , \\quad \\sum_{n=1}^{\\infty} 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\]';
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+          plot2Div.innerHTML = '';
+          const n = Array.from({
+            length: 20
+          }, (_, i) => i + 1); // keep small to avoid blowing up
+          let sumExp = 0;
+          let sumLin = 0;
+          let sumGeom = 0;
+          const partialExp = [];
+          const partialLin = [];
+          const partialGeom = [];
+          n.forEach(i => {
+            const expTerm = 2 * 2 ** (i - 1);
+            const linTerm = 2 + 2 * (i - 1);
+            const geomTerm = 2 * (1 / 2) ** (i - 1);
+            sumExp += expTerm;
+            sumLin += linTerm;
+            sumGeom += geomTerm;
+            partialExp.push(sumExp);
+            partialLin.push(sumLin);
+            partialGeom.push(sumGeom);
+          });
+          const traceExp = {
+            x: n,
+            y: partialExp,
+            mode: 'markers+lines',
+            name: 'Partial Sums of 2·2ⁿ⁻¹',
+            marker: {
+              color: '#ff4444'
+            },
+            line: {
+              color: '#ff4444'
+            }
+          };
+          const traceLin = {
+            x: n,
+            y: partialLin,
+            mode: 'markers+lines',
+            name: 'Partial Sums of 2 + 2(n−1)',
+            marker: {
+              color: '#00ccff'
+            },
+            line: {
+              color: '#00ccff'
+            }
+          };
+          const traceGeom = {
+            x: n,
+            y: partialGeom,
+            mode: 'markers+lines',
+            name: 'Partial Sums of 2·(1/2)ⁿ⁻¹',
+            marker: {
+              color: '#88ff00'
+            },
+            line: {
+              color: '#88ff00'
+            }
+          };
+          Plotly.newPlot(plot2Div, [traceExp, traceLin, traceGeom], darkLayout);
+        } else if (step === 8) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML = 'Despite being larger term-by-term, \\( \\sum \\frac{1}{\\sqrt{n}} \\) also diverges.';
+          rightNextText.appendChild(nextLine);
+          MathJax.typeset();
+          plot3Div.innerHTML = '';
+          const n = Array.from({
+            length: 300
+          }, (_, i) => i + 1);
+          const diverging = [];
+          let sum = 0;
+          n.forEach(i => {
+            sum += 1 / Math.sqrt(i);
+            diverging.push(sum);
+          });
+          const trace = {
+            x: n,
+            y: diverging,
+            mode: 'lines',
+            name: 'Visual of Diverging Series',
+            marker: {
+              color: '#ff4444'
+            },
+            line: {
+              color: '#ff4444'
+            }
+          };
+          Plotly.newPlot(plot3Div, [trace], darkLayout);
+        }
+      };
+      // MathJax.typeset(); // initial render
     </script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
   </body>
