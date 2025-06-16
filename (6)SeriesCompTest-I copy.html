@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Series Comparison</title>
+  <script>
+    alert("Push 'Enter' to progress");
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: sans-serif;
+      padding: 2em;
+      position: relative;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    .flex-container {
+      display: flex;
+      justify-content: center;
+      gap: 4em;
+      flex-wrap: wrap;
+    }
+    .column {
+      flex: 1;
+    }
+    .column div {
+      margin: 1.2em auto;
+      font-size: 20px;
+    }
+    #plot, #plot2, #plot3, #right-next-text {
+      margin-top: 2em;
+    }
+#rules {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  padding: 1em;
+  border: 2px solid #00ccff;
+  border-radius: 10px;
+  font-size: 18px;
+  background-color: #111;
+  max-width: 300px;
+}
+
+  </style>
+</head>
+<body>
+  <h2>Series Comparison Test: Part I</h2>
+  <div id="rules" style="display: none;"></div>
+  <div class="flex-container">
+    <div class="column">
+      <div id="math-container"></div>
+      <div id="plot"></div>
+    </div>
+    <div class="column">
+      <div id="right-math"></div>
+      <div id="plot2"></div>
+      <div id="right-next-text"></div>
+      <div id="plot3"></div>
+    </div>
+  </div>
+
+  <script>
+    let step = 0;
+    const mathContainer = document.getElementById('math-container');
+    const rightMath = document.getElementById('right-math');
+    const rightNextText = document.getElementById('right-next-text');
+    const plotDiv = document.getElementById('plot');
+    const plot2Div = document.getElementById('plot2');
+    const plot3Div = document.getElementById('plot3');
+    const rules = document.getElementById('rules');
+
+      const darkLayout = {
+        paper_bgcolor: '#000',
+        plot_bgcolor: '#000',
+        font: {
+          color: '#00ccff'
+        },
+        xaxis: {
+          title: 'n',
+          gridcolor: '#222',
+          zerolinecolor: '#444'
+        },
+        yaxis: {
+          title: 'Partial Sum',
+          gridcolor: '#222',
+          zerolinecolor: '#444',
+          type: 'log', // <-- This makes it logarithmic
+          autorange: true
+        }
+      };
+
+    const initialLine = document.createElement('div');
+    initialLine.innerHTML = 'Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} \\text{ and } \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} \\]';
+    mathContainer.appendChild(initialLine);
+
+    function nextStep() {
+      step++;
+
+      if (step === 1) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'We know that \\( \\frac{1}{n^2} > \\frac{1}{n^2 + 10} \\). Now we plot the partial sums of these series.';
+        mathContainer.appendChild(nextLine);
+        MathJax.typeset();
+
+      } else if (step === 2) {
+        plotDiv.innerHTML = '';
+        const n = Array.from({ length: 30 }, (_, i) => i + 1);
+        let sum1 = 0, sum2 = 0;
+        const partial1 = [], partial2 = [];
+        n.forEach(i => {
+          sum1 += 1 / (i ** 2);
+          sum2 += 1 / (i ** 2 + 1);
+          partial1.push(sum1);
+          partial2.push(sum2);
+        });
+
+        Plotly.newPlot(plotDiv, [
+          {
+            x: n, y: partial1, mode: 'markers+lines',
+            name: 'Partial Sums of 1/n²', marker: { color: '#00ccff' }, line: { color: '#00ccff' }
+          },
+          {
+            x: n, y: partial2, mode: 'markers+lines',
+            name: 'Partial Sums of 1/(n²+1)', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' }
+          }
+        ], darkLayout);
+
+      } else if (step === 3) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'We examine the larger series. The Divergence Test tells us that if a larger series converges, then a series smaller than it must also converge.';
+        mathContainer.appendChild(nextLine);
+        rules.style.display = "block";
+        rules.innerHTML = `<strong><u>Larger Series</u></strong><br>If a larger series converges, the smaller series converges also.<br>`;
+        MathJax.typeset();
+
+      } else if (step === 4) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'Now we consider the three series: \\[ \\sum_{n=1}^{\\infty} 2 \\cdot 2^{n-1} , \\quad \\sum_{n=1}^{\\infty} \\left( 2 + 2(n-1) \\right), \\quad \\sum_{n=1}^{\\infty} 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\]';
+        rightMath.appendChild(nextLine);
+        MathJax.typeset();
+
+      } else if (step === 5) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'We see that \\( 2 \\cdot 2^{n-1} > 2 + 2(n-1) > 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\)';
+        rightMath.appendChild(nextLine);
+        MathJax.typeset();
+
+      } else if (step === 6) {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = 'We again plot the partial sums of our three series. The Divergence Tests tells us that if the larger series diverges, the smaller series can either converge or diverge.';
+        rightMath.appendChild(nextLine);
+        MathJax.typeset();
+
+        const n = Array.from({ length: 20 }, (_, i) => i + 1);
+        let sumExp = 0, sumLin = 0, sumGeom = 0;
+        const partialExp = [], partialLin = [], partialGeom = [];
+        n.forEach(i => {
+          const expTerm = 2 * 2 ** (i - 1);
+          const linTerm = 2 + 2 * (i - 1);
+          const geomTerm = 2 * (1 / 2) ** (i - 1);
+          sumExp += expTerm;
+          sumLin += linTerm;
+          sumGeom += geomTerm;
+          partialExp.push(sumExp);
+          partialLin.push(sumLin);
+          partialGeom.push(sumGeom);
+        });
+
+        Plotly.newPlot(plot2Div, [
+          { x: n, y: partialExp, mode: 'markers+lines', name: '2·2ⁿ⁻¹', marker: { color: '#ff4444' }, line: { color: '#ff4444' } },
+          { x: n, y: partialLin, mode: 'markers+lines', name: '2 + 2(n−1)', marker: { color: '#00ccff' }, line: { color: '#00ccff' } },
+          { x: n, y: partialGeom, mode: 'markers+lines', name: '2·(1/2)ⁿ⁻¹', marker: { color: '#88ff00' }, line: { color: '#88ff00' } }
+        ], darkLayout);
+
+      } else if (step === 7) {
+        rules.innerHTML += `<br>If a larger series diverges, the smaller series can diverge or converge`;
+
+      } else if (step === 8) {
+        alert("Next lesson");
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') nextStep();
+    });
+  </script>
+</body>
+</html>

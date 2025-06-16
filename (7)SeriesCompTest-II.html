@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Series Comparison</title>
+    <script>
+      alert("Push 'Enter' to progress");
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: { fontCache: 'global' }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+      body {
+        background-color: #000;
+        color: #00ccff;
+        font-family: sans-serif;
+        padding: 2em;
+        position: relative;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 1em;
+      }
+
+      .flex-container {
+        display: flex;
+        justify-content: center;
+        gap: 4em;
+        flex-wrap: wrap;
+      }
+
+      .column {
+        flex: 1;
+      }
+
+      .column div {
+        margin: 1.2em auto;
+        font-size: 20px;
+      }
+
+      #plot, #plot2, #plot3, #right-next-text {
+        margin-top: 2em;
+      }
+
+#rules, #rules2 {
+  position: absolute;
+  top: 1em;
+  padding: 1em;
+  padding-top: 1.5em;  /* add this line */
+  border: 2px solid #00ccff;
+  border-radius: 10px;
+  font-size: 18px;
+  background-color: #111;
+  width: 280px;
+  box-sizing: border-box; /* ensures padding doesn't overflow width */
+}
+
+
+
+      #rules {
+        left: 1em;
+        display: block;
+        text-align: center;
+      }
+
+      #rules2 {
+        left: 320px;
+        display: none;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Series Comparison Test: Part II</h2>
+    <div id="top-wrapper">
+<!-- Inside <body> -->
+<div id="rules">
+  <div style="position: absolute; top: 0.5em; left: 0; right: 0; text-align: center; font-weight: bold; text-decoration: underline;">
+    Larger Series
+  </div>
+  <div style="padding-top: 2em;">
+    If a larger series converges, the smaller series converges also.<br><br>
+    If a larger series diverges, the smaller series can diverge or converge
+  </div>
+</div>
+
+<div id="rules2" style="display: none;">
+  <div style="position: absolute; top: 0.5em; left: 0; right: 0; text-align: center; font-weight: bold; text-decoration: underline;">
+    Smaller Series
+  </div>
+  <div style="padding-top: 2em;" id="rules2-content"></div>
+</div>
+
+      <div class="flex-container">
+        <div class="column">
+          <div id="math-container"></div>
+          <div id="plot"></div>
+        </div>
+        <div class="column">
+          <div id="right-math"></div>
+          <div id="plot2"></div>
+          <div id="right-next-text"></div>
+          <div id="plot3"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let step = 0;
+      const mathContainer = document.getElementById('math-container');
+      const rightMath = document.getElementById('right-math');
+      const rightNextText = document.getElementById('right-next-text');
+      const plotDiv = document.getElementById('plot');
+      const plot2Div = document.getElementById('plot2');
+      const plot3Div = document.getElementById('plot3');
+      const rules = document.getElementById('rules');
+      const rules2 = document.getElementById('rules2');
+
+      const darkLayout = {
+        paper_bgcolor: '#000',
+        plot_bgcolor: '#000',
+        font: { color: '#00ccff' },
+        xaxis: {
+          title: 'n',
+          gridcolor: '#222',
+          zerolinecolor: '#444'
+        },
+        yaxis: {
+          title: 'Partial Sum',
+          gridcolor: '#222',
+          zerolinecolor: '#444',
+          type: 'log',
+          autorange: true
+        }
+      };
+
+      const initialLine = document.createElement('div');
+      initialLine.innerHTML =
+        '<br><br><br><br><br><br><br>Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} , \\quad \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} , \\quad \\sum_{n=1}^{k} 2 \\cdot 2^{n-1} \\]';
+      mathContainer.appendChild(initialLine);
+
+      function nextStep() {
+        step++;
+        if (step === 1) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML =
+            'Let us examine our smallest series, \\( \\frac{1}{n^2 + 1} \\). We know that \\( \\frac{1}{n^2 + 1} < \\frac{1}{n^2} \\) and \\( \\frac{1}{n^2 + 1} < 2 \\cdot 2^{n-1} \\). Now we plot the sums of these series.';
+          mathContainer.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 2) {
+          plotDiv.innerHTML = '';
+          const n = Array.from({ length: 20 }, (_, i) => i + 1);
+          let sum1 = 0,
+            sum2 = 0,
+            sumExp = 0;
+          const partial1 = [],
+            partial2 = [],
+            partialExp = [];
+          n.forEach(i => {
+            sum1 += 1 / (i ** 2);
+            sum2 += 1 / (i ** 2 + 1);
+            sumExp += 2 * 2 ** (i - 1);
+            partial1.push(sum1);
+            partial2.push(sum2);
+            partialExp.push(sumExp);
+          });
+          Plotly.newPlot(plotDiv, [
+            { x: n, y: partial1, mode: 'markers+lines', name: 'Partial Sums of 1/n²', marker: { color: '#00ccff' }, line: { color: '#00ccff' } },
+            { x: n, y: partial2, mode: 'markers+lines', name: 'Partial Sums of 1/(n²+1)', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' } },
+            { x: n, y: partialExp, mode: 'markers+lines', name: 'Partial Sums of 2·2ⁿ⁻¹', marker: { color: '#ff4444' }, line: { color: '#ff4444' } }
+          ], darkLayout);
+        } else if (step === 3) {
+  const nextLine = document.createElement('div');
+  nextLine.innerHTML =
+    'We examine the smallest series. The Divergence Test tells us that if a smaller series converges, then a larger series can diverge or converge.';
+  mathContainer.appendChild(nextLine);
+rules2.style.display = "block";
+document.getElementById('rules2-content').innerHTML = `
+  If a smaller series converges, the larger series can diverge or converge.
+`;
+
+  MathJax.typeset();
+} else if (step === 4) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML ='Now we consider the two series: \\[ \\sum_{n=1}^{\\infty} 3^n\\ , \\quad \\sum_{n=0}^{\\infty} 4^n \\]';
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 5) {
+          const nextLine = document.createElement('div');
+          nextLine.innerHTML =
+            'We see that \\( 4^n > \\3^n \\)';
+          rightMath.appendChild(nextLine);
+          MathJax.typeset();
+        } else if (step === 6) {
+  const nextLine = document.createElement('div');
+  nextLine.innerHTML =
+    'We now plot the partial sums of our two divergent series. The Divergence Test tells us that divergence of a larger series does not determine convergence of the smaller.';
+  rightMath.appendChild(nextLine);
+  MathJax.typeset();
+
+  const n = Array.from({ length: 20 }, (_, i) => i + 1);
+  let sumExp = 0, sumHarmonic = 0;
+  const partialExp = [], partialHarmonic = [];
+  n.forEach(i => {
+    const expTerm = 3 ** i;
+    const harmonicTerm = 4 ** i;
+    sumExp += expTerm;
+    sumHarmonic += harmonicTerm;
+    partialExp.push(sumExp);
+    partialHarmonic.push(sumHarmonic);
+  });
+
+  Plotly.newPlot(plot2Div, [
+    {
+      x: n,
+      y: partialExp,
+      mode: 'markers+lines',
+      name: '2ⁿ',
+      marker: { color: '#ff4444' },
+      line: { color: '#ff4444' }
+    },
+    {
+      x: n,
+      y: partialHarmonic,
+      mode: 'markers+lines',
+      name: '1/n',
+      marker: { color: '#00ccff' },
+      line: { color: '#00ccff' }
+    }
+  ], darkLayout);
+}
+else if (step === 7) {
+document.getElementById('rules2-content').innerHTML += `
+  <br>If a smaller series diverges, the larger series must diverge as well.
+`;
+
+        } else if (step === 8) {
+          alert("Next lesson");
+        }
+      }
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') nextStep();
+      });
+    </script>
+  </body>
+</html>
