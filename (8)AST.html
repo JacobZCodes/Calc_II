@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>AST</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
@@ -12,55 +12,80 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
   <style>
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: sans-serif;
+      padding: 2em;
+    }
+
+    h3, h4 {
+      text-align: center;
+      color: #00ccff;
+    }
+
+    label {
+      display: block;
+      text-align: center;
+      margin-bottom: 1em;
+      font-size: 18px;
+    }
+
+    input[type="range"] {
+      display: block;
+      margin: 0 auto 2em auto;
+      width: 60%;
+    }
+
     #container {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 40px;
+      flex-wrap: wrap;
     }
+
     .plot-box {
       width: 45%;
     }
+
     #math-container {
       margin-top: 40px;
       padding: 0 40px;
       font-size: 18px;
+      line-height: 1.6em;
+      color: #00ccff;
+    }
+
+    strong {
+      color: #ffcc00;
+    }
+
+    em {
+      color: #88ff00;
     }
   </style>
 </head>
 <body>
-  <h3>AST</h3>
+  <h3>Alternating Series Test (AST)</h3>
+
   <label for="termsSlider">Number of terms (n): <span id="termCount">5</span></label>
   <input type="range" id="termsSlider" min="1" max="50" value="5" />
 
   <div id="container">
     <div class="plot-box">
-      <h4>Alternating Harmonic Series</h4>
-      <div id="plotAlt"></div>
-    </div>
-    <div class="plot-box">
       <h4>Harmonic Series</h4>
       <div id="plotHarm"></div>
     </div>
+    <div class="plot-box">
+      <h4>Alternating Harmonic Series</h4>
+      <div id="plotAlt"></div>
+    </div>
   </div>
 
-  <!-- Explanation below the graphs -->
   <div id="math-container">
-    <h4>Explanation:</h4>
+    <h4>Alternating Series Test</h4>
     <p>
-      The <strong>harmonic series</strong> is defined as:
-      <br><br>
-      \( H_n = \sum_{k=1}^n \frac{1}{k} \)
-      <br><br>
-      This series <em>diverges</em> as \( n \to \infty \), meaning it grows without bound.
-      <br><br>
-      The <strong>alternating harmonic series</strong> is defined as:
-      <br><br>
-      \( A_n = \sum_{k=1}^n \frac{(-1)^{k+1}}{k} \)
-      <br><br>
-      This series <em>converges</em> to \( \ln(2) \) as \( n \to \infty \), because the terms decrease in magnitude and alternate in sign.
-      <br><br>
-      Thus we define the <strong><em>alternating series test (AST)</em></strong>:<br>
-      An alternating series converges if the terms are growing smaller and the infinitiest term is 0
+      An alternating series converges if the terms decrease in magnitude and the limit of the sequence is zero.
     </p>
   </div>
 
@@ -106,15 +131,20 @@
 
     function buildLayout(n) {
       return {
+        paper_bgcolor: '#000',
+        plot_bgcolor: '#000',
+        font: { color: '#00ccff' },
         xaxis: {
           tickvals: Array.from({ length: n }, (_, i) => i),
           ticktext: Array.from({ length: n }, (_, i) => `S${i + 1}`),
           title: "Partial Sum Index",
-          zeroline: false
+          gridcolor: '#222',
+          zerolinecolor: '#444'
         },
         yaxis: {
           title: "Value",
-          zeroline: false
+          gridcolor: '#222',
+          zerolinecolor: '#444'
         },
         margin: { t: 30 },
         showlegend: false
@@ -125,8 +155,9 @@
       const yAlt = computeAlternatingHarmonic(n);
       const yHarm = computeHarmonic(n);
 
-      Plotly.newPlot('plotAlt', buildTraces(yAlt, 'blue'), buildLayout(n));
-      Plotly.newPlot('plotHarm', buildTraces(yHarm, 'red'), buildLayout(n));
+      // SWAPPED here: left = Harmonic (red), right = Alt Harmonic (green)
+      Plotly.newPlot('plotHarm', buildTraces(yHarm, '#ff4444'), buildLayout(n));
+      Plotly.newPlot('plotAlt', buildTraces(yAlt, '#88ff00'), buildLayout(n));
     }
 
     slider.addEventListener('input', () => {
