@@ -132,21 +132,50 @@
         <p id="inequality1" style="display: block;"></p>
       </div>
       <div class="plot-box" id="plot3-box" style="display: none;">
-        <h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
+        <div style="position: relative; text-align: center;">
+  <!-- Explanation box floats far left -->
+  <div id="explanation-box3" style="
+    display: none;
+    position: absolute;
+    left: -5px;  /* Push far to the left */
+    z-index: 10;
+    top: 0;
+    border: 1px solid #00ccff;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #111;
+    color: #00ccff;
+    max-width: 250px;
+    text-align: left;
+  ">
+    <p id="explanation-text3" style="margin: 0;">
+  
+</p>
+  </div>
+
+<h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
+</div>
+        
         <div id="plot3"></div>
         <p id="inequality2" style="display: none;"></p>
       </div>
     </div>
-    <div id="bottom-text" style="margin-top: 2em;">
-      <p id="step13-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
-      <p id="step14-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
-      <p id="step15-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
-    </div>
+<div id="bottom-text" style="margin-top: 2em;">
+  <p id="step13-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
+
+  <div id="step14-15-wrapper" style="display: flex; justify-content: center; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
+    <p id="step14-text" style="display: none; font-size: 1.1em; color: #00ccff; max-width: 400px; text-align: left;"></p>
+    <div id="step15-text" style="display: none;"></div>
+  </div>
+</div>
+
     <!-- <button id="animate-button">Continue Animation</button> -->
     <!-- KEEP ALL YOUR <head> AND <body> AS IS UNTIL... -->
 
 <script>
   const darkThemeLayout = {
+     width: 800,
+  height: 400,
     paper_bgcolor: '#111',
     plot_bgcolor: '#111',
     font: {
@@ -316,7 +345,7 @@ MathJax.typeset();
         MathJax.typeset();
 
       } else if (clickCount === 7) {
-        document.getElementById("plot1-title").textContent = '.';
+        document.getElementById("plot1-title").textContent = 'Left-endpoint Rectangles';
         document.getElementById("plot3-box").style.display = 'block';
         document.getElementById("plot3-title").style.display = 'block';
         const pointTrace3 = {
@@ -330,7 +359,7 @@ MathJax.typeset();
         const curve3 = {
           x: [], y: [],
           mode: 'lines',
-          name: 'f(x) = 1/x',
+          name: 'g(x) = 1/x',
           line: { color: 'red' },
           type: 'scatter'
         };
@@ -341,7 +370,12 @@ MathJax.typeset();
         Plotly.newPlot('plot3', [pointTrace3, curve3], darkThemeLayout);
 
       } else if (clickCount === 8) {
-        document.getElementById("plot3-title").innerHTML = `Now we add right-endpoint rectangles to the curve.`;
+        document.getElementById("plot3-title").innerHTML = `Now we add right-endpoint rectangles to the curve and remove g(x) for visual clarity.`;
+                const plotDiv = document.getElementById('plot3');
+        const traceIndexToRemove = plotDiv.data.findIndex(trace => trace.name === 'g(x) = 1/x');
+        if (traceIndexToRemove !== -1) {
+          Plotly.deleteTraces('plot3', traceIndexToRemove);
+        }
         const barX = [], barY = [];
         for (let i = 2; i <= 6; i++) {
           barX.push(i - 0.5);
@@ -353,44 +387,80 @@ MathJax.typeset();
           type: 'bar',
           name: 'Right-Endpoint Rectangles',
           width: 1,
-          marker: { color: 'green', opacity: 0.4 }
+          marker: { color: 'orange', opacity: 0.4 }
         });
 
-      } else if (clickCount === 9) {
+      } else if (clickCount === 9) { // WORKING HERE
         document.getElementById("plot3-title").innerHTML = `We now label the heights (a_n values) and widths (1) for each rectangle.`;
-        const verticalTraces = [];
+
+        const verticalTraces = [], labelTraces = [];
         for (let i = 2; i <= 6; i++) {
+          const yTop = 1 / i;
+const yMid = yTop / 2;
+
           verticalTraces.push({
             x: [i, i],
             y: [0, 1 / i],
             mode: 'lines+text',
             type: 'scatter',
-            line: { color: 'black', dash: 'dot' },
-            text: [`a_${i}`],
+            line: { color: 'green', dash: 'dot' },
+            // text: [`a_${i}`],
             textposition: 'top right',
             showlegend: false
           });
+                    labelTraces.push({
+            x: [i],
+            y: [yMid],
+            mode: 'markers+text',
+            type: 'scatter',
+            text: [`a_${i}`],
+            textposition: 'middle right',
+            textfont: { size: 14, color: 'black' },
+            marker: { opacity: 0 },
+            showlegend: false
+          });
         }
+
+      
         const horizontalTrace = {
           x: [1, 2, null, 2, 3, null, 3, 4, null, 4, 5, null, 5, 6],
           y: Array(14).fill(0),
           mode: 'lines+text',
           type: 'scatter',
-          line: { color: 'gray', width: 1 },
+          line: { color: 'green', width: 1 },
           text: ['1', '1', '', '1', '1', '', '1', '1', '', '1', '1', '', '1', '1'],
           textposition: 'bottom center',
           showlegend: false
         };
-        Plotly.addTraces('plot3', [...verticalTraces, horizontalTrace]);
+        
+        const horizontalLabelTrace = {
+          x: [1.5,2.5, 3.5, 4.5, 5.5],
+          y: [0,0, 0, 0, 0],
+          mode: 'markers+text',
+          type: 'scatter',
+          text: ['1', '1', '1', '1', '1'],
+          textposition: 'top',
+          textfont: { size: 14, color: 'black' },
+          marker: { opacity: 0 },
+          showlegend: false
+        };
 
-      } else if (clickCount === 10) {
-        document.getElementById("plot3-title").innerHTML = `The area of the rectangles now matches this summation`;
-        document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=2}^{6} \\frac{1}{n} \\)';
-        document.getElementById("inequality2").style.display = 'block';
+        Plotly.addTraces('plot3', [...verticalTraces, ...labelTraces,  horizontalTrace, horizontalLabelTrace]);
+
+      } else if (clickCount === 10) { 
+        document.getElementById("explanation-box3").style.display = "block";
+        document.getElementById("explanation-text3").innerHTML = `Area Rectangles: \\( \\sum_{n=2}^{6} \\frac{1}{n} \\)`;
+        document.getElementById("plot3-title").innerHTML = `We see that the area of the rectangles is: \\( \\sum_{n=2}^{6} \\frac{1}{n} \\)`;
+        document.getElementById("plot3-title").style="margin-left: 120px;";
+
+        // shift plot3-title over to the right a little bit
         MathJax.typeset();
 
       } else if (clickCount === 11) {
-        document.getElementById("plot3-title").innerHTML = `Again we shade the region`;
+        document.getElementById("plot3-title").innerHTML = `Again we shade the region under the curve, which has area  \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`;
+        document.getElementById("explanation-text3").innerHTML += `Area Under Curve:  \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`;
+        document.getElementById("plot3-title").style="margin-left: 270px;";
+        MathJax.typeset();
         const xFill = [], yFill = [];
         for (let x = 1; x <= 6; x += 0.05) {
           xFill.push(x);
@@ -410,24 +480,41 @@ MathJax.typeset();
 
       } else if (clickCount === 12) {
         document.getElementById("plot3-title").innerHTML = `Now we form this inequality`;
-        document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
+        document.getElementById("plot3-title").style="margin-left: 120px;";
+        document.getElementById("explanation-text3").innerHTML += '\\( \\sum_{n=2}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
+        
         MathJax.typeset();
 
       } else if (clickCount === 13) {
-        document.getElementById("plot3-title").innerHTML = `Now we combine both inequalities to form`;
+        document.getElementById("plot3-title").innerHTML = `Right-Endpoint Rectangles`;
         document.getElementById("step13-text").style.display = 'block';
-        document.getElementById("step13-text").innerHTML = '\\( \\int_{1}^{6} \\frac{1}{x} \\, dx < \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
+        document.getElementById("step13-text").innerHTML = 'We combine both inequalities to form: <br>\\( \\int_{1}^{6} \\frac{1}{x} \\, dx < \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
         MathJax.typeset();
 
       } else if (clickCount === 14) {
-        document.getElementById("plot3-title").innerHTML = `We generalize this to form`;
-        document.getElementById("step14-text").style.display = 'block';
-        document.getElementById("step14-text").innerHTML = '\\( \\int_{1}^{\\infty} f(x) \\, dx < \\sum_{n=1}^{\\infty} a_n < \\int_{1}^{\\infty} f(x) \\, dx \\)';
+        document.getElementById("step13-text").innerHTML += `<br>We generalize this to form: <br>\\( \\int_{1}^{\\infty} f(x) \\, dx < \\sum_{n=1}^{\\infty} a_n < \\int_{1}^{\\infty} f(x) \\, dx \\)`;
         MathJax.typeset();
 
       } else if (clickCount === 15) {
-        document.getElementById("step15-text").innerHTML = `Insert formal integral test`;
-        document.getElementById("step15-text").style.display = 'block';
+        document.getElementById("step13-text").innerHTML = `
+  <div style="
+    background-color: #111;
+    border: 1px solid #00ccff;
+    padding: 1em;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 0 12px #00ccff44;
+    text-align: center;
+    line-height: 1.6em;
+  ">
+    <strong style="color: #66ddee; font-size: 1.2em;">Integral Test:</strong><br><br>
+    Let \\( f(x) \\) be a continuous, positive, decreasing function on \\( [1, \\infty) \\) and let \\( a_n = f(n) \\). Then:<br><br>
+    - If \\( \\int_1^\\infty f(x)\\,dx \\) converges, then \\( \\sum_{n=1}^\\infty a_n \\) converges.<br>
+    - If \\( \\int_1^\\infty f(x)\\,dx \\) diverges, then \\( \\sum_{n=1}^\\infty a_n \\) diverges.
+  </div>
+`;
+MathJax.typeset();        
       }
     }
   });
