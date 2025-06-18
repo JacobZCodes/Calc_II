@@ -85,7 +85,7 @@
         color: #66ddee;
       }
 
-      #inequality1,
+     
       #inequality2 {
         margin-top: 1em;
         font-size: 18px;
@@ -96,9 +96,40 @@
     <h2>Integral Test</h2>
     <div id="plots-container">
       <div class="plot-box">
-        <h3 id="plot1-title">The integral test allows us to use integrals to help us classify series. We start out graphing the first few points of 1/n</h3>
+<div style="position: relative; text-align: center;">
+  <!-- Explanation box floats far left -->
+  <div id="explanation-box" style="
+    display: none;
+    position: absolute;
+    left: -5px;  /* Push far to the left */
+    z-index: 10;
+    top: 0;
+    border: 1px solid #00ccff;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #111;
+    color: #00ccff;
+    max-width: 250px;
+    text-align: left;
+  ">
+    <p id="explanation-text" style="margin: 0;">
+  
+</p>
+  </div>
+
+  <!-- Title stays centered -->
+  <h3 id="plot1-title" style="margin: 0; max-width: 600px; display: inline-block;">
+    The integral test allows us to use integrals to help us classify series. We start out graphing the first few points of 1/n, n is natural number
+  </h3>
+</div>
+
+
+
+
+<div id="plot1"></div>
+
         <div id="plot1"></div>
-        <p id="inequality1" style="display: none;"></p>
+        <p id="inequality1" style="display: block;"></p>
       </div>
       <div class="plot-box" id="plot3-box" style="display: none;">
         <h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
@@ -111,295 +142,295 @@
       <p id="step14-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
       <p id="step15-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
     </div>
-    <button id="animate-button">Continue Animation</button>
-    <script>
-      const darkThemeLayout = {
-        paper_bgcolor: '#111',
-        plot_bgcolor: '#111',
-        font: {
-          color: '#00ccff',
-          family: 'sans-serif'
-        },
-        xaxis: {
-          title: 'x',
-          range: [0, 7],
-          gridcolor: '#333',
-          zerolinecolor: '#555'
-        },
-        yaxis: {
-          title: 'f(x)',
-          range: [0, 1.2],
-          gridcolor: '#333',
-          zerolinecolor: '#555'
-        },
-        margin: {
-          t: 20
-        },
-        legend: {
-          font: {
-            color: '#00ccff'
-          },
-          bgcolor: '#111'
+    <!-- <button id="animate-button">Continue Animation</button> -->
+    <!-- KEEP ALL YOUR <head> AND <body> AS IS UNTIL... -->
+
+<script>
+  const darkThemeLayout = {
+    paper_bgcolor: '#111',
+    plot_bgcolor: '#111',
+    font: {
+      color: '#00ccff',
+      family: 'sans-serif'
+    },
+    xaxis: {
+      title: 'x',
+      range: [0, 7],
+      gridcolor: '#333',
+      zerolinecolor: '#555'
+    },
+    yaxis: {
+      title: 'f(x)',
+      range: [0, 1.2],
+      gridcolor: '#333',
+      zerolinecolor: '#555'
+    },
+    margin: { t: 20 },
+    legend: {
+      font: { color: '#00ccff' },
+      bgcolor: '#111'
+    }
+  };
+
+  let clickCount = 0;
+
+  const intX = [], intY = [];
+  for (let i = 1; i <= 6; i++) {
+    intX.push(i);
+    intY.push(1 / i);
+  }
+
+  Plotly.newPlot('plot1', [{
+    x: intX,
+    y: intY,
+    mode: 'markers',
+    name: 'Points at Integers',
+    marker: { size: 8, color: 'blue' },
+    type: 'scatter'
+  }], darkThemeLayout);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      clickCount++;
+      console.log(clickCount);
+
+      if (clickCount === 1) {
+        document.getElementById("plot1-title").innerHTML = `Now we draw the function 1/x which passes through our n points`;
+        const realX = [], realY = [];
+        for (let x = 1; x <= 6; x += 0.05) {
+          realX.push(x);
+          realY.push(1 / x);
         }
-      };
-      let clickCount = 0;
-      const intX = [],
-        intY = [];
-      for (let i = 1; i <= 6; i++) {
-        intX.push(i);
-        intY.push(1 / i);
-      }
-      Plotly.newPlot('plot1', [{
-        x: intX,
-        y: intY,
-        mode: 'markers',
-        name: 'Points at Integers',
-        marker: {
-          size: 8,
-          color: 'blue'
-        },
-        type: 'scatter'
-      }], darkThemeLayout);
-      document.getElementById('animate-button').onclick = function() {
-        clickCount++;
-        console.log(clickCount);
-        if (clickCount === 1) {
-          document.getElementById("plot1-title").innerHTML = `Now we draw the function 1/x which passes through our n points`;
-          const realX = [],
-            realY = [];
-          for (let x = 1; x <= 6; x += 0.05) {
-            realX.push(x);
-            realY.push(1 / x);
-          }
-          Plotly.addTraces('plot1', {
-            x: realX,
-            y: realY,
+        Plotly.addTraces('plot1', {
+          x: realX,
+          y: realY,
+          mode: 'lines',
+          name: 'f(x) = 1/x (Curve)',
+          line: { color: 'red' },
+          type: 'scatter'
+        });
+
+      } else if (clickCount === 2) {
+        document.getElementById("plot1-title").innerHTML = `Then we draw our left endpoint rectangles and remove the f(x) for visual clarity`;
+        const plotDiv = document.getElementById('plot1');
+        const traceIndexToRemove = plotDiv.data.findIndex(trace => trace.name === 'f(x) = 1/x (Curve)');
+        if (traceIndexToRemove !== -1) {
+          Plotly.deleteTraces('plot1', traceIndexToRemove);
+        }
+        const barX = [], barY = [];
+        for (let i = 1; i <= 5; i++) {
+          barX.push(i + 0.5);
+          barY.push(1 / i);
+        }
+        Plotly.addTraces('plot1', {
+          x: barX,
+          y: barY,
+          type: 'bar',
+          name: 'Left-Endpoint Rectangles',
+          width: 1,
+          marker: { color: 'green', opacity: 0.4 }
+        });
+
+      } else if (clickCount === 3) {
+        document.getElementById("plot1-title").innerHTML = `To find the area of these rectangles, we note that the height of each rectangle is a_n and each base is 1`;
+
+        const verticalTraces = [], labelTraces = [];
+        for (let i = 1; i <= 5; i++) {
+          const yTop = 1 / i;
+          const yMid = yTop / 2;
+          verticalTraces.push({
+            x: [i, i],
+            y: [0, yTop],
             mode: 'lines',
-            name: 'f(x) = 1/x (Curve)',
-            line: {
-              color: 'red'
-            },
-            type: 'scatter'
+            type: 'scatter',
+            line: { color: 'orange', dash: 'dot' },
+            showlegend: false
           });
-          this.innerText = 'Draw Left-Endpoint Rectangles';
-        } else if (clickCount === 2) {
-          document.getElementById("plot1-title").innerHTML = `Then we draw our left endpoint rectangles`;
-          const barX = [],
-            barY = [];
-          for (let i = 1; i <= 5; i++) {
-            barX.push(i + 0.5);
-            barY.push(1 / i);
-          }
-          Plotly.addTraces('plot1', {
-            x: barX,
-            y: barY,
-            type: 'bar',
-            name: 'Left-Endpoint Rectangles',
-            width: 1,
-            marker: {
-              color: 'green',
-              opacity: 0.4
-            }
+          labelTraces.push({
+            x: [i],
+            y: [yMid],
+            mode: 'markers+text',
+            type: 'scatter',
+            text: [`a_${i}`],
+            textposition: 'middle right',
+            textfont: { size: 14, color: 'orange' },
+            marker: { opacity: 0 },
+            showlegend: false
           });
-          this.innerText = 'Show Base Widths and Heights';
-        } else if (clickCount === 3) {
-          document.getElementById("plot1-title").innerHTML = `Now we draw vertical lines from the left endpoints and label base widths`;
-          const verticalTraces = [];
-          for (let i = 1; i <= 5; i++) {
-            verticalTraces.push({
-              x: [i, i],
-              y: [0, 1 / i],
-              mode: 'lines+text',
-              type: 'scatter',
-              line: {
-                color: 'black',
-                dash: 'dot'
-              },
-              text: [`a_${i}`],
-              textposition: 'top right',
-              showlegend: false
-            });
-          }
-          const horizontalTrace = {
-            x: [1, 2, null, 2, 3, null, 3, 4, null, 4, 5, null, 5, 6],
-            y: Array(14).fill(0),
+        }
+
+        const horizontalTrace = {
+          x: [1, 2, null, 2, 3, null, 3, 4, null, 4, 5, null, 5, 6],
+          y: Array(14).fill(0),
+          mode: 'lines',
+          type: 'scatter',
+          line: { color: 'orange', dash: 'dot' },
+          showlegend: false
+        };
+
+        const horizontalLabelTrace = {
+          x: [1.5, 2.5, 3.5, 4.5, 5.5],
+          y: [0, 0, 0, 0, 0],
+          mode: 'markers+text',
+          type: 'scatter',
+          text: ['1', '1', '1', '1', '1'],
+          textposition: 'top',
+          textfont: { size: 14, color: 'orange' },
+          marker: { opacity: 0 },
+          showlegend: false
+        };
+
+        Plotly.addTraces('plot1', [...verticalTraces, ...labelTraces, horizontalTrace, horizontalLabelTrace]);
+
+      } else if (clickCount === 4) {
+        document.getElementById("plot1-title").innerHTML = `We see that the area of the rectangles is: \\( \\sum_{n=1}^{6} \\frac{1}{n} \\)`;
+        document.getElementById("explanation-box").style.display = "block";
+        document.getElementById("explanation-text").innerHTML = 'Area Rectangles: \\( \\sum_{n=1}^{6} \\frac{1}{n} \\)';
+      MathJax.typeset();
+
+      } else if (clickCount === 5) {
+document.getElementById("plot1-title").innerHTML = `Now consider the area under the curve, shaded in purple; it's always less than the area of our rectangles. The area under the curve is \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`;
+MathJax.typeset();
+document.getElementById("explanation-text").innerHTML += `Area Under Curve: \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`
+MathJax.typeset();
+        const xFill = [], yFill = [];
+        for (let x = 1; x <= 6; x += 0.05) {
+          xFill.push(x);
+          yFill.push(1 / x);
+        }
+        Plotly.addTraces('plot1', {
+          x: xFill,
+          y: yFill,
+          type: 'scatter',
+          mode: 'lines',
+          name: 'Area under f(x) = 1/x',
+          fill: 'tozeroy',
+          fillcolor: 'rgba(150, 50, 200, 0.3)',
+          line: { color: 'purple' },
+          showlegend: false
+        });
+
+      } else if (clickCount === 6) {
+        document.getElementById("plot1-title").innerHTML = `We now have the inequality in the left-hand box`;
+        document.getElementById("explanation-text").innerHTML +=` \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\) < \\( \\sum_{n=1}^{6} \\frac{1}{n} \\)`
+        MathJax.typeset();
+
+      } else if (clickCount === 7) {
+        document.getElementById("plot1-title").textContent = '.';
+        document.getElementById("plot3-box").style.display = 'block';
+        document.getElementById("plot3-title").style.display = 'block';
+        const pointTrace3 = {
+          x: [1, 2, 3, 4, 5, 6],
+          y: [1, 0.5, 1 / 3, 0.25, 0.2, 1 / 6],
+          mode: 'markers',
+          name: 'Points at Integers',
+          marker: { size: 8, color: 'blue' },
+          type: 'scatter'
+        };
+        const curve3 = {
+          x: [], y: [],
+          mode: 'lines',
+          name: 'f(x) = 1/x',
+          line: { color: 'red' },
+          type: 'scatter'
+        };
+        for (let x = 1; x <= 6; x += 0.05) {
+          curve3.x.push(x);
+          curve3.y.push(1 / x);
+        }
+        Plotly.newPlot('plot3', [pointTrace3, curve3], darkThemeLayout);
+
+      } else if (clickCount === 8) {
+        document.getElementById("plot3-title").innerHTML = `Now we add right-endpoint rectangles to the curve.`;
+        const barX = [], barY = [];
+        for (let i = 2; i <= 6; i++) {
+          barX.push(i - 0.5);
+          barY.push(1 / i);
+        }
+        Plotly.addTraces('plot3', {
+          x: barX,
+          y: barY,
+          type: 'bar',
+          name: 'Right-Endpoint Rectangles',
+          width: 1,
+          marker: { color: 'green', opacity: 0.4 }
+        });
+
+      } else if (clickCount === 9) {
+        document.getElementById("plot3-title").innerHTML = `We now label the heights (a_n values) and widths (1) for each rectangle.`;
+        const verticalTraces = [];
+        for (let i = 2; i <= 6; i++) {
+          verticalTraces.push({
+            x: [i, i],
+            y: [0, 1 / i],
             mode: 'lines+text',
             type: 'scatter',
-            line: {
-              color: 'gray',
-              width: 1
-            },
-            text: ['1', '1', '', '1', '1', '', '1', '1', '', '1', '1', '', '1', '1'],
-            textposition: 'bottom center',
-            showlegend: false
-          };
-          Plotly.addTraces('plot1', [...verticalTraces, horizontalTrace]);
-          this.innerText = 'Highlight Area Under Curve';
-        } else if (clickCount === 4) {
-          document.getElementById("plot1-title").innerHTML = `To now we see that the area of our rectangles is: which matches our series`;
-          const p = document.getElementById("inequality1");
-          p.innerHTML = '\\( \\sum_{n=1}^{6} \\frac{1}{n} \\)';
-          p.style.display = 'block';
-          MathJax.typeset();
-          this.innerText = 'Shade Area Under Curve';
-        } else if (clickCount === 5) {
-          document.getElementById("plot1-title").innerHTML = `Now consider the area under the curve, shaded in purple; it's always less than the area of our rectangles.`;
-          const xFill = [],
-            yFill = [];
-          for (let x = 1; x <= 6; x += 0.05) {
-            xFill.push(x);
-            yFill.push(1 / x);
-          }
-          Plotly.addTraces('plot1', {
-            x: xFill,
-            y: yFill,
-            type: 'scatter',
-            mode: 'lines',
-            name: 'Area under f(x) = 1/x',
-            fill: 'tozeroy',
-            fillcolor: 'rgba(150, 50, 200, 0.3)',
-            line: {
-              color: 'purple'
-            },
+            line: { color: 'black', dash: 'dot' },
+            text: [`a_${i}`],
+            textposition: 'top right',
             showlegend: false
           });
-          this.innerText = 'Show Final Inequality';
-        } else if (clickCount === 6) {
-          document.getElementById("plot1-title").innerHTML = `We now have this inequality:`;
-          document.getElementById("inequality1").innerHTML = '\\( \\sum_{n=1}^{6} \\frac{1}{n} > \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
-          MathJax.typeset();
-          this.innerText = 'Replot Points and Curve';
-        } else if (clickCount === 7) {
-          document.getElementById("plot1-title").textContent = '.';
-          document.getElementById("plot3-box").style.display = 'block';
-          document.getElementById("plot3-title").style.display = 'block';
-          const pointTrace3 = {
-            x: [1, 2, 3, 4, 5, 6],
-            y: [1, 0.5, 1 / 3, 0.25, 0.2, 1 / 6],
-            mode: 'markers',
-            name: 'Points at Integers',
-            marker: {
-              size: 8,
-              color: 'blue'
-            },
-            type: 'scatter'
-          };
-          const curve3 = {
-            x: [],
-            y: [],
-            mode: 'lines',
-            name: 'f(x) = 1/x',
-            line: {
-              color: 'red'
-            },
-            type: 'scatter'
-          };
-          for (let x = 1; x <= 6; x += 0.05) {
-            curve3.x.push(x);
-            curve3.y.push(1 / x);
-          }
-          Plotly.newPlot('plot3', [pointTrace3, curve3], darkThemeLayout);
-          this.innerText = 'Finish';
-        } else if (clickCount === 8) {
-          document.getElementById("plot3-title").innerHTML = `Now we add right-endpoint rectangles to the curve.`;
-          const barX = [],
-            barY = [];
-          for (let i = 2; i <= 6; i++) {
-            barX.push(i - 0.5);
-            barY.push(1 / i);
-          }
-          const rightRects = {
-            x: barX,
-            y: barY,
-            type: 'bar',
-            name: 'Right-Endpoint Rectangles',
-            width: 1,
-            marker: {
-              color: 'green',
-              opacity: 0.4
-            }
-          };
-          Plotly.addTraces('plot3', rightRects);
-          this.innerText = 'Label Heights and Widths';
-        } else if (clickCount === 9) {
-          document.getElementById("plot3-title").innerHTML = `We now label the heights (a_n values) and widths (1) for each rectangle.`;
-          const verticalTraces = [];
-          for (let i = 2; i <= 6; i++) {
-            verticalTraces.push({
-              x: [i, i],
-              y: [0, 1 / i],
-              mode: 'lines+text',
-              type: 'scatter',
-              line: {
-                color: 'black',
-                dash: 'dot'
-              },
-              text: [`a_${i}`],
-              textposition: 'top right',
-              showlegend: false
-            });
-          }
-          const horizontalTrace = {
-            x: [1, 2, null, 2, 3, null, 3, 4, null, 4, 5, null, 5, 6],
-            y: Array(14).fill(0),
-            mode: 'lines+text',
-            type: 'scatter',
-            line: {
-              color: 'gray',
-              width: 1
-            },
-            text: ['1', '1', '', '1', '1', '', '1', '1', '', '1', '1', '', '1', '1'],
-            textposition: 'bottom center',
-            showlegend: false
-          };
-          Plotly.addTraces('plot3', [...verticalTraces, horizontalTrace]);
-          this.innerText = 'Finish';
-        } else if (clickCount == 10) { // update instruction + show summation
-          document.getElementById("plot3-title").innerHTML = `The area of the rectangles now matches this summation`;
-          document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=2}^{6} \\frac{1}{n} \\)';
-          document.getElementById("inequality2").style.display = 'block';
-          MathJax.typeset();
-        } else if (clickCount == 11) { // update instruction + show shaded region
-          document.getElementById("plot3-title").innerHTML = `Again we shade the region`;
-          const xFill = [],
-            yFill = [];
-          for (let x = 1; x <= 6; x += 0.05) {
-            xFill.push(x);
-            yFill.push(1 / x);
-          }
-          Plotly.addTraces('plot3', {
-            x: xFill,
-            y: yFill,
-            type: 'scatter',
-            mode: 'lines',
-            name: 'Area under f(x) = 1/x',
-            fill: 'tozeroy',
-            fillcolor: 'rgba(150, 50, 200, 0.3)',
-            line: {
-              color: 'purple'
-            },
-            showlegend: false
-          });
-          this.innerText = 'Show Final Inequality';
-        } else if (clickCount == 12) { // update instruction + show inequality
-          document.getElementById("plot3-title").innerHTML = `Now we form this inequality`;
-          document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
-          MathJax.typeset();
-        } else if (clickCount == 13) { // update instruction + show joint inequality
-          document.getElementById("plot3-title").innerHTML = `Now we combine both inequalities to form`;
-          document.getElementById("step13-text").style.display = 'block';
-          document.getElementById("step13-text").innerText = '\\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\< \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
-          MathJax.typeset();
-        } else if (clickCount == 14) {
-          document.getElementById("plot3-title").innerHTML = `We generalize this to form`;
-          document.getElementById("step14-text").style.display = 'block';
-          document.getElementById("step14-text").innerHTML = '\\( \\int_{1}^{\\inf} \\f(x) \\, dx \\< \\sum_{n=1}^{\\inf} \\a_n < \\int_{1}^{\\inf} \\f(x) \\, dx \\)';
-          MathJax.typeset();
-        } else if (clickCount == 15) {
-          document.getElementById("step15-text").innerHTML = `insert formal integral test`;
-          document.getElementById("step15-text").style.display = `block`;
         }
+        const horizontalTrace = {
+          x: [1, 2, null, 2, 3, null, 3, 4, null, 4, 5, null, 5, 6],
+          y: Array(14).fill(0),
+          mode: 'lines+text',
+          type: 'scatter',
+          line: { color: 'gray', width: 1 },
+          text: ['1', '1', '', '1', '1', '', '1', '1', '', '1', '1', '', '1', '1'],
+          textposition: 'bottom center',
+          showlegend: false
+        };
+        Plotly.addTraces('plot3', [...verticalTraces, horizontalTrace]);
+
+      } else if (clickCount === 10) {
+        document.getElementById("plot3-title").innerHTML = `The area of the rectangles now matches this summation`;
+        document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=2}^{6} \\frac{1}{n} \\)';
+        document.getElementById("inequality2").style.display = 'block';
+        MathJax.typeset();
+
+      } else if (clickCount === 11) {
+        document.getElementById("plot3-title").innerHTML = `Again we shade the region`;
+        const xFill = [], yFill = [];
+        for (let x = 1; x <= 6; x += 0.05) {
+          xFill.push(x);
+          yFill.push(1 / x);
+        }
+        Plotly.addTraces('plot3', {
+          x: xFill,
+          y: yFill,
+          type: 'scatter',
+          mode: 'lines',
+          name: 'Area under f(x) = 1/x',
+          fill: 'tozeroy',
+          fillcolor: 'rgba(150, 50, 200, 0.3)',
+          line: { color: 'purple' },
+          showlegend: false
+        });
+
+      } else if (clickCount === 12) {
+        document.getElementById("plot3-title").innerHTML = `Now we form this inequality`;
+        document.getElementById("inequality2").innerHTML = '\\( \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
+        MathJax.typeset();
+
+      } else if (clickCount === 13) {
+        document.getElementById("plot3-title").innerHTML = `Now we combine both inequalities to form`;
+        document.getElementById("step13-text").style.display = 'block';
+        document.getElementById("step13-text").innerHTML = '\\( \\int_{1}^{6} \\frac{1}{x} \\, dx < \\sum_{n=1}^{6} \\frac{1}{n} < \\int_{1}^{6} \\frac{1}{x} \\, dx \\)';
+        MathJax.typeset();
+
+      } else if (clickCount === 14) {
+        document.getElementById("plot3-title").innerHTML = `We generalize this to form`;
+        document.getElementById("step14-text").style.display = 'block';
+        document.getElementById("step14-text").innerHTML = '\\( \\int_{1}^{\\infty} f(x) \\, dx < \\sum_{n=1}^{\\infty} a_n < \\int_{1}^{\\infty} f(x) \\, dx \\)';
+        MathJax.typeset();
+
+      } else if (clickCount === 15) {
+        document.getElementById("step15-text").innerHTML = `Insert formal integral test`;
+        document.getElementById("step15-text").style.display = 'block';
       }
-    </script>
-  </body>
+    }
+  });
+</script>
+</body>
 </html>
