@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taylor Series</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    @font-face {
+      font-family: 'TangoSans_Bold';
+      src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+    }
+    body {
+      background-color: #000;
+      color: #00ccff;
+      font-family: 'TangoSans_Bold', sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+
+  </style>
+</head>
+<body>
+  <h2>Taylor Series</h2>
+
+
+  <div class="lesson">
+<p>\( e^x \approx c_0 + c_1 x + c_2 x^2  \). Let \( g(x) = c_0 + c_1 x  + c_2 x^2\).</p>
+<p>Recall that a degree two approximation is just a degree two polynomial, which is why our approximation is <br>
+  initially just the general form of a degree two polynomial.
+</p>
+<ul>
+  <li>\( g(0) = e^0 \)</li>
+  <li>\( f'(0) = \left. \frac{d}{dx} e^x \right|_{x=0} \)</li>
+  <li>\( f''(0) = \left. \frac{d^2}{dx^2} e^x \right|_{x=0} \)</li>
+
+</ul>
+  </div>
+<div>
+  \[
+  g(0) = e^0 \Rightarrow c_0 = 1
+  \]
+  \[
+  f'(x) = c_1
+  \]
+  \[
+  \frac{d}{dx} e^x = e^x
+  \]
+  \[
+  f'(0) = \left. \frac{d}{dx} e^x \right|_{x=0} = e^0 = 1 \Rightarrow c_1 = 1
+  \]
+  \[
+  g(x) = 1+x
+  \]
+    \[
+  f''(0) = \left. \frac{d}{dx} e^x \right|_{x=0} = e^0 = 1 \Rightarrow c_1 = 1
+  \]
+  \[
+  g(x) = 1+x
+  \]
+</div>
+
+
+
+  <script>
+
+  </script>
+</body>
+</html>
