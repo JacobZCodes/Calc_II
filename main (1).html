@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Jacob Zamore" />
+  <title>Scratch</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Scratch</h1>
+<h2 class="author">Jacob Zamore</h2>
+<h3 class="date">June 2025</h3>
+</div>
+<div id ="taylorseries"></div>
+<p><br /><span class="math display">$$\begin{aligned}
+e^x &amp;\approx f(x) = c_0 + c_1 x + c_2 x^2 + c_3 x^3 + \dots + c_n x^n \\
+f(0) &amp;= e^0 \\
+\implies c_0 &amp;= 1\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\begin{aligned}
+f'(x) &amp;= c_1 + 2c_2 x + 3c_3 x^2 + \dots + n c_n x^{n-1} 
+&amp;&amp; \text{and} &amp;\quad \frac{d}{dx}(e^x) = e^x \\
+f'(0) &amp;= c_1 
+&amp;&amp; \text{and} &amp;\quad e^0 = 1 \\
+\implies c_1 &amp;= 1\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\begin{aligned}
+f''(x) &amp;= 2c_2 + 6c_3 x + \dots + n(n-1) c_n x^{n-2}
+&amp;&amp; \text{and} &amp;\quad \frac{d^2}{dx^2}(e^x) = e^x \\
+f''(0) &amp;= 2c_2 
+&amp;&amp; \text{and} &amp;\quad e^0 = 1 \\
+\implies c_2 &amp;= \frac{1}{2}\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\begin{aligned}
+f'''(x) &amp;= 6c_3 + \dots + n(n-1)(n-2)c_n x^{n-3}
+&amp;&amp; \text{and} &amp;\quad \frac{d^3}{dx^3}(e^x) = e^x \\
+f'''(0) &amp;= 6c_3 
+&amp;&amp; \text{and} &amp;\quad e^0 = 1 \\
+\implies c_3 &amp;= \frac{1}{6}\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\begin{aligned}
+f^{(n)}(x) &amp;= n! c_n 
+&amp;&amp; \text{and} &amp;\quad \frac{d^n}{dx^n}(e^x) = e^x \\
+f^{(n)}(0) &amp;= n! 
+&amp;&amp; \text{and} &amp;\quad e^0 = 1 \\
+\implies c_n &amp;= \frac{1}{n!}\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\begin{aligned}
+f(x) = 1 + x + \frac{1}{2}x^2 + \frac{1}{6}x^3 + \dots + \frac{1}{n!}x^n\end{aligned}$$</span><br /></p>
+<p><br /><span class="math display">$$\boxed{f(x) = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots + \frac{x^n}{n!}}$$</span><br /></p>
+</body>
+</html>
