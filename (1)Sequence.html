@@ -8,6 +8,17 @@
       font-family: 'TangoSans_Bold';
       src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
     }
+    .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
     body {
       background-color: #000;
       color: #00ccff;
@@ -87,15 +98,18 @@
       border-radius: 30px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1s forwards;
     }
 
     button:hover {
       transform: scale(1.05);
       box-shadow: 0 0 15px #00ccff;
+      /* animation: fadeIn 1s forwards; */
     }
 
     button:active {
       transform: scale(0.95);
+      /* animation: fadeIn 1s forwards; */
     }
 
     @keyframes fadeIn {
@@ -111,7 +125,6 @@
   <div id="sentences">
     <div class="sentence-line">
       <p id="sentence1"></p>
-      <button id="next-btn" onclick="showNext()">Click to show next sentence</button>
     </div>
   </div>
 
@@ -127,94 +140,112 @@
     <input type="text" id="geometricInput" placeholder="e.g. 2, 4, 8, 16, 32">
     <br>
     <button onclick="checkGeometric()">Check Sequence</button>
+    <br><br>
+<button id="next-lesson-btn" class="next-lesson" style="display: none;" onclick="window.location.href='(2)Series.html'">Next Lesson</button>
   </div>
 
-  <script>
-    function underlineWord(word) {
-      return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
+ <!-- REPLACE your current <script> tag with this updated version -->
+<script>
+  function underlineWord(word) {
+    return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
+  }
+
+  function formatSentence(raw) {
+    return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
+  }
+
+  const sentenceList = [
+    'A <u>sequence</u> is an ordering of numbers.',
+    'If each term of the sequence is separated by addition, the sequence is <u>arithmetic</u>.\nEx: 4,6,8,10,12...',
+    'If each term of the sequence is separated by multiplication, the sequence is <u>geometric</u>.\nEx: 4,8,16,32,64...',
+  ];
+
+  let currentIndex = 0;
+
+  document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      showNext();
+    }
+  });
+
+  function showNext() {
+    currentIndex++;
+    if (currentIndex < sentenceList.length) {
+      const sentenceDiv = document.createElement("div");
+      sentenceDiv.className = "sentence-line";
+
+      const p = document.createElement("p");
+      p.innerHTML = formatSentence(sentenceList[currentIndex]);
+      sentenceDiv.appendChild(p);
+
+      document.getElementById("sentences").appendChild(sentenceDiv);
+    } else {
+      const arithmeticInput = document.getElementById("user-input-arithmetic");
+      arithmeticInput.style.display = "block";
+      arithmeticInput.style.animation = "fadeIn 1s forwards";
+      // Also animate the button
+const arithmeticBtn = arithmeticInput.querySelector("button");
+arithmeticBtn.style.opacity = "0";
+arithmeticBtn.style.animation = "fadeIn 1s forwards";
+    }
+  }
+
+  function checkArithmetic() {
+    const input = document.getElementById("arithmeticInput").value;
+    const nums = input.split(',').map(x => parseFloat(x.trim()));
+
+    if (nums.length < 5 || nums.some(isNaN)) {
+      alert("Please enter at least 5 valid numbers.");
+      return;
     }
 
-    function formatSentence(raw) {
-      return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
-    }
-
-    const sentenceList = [
-      'A "sequence" is an ordering of numbers.',
-      'If each term of the sequence is separated by addition, the sequence is "arithmetic".\nEx: 4,6,8,10,12...',
-      'If each term of the sequence is separated by multiplication, the sequence is "geometric".\nEx: 4,8,16,32,64...',
-    ];
-
-    let currentIndex = 0;
-    document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
-
-    function showNext() {
-      currentIndex++;
-      if (currentIndex < sentenceList.length) {
-        const sentenceDiv = document.createElement("div");
-        sentenceDiv.className = "sentence-line";
-
-        const p = document.createElement("p");
-        p.innerHTML = formatSentence(sentenceList[currentIndex]);
-
-        const btn = document.getElementById("next-btn");
-        sentenceDiv.appendChild(p);
-        sentenceDiv.appendChild(btn);
-
-        document.getElementById("sentences").appendChild(sentenceDiv);
-      } else {
-        document.getElementById("next-btn").style.display = "none";
-        const arithmeticInput = document.getElementById("user-input-arithmetic");
-        arithmeticInput.style.display = "block";
-        arithmeticInput.style.animation = "fadeIn 1s forwards";
-      }
-    }
-
-    function checkArithmetic() {
-      const input = document.getElementById("arithmeticInput").value;
-      const nums = input.split(',').map(x => parseFloat(x.trim()));
-
-      if (nums.length < 5 || nums.some(isNaN)) {
-        alert("Please enter at least 5 valid numbers.");
+    const diff = nums[1] - nums[0];
+    for (let i = 2; i < nums.length; i++) {
+      if (Math.abs((nums[i] - nums[i - 1]) - diff) > 1e-6) {
+        alert("That's not a valid arithmetic sequence.");
         return;
       }
+    }
+    alert("✅ Great job! That is a valid arithmetic sequence.");
 
-      const diff = nums[1] - nums[0];
-      for (let i = 2; i < nums.length; i++) {
-        if (Math.abs((nums[i] - nums[i - 1]) - diff) > 1e-6) {
-          alert("That's not a valid arithmetic sequence.");
-          return;
-        }
-      }
-      alert("✅ Great job! That is a valid arithmetic sequence.");
+    const geometricInput = document.getElementById("user-input-geometric");
+    geometricInput.style.display = "block";
+    geometricInput.style.animation = "fadeIn 1s forwards";
+    const geometricBtn = geometricInput.querySelector("button");
+geometricBtn.style.opacity = "0";
+geometricBtn.style.animation = "fadeIn 1s forwards";
+  }
 
-      const geometricInput = document.getElementById("user-input-geometric");
-      geometricInput.style.display = "block";
-      geometricInput.style.animation = "fadeIn 1s forwards";
+  function checkGeometric() {
+    const input = document.getElementById("geometricInput").value;
+    const nums = input.split(',').map(x => parseFloat(x.trim()));
+
+    if (nums.length < 5 || nums.some(isNaN)) {
+      alert("Please enter at least 5 valid numbers.");
+      return;
     }
 
-    function checkGeometric() {
-      const input = document.getElementById("geometricInput").value;
-      const nums = input.split(',').map(x => parseFloat(x.trim()));
-
-      if (nums.length < 5 || nums.some(isNaN)) {
-        alert("Please enter at least 5 valid numbers.");
+    const ratio = nums[1] / nums[0];
+    for (let i = 2; i < nums.length; i++) {
+      if (Math.abs((nums[i] / nums[i - 1]) - ratio) > 1e-6) {
+        alert("That's not a valid geometric sequence.");
         return;
       }
-
-      const ratio = nums[1] / nums[0];
-      for (let i = 2; i < nums.length; i++) {
-        if (Math.abs((nums[i] / nums[i - 1]) - ratio) > 1e-6) {
-          alert("That's not a valid geometric sequence.");
-          return;
-        }
-      }
-      alert("✅ Great job! That is a valid geometric sequence.");
-      alertComplete();
     }
+    alert("✅ Great job! That is a valid geometric sequence.");
+    nextBtn = document.getElementById("next-lesson-btn");
+    nextBtn.style.display = "inline-block";
+    nextBtn.style.opacity = "0";
+    nextBtn.style.animation = "fadeIn 1s forwards";
+    // show next lesson
+  }
 
-    function alertComplete() {
-      alert("🎉 You have completed this lesson!");
-    }
-  </script>
+  function alertComplete() {
+    alert("🎉 You have completed this lesson!");
+  }
+</script>
+
 </body>
 </html>

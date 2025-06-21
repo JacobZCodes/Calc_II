@@ -30,6 +30,13 @@
             if (clickCount === 2) { // show second row boxes
               document.getElementById("taylorseries").style.display = "flex";
             }
+            if (clickCount === 3) { // 
+              console.log("here i am");
+              document.getElementById("summation").style.display = "block";
+            }
+            if (clickCount === 4) { // 
+              document.getElementById("conc").style.display = "block";
+            }
 
           }
         });
@@ -89,7 +96,7 @@
           </div>
         </div>
       </div>
-      <div id ="taylorseries" style="display:none;">
+<div id ="taylorseries" style="display:none;">
 <p><br /><span class="math display">$$\begin{aligned}
 e^x &amp;\approx f(x) = c_0 + c_1 x + c_2 x^2 + c_3 x^3 + \dots + c_n x^n \\
 f(0) &amp;= e^0 \\
@@ -122,5 +129,9 @@ f^{(n)}(0) &amp;= n!
 f(x) = 1 + x + \frac{1}{2}x^2 + \frac{1}{6}x^3 + \dots + \frac{1}{n!}x^n\end{aligned}$$</span><br /></p>
 <p><br /><span class="math display">$$\boxed{f(x) = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots + \frac{x^n}{n!}}$$</span><br /></p>
 </div>
+<p id="summation" style="display:none;">
+  We can write $$\boxed{f(x) = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots + \frac{x^n}{n!} = \sum_{n=0}^{\infty} \frac{x^n}{n!}}$$
+</p>
+<p id="conc" style="display:none;">And this is our Taylor series expansion</p>
   </body>
 </html>
