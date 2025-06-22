@@ -207,16 +207,27 @@ document.addEventListener("keydown", function (event) {
       MathJax.typeset();
     }
     
-  }
-
-
-  function showConverse() {
+    if (currentIndex === 1) {
     const converse = document.getElementById("converse");
     converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
-      <button onclick="showDivergenceGraph()">Continue</button>`;
-    converse.style.display = "block";
+      <button onclick="showNext()">Continue</button>`;
+    fadeIn(converse);
     MathJax.typeset();
+    }
+
+    if (currentIndex === 2) {
+    const converse = document.getElementById("converse");
+    converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
+      <button onclick="showNext()">Continue</button>`;
+    fadeIn(converse);
+    MathJax.typeset();
+    }
+
+    if (currentIndex === 3) {
+      showDivergenceGraph();
+    }
   }
+
 
   function showDivergenceGraph() {
     const canvas1 = document.getElementById("stacked-box-canvas-1");
