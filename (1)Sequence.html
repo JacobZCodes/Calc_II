@@ -19,6 +19,15 @@
   animation: fadeIn 1s forwards;
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
     body {
       background-color: #000;
       color: #00ccff;
@@ -123,9 +132,9 @@
 <body>
   <h1><b>Intro To Sequences</b></h1>
   <div id="sentences">
-    <div class="sentence-line">
-      <p id="sentence1"></p>
-    </div>
+    <p id="1"  style="display: none;"></p>
+    <p id="2" style="display: none;"></p>
+    <p id="3"  style="display: none;"></p>
   </div>
 
   <div id="user-input-arithmetic" style="display: none">
@@ -144,15 +153,14 @@
 <button id="next-lesson-btn" class="next-lesson" style="display: none;" onclick="window.location.href='(2)Series.html'">Next Lesson</button>
   </div>
 
- <!-- REPLACE your current <script> tag with this updated version -->
 <script>
-  function underlineWord(word) {
-    return `<span class="hovered" data-tooltip="${word}">${word}</span>`;
-  }
+  function fadeOutAndHide(el) {
+  el.style.animation = "fadeOut 0.6s forwards";
+  setTimeout(() => {
+    el.style = "display:none;";
+  }, 600);
+}
 
-  function formatSentence(raw) {
-    return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, '<br>');
-  }
 
   const sentenceList = [
     'A <u>sequence</u> is an ordering of numbers.',
@@ -160,42 +168,124 @@
     'If each term of the sequence is separated by multiplication, the sequence is <u>geometric</u>.\nEx: 4,8,16,32,64...',
   ];
 
-  let currentIndex = 0;
-
-  document.getElementById("sentence1").innerHTML = formatSentence(sentenceList[currentIndex]);
-
+let currentIndex = 0;
+let verbosity = 0; // debug mode
+const p1 = document.getElementById("1");
+const p2 = document.getElementById("2");
+const p3 = document.getElementById("3");
+const sentences = document.getElementById("sentences");
+let keyCooldown = false;
   document.addEventListener("keydown", function (event) {
+      if (keyCooldown) return;
+
+  keyCooldown = true;
+
+  setTimeout(() => {
+    keyCooldown = false;
+  }, 500); 
     if (event.key === "Enter") {
       showNext();
     }
+    if (event.key === "Backspace") {
+      goBack();
+    }
   });
 
+  function goBack() {
+    currentIndex--;
+    if (currentIndex === -1) {
+      return;
+    }
+    switch(currentIndex) {
+      case 0:
+fadeOutAndHide(p1);
+      case 1: 
+fadeOutAndHide(p2); 
+        break;
+      case 2: 
+fadeOutAndHide(p3);
+      break;
+      case 3: // a. input
+    const arithmeticInput = document.getElementById("user-input-arithmetic");
+    const arithmeticBtn = arithmeticInput.querySelector("button");
+      fadeOutAndHide(arithmeticBtn);
+      fadeOutAndHide(arithmeticInput);
+      break;
+      case 4: // g. input
+          const geometricInput = document.getElementById("user-input-geometric");
+    const geometricBtn = geometricInput.querySelector("button");
+    fadeOutAndHide(geometricBtn);
+fadeOutAndHide(geometricInput);
+      break;
+      case 5:
+  const nextBtn = document.getElementById("next-lesson-btn");
+  nextBtn.style.opacity = "1"; // in case it was still faded
+  nextBtn.style.animation = "fadeOut 0.6s forwards";
+  setTimeout(() => {
+    nextBtn.style.display = "none";
+  }, 600);
+    break;
+    }
+
+    
+  }
   function showNext() {
     currentIndex++;
-    if (currentIndex < sentenceList.length) {
-      const sentenceDiv = document.createElement("div");
-      sentenceDiv.className = "sentence-line";
-
-      const p = document.createElement("p");
-      p.innerHTML = formatSentence(sentenceList[currentIndex]);
-      sentenceDiv.appendChild(p);
-
-      document.getElementById("sentences").appendChild(sentenceDiv);
-    } else {
+    if (currentIndex === 7) {
+      currentIndex = 6;
+    }
+    console.log(currentIndex);
+    switch(currentIndex) {
+      case 1:
+        p1.innerHTML = sentenceList[0];
+        p1.style.display="block";
+        break;
+         // sentence 1
+      case 2: 
+        p2.innerHTML = sentenceList[1];
+        p2.style.display="block";// setnence 2  
+        break;
+      case 3: 
+              p3.innerHTML = sentenceList[2];
+        p3.style.display="block";// sentence 3
+      break;
+      case 4: // a. input
       const arithmeticInput = document.getElementById("user-input-arithmetic");
       arithmeticInput.style.display = "block";
       arithmeticInput.style.animation = "fadeIn 1s forwards";
       // Also animate the button
-const arithmeticBtn = arithmeticInput.querySelector("button");
-arithmeticBtn.style.opacity = "0";
-arithmeticBtn.style.animation = "fadeIn 1s forwards";
+      const arithmeticBtn = arithmeticInput.querySelector("button");
+      arithmeticBtn.style.opacity = "0";
+      arithmeticBtn.style.animation = "fadeIn 1s forwards";
+      arithmeticBtn.style.display = "inline-block";
+      break;
+      case 5: // g. input
+          const geometricInput = document.getElementById("user-input-geometric");
+    geometricInput.style.display = "block";
+    geometricInput.style.animation = "fadeIn 1s forwards";
+    const geometricBtn = geometricInput.querySelector("button");
+geometricBtn.style.opacity = "0";
+geometricBtn.style.animation = "fadeIn 1s forwards";
+geometricBtn.style.display = "inline-block";
+      break;
+      case 6:
+            nextBtn = document.getElementById("next-lesson-btn");
+    nextBtn.style.display = "inline-block";
+    nextBtn.style.opacity = "0";
+    nextBtn.style.animation = "fadeIn 1s forwards";
+    break;
     }
+
+    
+
   }
 
   function checkArithmetic() {
     const input = document.getElementById("arithmeticInput").value;
     const nums = input.split(',').map(x => parseFloat(x.trim()));
-
+    if (verbosity === 1) {
+      showNext();
+    }
     if (nums.length < 5 || nums.some(isNaN)) {
       alert("Please enter at least 5 valid numbers.");
       return;
@@ -209,19 +299,18 @@ arithmeticBtn.style.animation = "fadeIn 1s forwards";
       }
     }
     alert("✅ Great job! That is a valid arithmetic sequence.");
+    showNext();
 
-    const geometricInput = document.getElementById("user-input-geometric");
-    geometricInput.style.display = "block";
-    geometricInput.style.animation = "fadeIn 1s forwards";
-    const geometricBtn = geometricInput.querySelector("button");
-geometricBtn.style.opacity = "0";
-geometricBtn.style.animation = "fadeIn 1s forwards";
+
   }
 
   function checkGeometric() {
     const input = document.getElementById("geometricInput").value;
     const nums = input.split(',').map(x => parseFloat(x.trim()));
 
+    if (verbosity === 1) {
+      showNext();
+    }
     if (nums.length < 5 || nums.some(isNaN)) {
       alert("Please enter at least 5 valid numbers.");
       return;
@@ -235,10 +324,7 @@ geometricBtn.style.animation = "fadeIn 1s forwards";
       }
     }
     alert("✅ Great job! That is a valid geometric sequence.");
-    nextBtn = document.getElementById("next-lesson-btn");
-    nextBtn.style.display = "inline-block";
-    nextBtn.style.opacity = "0";
-    nextBtn.style.animation = "fadeIn 1s forwards";
+    showNext();
     // show next lesson
   }
 
