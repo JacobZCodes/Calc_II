@@ -16,7 +16,20 @@
       padding: 2em;
     }
 
+      @keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
 
+    @keyframes fadeOut {
+        from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
   .hovered {
     text-decoration: underline;
     cursor: help;
@@ -103,9 +116,9 @@
   </head>
   <body>
     <h1>Divergence Test</h1>
-    <div id="divergence-test" style="display: none"></div>
-    <div id="converse" style="display: none"></div>
-    <div id="slider-container" style="display: none; margin-top: 1em">
+    <div id="divergence-test" style="opacity: 0;"></div>
+    <div id="converse" style="opacity: 0;"></div>
+    <div id="slider-container" style="opacity: 0; margin-top: 1em">
       <label for="term-slider">Number of Terms: <span id="term-count">1</span>
       </label>
       <input type="range" id="term-slider" min="1" max="1000" value="1" />
@@ -125,41 +138,77 @@
     <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
       <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
     </div>
-    <button id="canvas2-button" style="margin-top: 0.5em; display: none;" onclick="explainGraphs()">Continue</button>
-    <p id="graph-explanation" style="display: none; max-width: 400px; margin-top: 0.5em; text-align: center;">
+    <button id="canvas2-button" style="margin-top: 0.5em; opacity:0;" onclick="explainGraphs()">Continue</button>
+    <p id="graph-explanation" style="opacity:0; max-width: 400px; margin-top: 0.5em; text-align: center;">
       Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
     </p>
   </div>
 </div>
 
-  <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+  <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; opacity: 0;">
     <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
   </div>
   <div style="display: flex; flex-direction: column; align-items: center;">
-  <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
+  <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; opacity: 0;">
     <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
   </div>
-  <button id="canvas2-button" style="margin-top: 0.5em; display: none;" onclick="explainGraphs()">Continue</button>
-  <p id="graph-explanation" style="display: none; max-width: 400px; margin-top: 0.5em; text-align: center;">
+  <button id="canvas2-button" style="margin-top: 0.5em; opacity:0;" onclick="explainGraphs()">Continue</button>
+  <p id="graph-explanation" style="opacity: 0; max-width: 400px; margin-top: 0.5em; text-align: center;">
   Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
 </p>
 
 </div>
 
 </div>
-<!-- 🧠 ONLY the <script> section is changed below your original code -->
 <script>
+
+let currentIndex = -1;
+document.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            if (currentIndex === -1) {
+              showNext();
+            }
+            return
+          }
+          if (event.key === "Backspace") {
+            if (currentIndex === -2) {
+              currentIndex = -1;
+              return
+            }
+            else {
+              goBack();
+            }
+          }
+        });
+   function fadeIn(el) {
+        el.style.opacity = "0";    
+
+    el.style.animation = "fadeIn 0.6s forwards";
+  }
+
+
+    function fadeOut(el) {
+    el.style.opacity = "1";    
+    el.style.animation = "fadeOut 0.6s forwards";
+  }
   function explainGraphs() {
     const para = document.getElementById("graph-explanation");
     para.style.display = "block";
     MathJax.typeset();
   }
 
-  const divergenceTest = document.getElementById("divergence-test");
-  divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** 
-    <button onclick="showConverse()">Continue</button>`;
-  divergenceTest.style.display = "block";
-  MathJax.typeset();
+  function showNext() {
+    currentIndex++;
+    console.log(currentIndex);
+    if (currentIndex === 0) {
+      const divergenceTest = document.getElementById("divergence-test");
+      divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** <button onclick="showNext()">Continue</button>`;
+      fadeIn(divergenceTest);
+      MathJax.typeset();
+    }
+    
+  }
+
 
   function showConverse() {
     const converse = document.getElementById("converse");
