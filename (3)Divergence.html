@@ -75,6 +75,9 @@
       width: 60%;
     }
 
+    .loading {
+  cursor: progress; /* or wait */
+}
     #sentences {
       margin-top: 1em;
     }
@@ -90,6 +93,17 @@
       color: #00ccff
       ;
     }
+
+        .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+
+}
+
 
       @keyframes fadeIn {
   to {
@@ -143,27 +157,29 @@
     </div>
     <div id="user-input-guess" style="opacity: 0;">
 
-
     </div>
-              <div id="explanation1" style="opacity: 0;"> <!--convergence vs divergence--> </div>
-
-        <div id="graph-container" style="opacity: 0; justify-content: space-around; gap: 2em;">
-      <div id="graph" style="flex: 1;"></div>
-      <div id="div-guess" style="opacity: 0;"> K/div>
-
-      <div id="graphMore" style="flex: 1; opacity: 0;"></div>
+    <div id="explanation1" style="opacity: 0;"> <!--convergence vs divergence--> </div>
+    <button id="plotPartialSums" style="opacity:0;" onclick="showNext()">Plot Partial Sums</button>
+    <div id="graphUserPoints" style="opacity:0;"></div>
+    <button id="graphUserPointsNextButton" onclick="showNext()" style="opacity: 0;">Continue</button>
+    <div id="div-guess" style="opacity: 0;"></div>
+    <button id="div-guess-next-btn" style="opacity: 0;" onclick="showNext()">Submit Guess</button>
+    <div id="divergenceExplain" style="opacity: 0;">
+      <p> It's a bit hard to tell just from graphing the first five terms whether or not the series will converge or diverge. Here is your graph with some more partial sums computed: </p>
+      <br>
     </div>
-    <div id="explanation2" style="opacity: 0;"> <!--convergence vs divergence-->
-    </div>
+    <button id="showGraphBtn" style="opacity: 0;" onclick="showNext()">Show Graph</button>
+    <div id="graphMorePoints" style="opacity: 0;"></div>
+    <button id="graphMorePointsNextBtn" style="opacity: 0;" onclick="showNext()">Continue</button>
     <div id="finalExplanation" style="opacity: 0;">
       <p>So it might seem that we can easily tell whether or not a series converges or diverges: we can just start computing partial sums and follow the pattern.
         But sometimes this pattern is not always obvious, or predictable, or easy at all to compute (give an example of such a difficult computation). So that is why mathematicians have created a series of tests
         to examine series in order that we do not need to sit all day computing partial sums. The first test is the <strong>divergence test</strong> LESSON DONE.
       </p>
     </div>
-    <div id="divergenceExplain" style="opacity: 0;">
-    </div>
+    <button id="nextLessonBtn" class="next-lesson" style = "opacity: 0;" onclick="window.location.href='(4)DivergenceTest.html'">Next Lesson</button>
     <script>
+      let verbosity = 0;
         function fadeIn(el) {
         el.style.opacity = "0";    
 
@@ -182,14 +198,14 @@
           }
           return sum;
       }
-
-      function formatSentence(raw) {
-        return raw.replace(/"([^"]+)"/g, (_, word) => underlineWord(word)).replace(/\n/g, ' < br > ');
-      }
         const sentenceList = [];
         let currentIndex = -1;
         let userSequence = []; // Global list to store the sequence
         function storeSequenceAndShowNext() {
+          if (verbosity === 1) {
+            userSequence= [1,2,3,4,5];
+            showNext();
+          }
           const input = document.getElementById("sequenceInput").value;
           // Parse by either spaces OR commas
           userSequence = input.split(/[\s,]+/) // Split on space or comma
@@ -201,6 +217,10 @@
         }
         let userSeries = []; // Global list to store the series
         function storeSeriesAndShowNext() {
+          if (verbosity === 1) {
+            userSeries= n;
+            showNext();
+          }
           const input = document.getElementById("seriesInput").value;
           userSeries = input;
           console.log("User series: ", userSeries);
@@ -209,6 +229,10 @@
         let userPsums = []
 
         function storePsumsAndShowNext() {
+          if (verbosity === 1) {
+            userPsums = [1,3,6,10,15];
+            showNext();
+          }
           const input = document.getElementById("S1").value;
           userPsums = [document.getElementById("S1").value, document.getElementById("S2").value,
             document.getElementById("S3").value, document.getElementById("S4").value, document.getElementById("S5").value
@@ -240,25 +264,51 @@
           currentIndex--;
           switch (currentIndex){
             case 7:
+            const nextLessonBtn = document.getElementById("nextLessonBtn");
+            const finalExplanation = document.getElementById("finalExplanation");
+            fadeOut(finalExplanation);
+            fadeOut(nextLessonBtn);
               break;
             case 6:
+                          const graphMore = document.getElementById('graphMorePoints');
+            const graphMorePointsNextBtn = document.getElementById('graphMorePointsNextBtn');
+           fadeOut(graphMore);
+         fadeOut(graphMorePointsNextBtn);
               break;
             case 5:
+                          fadeOut(divergenceExplain);
+      
+          fadeOut(document.getElementById("showGraphBtn"));
               break;
             case 4:
+                          const guessInput = document.getElementById('div-guess');
+            const guessSubmitButton = document.getElementById("div-guess-next-btn");
+            fadeOut(guessInput);
+            fadeOut(guessSubmitButton);
               break;
             case 3:
+                          const graph = document.getElementById("graphUserPoints");
+            const nextButton = document.getElementById("graphUserPointsNextButton");
+            fadeOut(graph);
+            fadeOut(nextButton);
               break;
             case 2:
+                          const explanation = document.getElementById("explanation1");
+            const plotPartialSumsBtn = document.getElementById("plotPartialSums");
+            fadeOut(explanation);
+            fadeOut(plotPartialSumsBtn);
               break;
             case 1:
+                   const psumsInput = document.getElementById('user-input-psums');
+                   fadeOut(psumsInput);
               break;
             case 0:
+                 const seriesInput = document.getElementById('user-input-series');
+                 fadeOut(seriesInput);
               break;
             case -1:
         const seqInput = document.getElementById('user-input-sequence');
         fadeOut(seqInput);
-        seqInput.remove();
               break;
           }
         }
@@ -284,59 +334,32 @@
           }
           if (currentIndex == 3) { // convergence vs divergence
             const explanation = document.getElementById("explanation1");
-                        fadeIn(explanation);
-
-            explanation.innerHTML = `
+            const plotPartialSumsBtn = document.getElementById("plotPartialSums");
+            fadeIn(explanation);
+                        explanation.innerHTML = `
               <p>
                 We can form a sequence of your partial sums: S: {${userPsums.join(", ")}}
                 <br>
                 If <em>this</em> sequence approaches infinity, we say your series <em>diverges</em>.
                 Otherwise, we say your series <em>converges</em>
-                <button onclick="showNext()">Plot Partial Sums!</button>
-                
               </p>`;
-            // document.getElementById("sentences").appendChild(explanation);
-          }
-          if (currentIndex == 5) { // guess
-            const guessInput = document.getElementById('div-guess');
-            guessInput.innerHTML = `
-                  <p>What do you think the series will do?</p>
-                  <label>
-        <input type="radio" name="seriesGuess" value="converge"> Converge </label>
-      <br>
-      <label>
-        <input type="radio" name="seriesGuess" value="diverge"> Diverge </label>
-      <br>
-      <button onclick="showNext()">Submit Guess</button>
-            `
+            fadeIn(plotPartialSumsBtn);
 
-            fadeIn(guessInput);
-            // document.getElementById("sentences").appendChild(guessInput);
           }
-          if (currentIndex == 6) { // explain divergence more
-            fadeIn(divergenceExplain);
-            divergenceExplain.innerHTML = `      <p> It's a bit hard to tell just from graphing the first five terms whether or not the series will converge or diverge. Here is your graph with some more partial sums computed: </p>
- <br> <button onclick="showNext()">Show Graph</button>`
-            // document.getElementById('sentences').appendChild(divergenceExplain);
-          }
-          if (currentIndex == 4) { // graph user
+                    if (currentIndex == 4) { // graph user
             console.log("here");
-            const graphContainer = document.getElementById('graph-container');
-            const graph = document.getElementById('graph');
-            console.log("t1");
-            fadeIn(graphContainer);
-            console.log("t2");
+            const graph = document.getElementById("graphUserPoints");
+            const nextButton = document.getElementById("graphUserPointsNextButton");
             fadeIn(graph);
-            console.log("t3");
-
-            // document.getElementById("sentences").appendChild(graph);
-            const nextBtn = document.createElement("button");
-            nextBtn.textContent = "Continue";
-            nextBtn.onclick = showNext;
+            fadeIn(nextButton);
+            // // document.getElementById("sentences").appendChild(graph);
+            // const nextBtn = document.createElement("button");
+            // nextBtn.textContent = "Continue";
+            // nextBtn.onclick = showNext;
             // document.getElementById("sentences").appendChild(nextBtn);
             const xVals = userPsums.map((_, i) => i + 1);
             const yVals = userPsums.map(val => parseFloat(val)).filter(v => !isNaN(v));
-Plotly.newPlot('graph', [{
+Plotly.newPlot('graphUserPoints', [{
   x: xVals,
   y: yVals,
   mode: 'markers',
@@ -372,16 +395,32 @@ Plotly.newPlot('graph', [{
 });
 
           }
+          if (currentIndex == 5) { // guess
+            const guessInput = document.getElementById('div-guess');
+            const guessSubmitButton = document.getElementById("div-guess-next-btn");
+            guessInput.innerHTML = `
+                  <p>What do you think the series will do?</p>
+                  <label>
+        <input type="radio" name="seriesGuess" value="converge"> Converge </label>
+      <br>
+      <label>
+        <input type="radio" name="seriesGuess" value="diverge"> Diverge </label>
+      <br>            `
+
+            fadeIn(guessInput);
+            fadeIn(guessSubmitButton);
+          }
+          if (currentIndex == 6) { // explain divergence more
+            fadeIn(divergenceExplain);
+      
+          fadeIn(document.getElementById("showGraphBtn"));
+          }
+
           if (currentIndex == 7) { // graph user + more points
-            const graphMore = document.getElementById('graphMore');
-            const graphContainer = document.getElementById('graph-container');
+            const graphMore = document.getElementById('graphMorePoints');
+            const graphMorePointsNextBtn = document.getElementById('graphMorePointsNextBtn');
            fadeIn(graphMore);
-            graphContainer.style.display = 'flex'; // ✅ make it visible
-            // document.getElementById("sentences").appendChild(graphContainer);
-            const nextBtn = document.createElement("button");
-            nextBtn.textContent = "Continue";
-            nextBtn.onclick = showNext;
-            // document.getElementById("sentences").appendChild(nextBtn);
+         fadeIn(graphMorePointsNextBtn);
             const xVals = Array.from({
               length: 30
             }, (_, i) => i + 1);
@@ -393,7 +432,7 @@ Plotly.newPlot('graph', [{
               alert("There was an error parsing your series function.");
               console.error(e);
             }
-Plotly.newPlot('graphMore', [{
+Plotly.newPlot('graphMorePoints', [{
   x: xVals,
   y: yVals,
   mode: 'markers',
@@ -427,19 +466,13 @@ Plotly.newPlot('graphMore', [{
     tickcolor: '#00ccff'
   }
 });
-
-
 ;
           }
            if (currentIndex == 8) { // final explaination
+            const nextLessonBtn = document.getElementById("nextLessonBtn");
             fadeIn(finalExplanation);
+            fadeIn(nextLessonBtn);
             // document.getElementById("sentences").appendChild(finalExplanation);
-          }
-          if (currentIndex < sentenceList.length) {
-            const p = document.createElement("p");
-            p.innerHTML = formatSentence(sentenceList[currentIndex]);
-            // document.getElementById("sentences").appendChild(p);
-            MathJax.typeset(); // Re-render LaTeX after update
           }
         }
     </script>
