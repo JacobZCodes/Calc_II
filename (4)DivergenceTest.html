@@ -93,12 +93,6 @@
     display: none;
   }
 
-  #canvas-wrapper,
-  #canvas-wrapper-1,
-  #canvas-wrapper-2 {
-    border: 1px solid #00ccff;
-    background-color: #111;
-  }
 
   #graph-explanation {
     color: #00ccff;
@@ -108,241 +102,232 @@
     color: #00ccff;
     font-weight: bold;
   }
+
+  .red {
+  color: #ff4d4d; /* light red text */
+  padding-left: 0.4em;
+
+}
+
+  .yellow {
+  color:lightyellow; /* light red text */
+  padding-left: 0.4em;
+
+}
+
+input[type="text"] {
+  background-color: #111;         /* dark input background */
+  color: #00ccff;                 /* cyan text color */
+  border: 1px solid #00ccff;      /* cyan border */
+  border-radius: 4px;             /* rounded corners */
+  padding: 10px 12px;
+  font-size: 16px;
+  width: 10%;
+  box-shadow: 0 0 8px #00ccff33;  /* subtle cyan glow */
+  outline: none;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #33ffff;
+  box-shadow: 0 0 12px #33ffff;
+}
+
+
+#box1 {
+  padding-top: 3em;
+  display:flex;
+  justify-content: space-evenly;
+}
+
+
+#slider-wrapper {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.7); /* optional: dark transparent bg */
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #00ccff66;
+}
+
+#slider-wrapper input[type="range"] {
+  width: 50%;
+  margin-top: 0.5em;
+  accent-color: #00ccff;
+}
+
+#plotSpace1 {
+  position: relative;
+}
+
 </style>
 
-    <!-- ✅ MathJax for LaTeX rendering -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
     <h1>Divergence Test</h1>
-    <div id="divergence-test" style="opacity: 0;"></div>
-    <div id="converse" style="opacity: 0;"></div>
-    <div id="slider-container" style="opacity: 0; margin-top: 1em">
-      <label for="term-slider">Number of Terms: <span id="term-count">1</span>
+    <div id="sentence1" style="opacity: 0;"><p><strong>If \(a_n \not\to 0\), then \(\sum a_n\) diverges.</strong></p> </div>
+    <div id="sentence2" style="opacity: 0;"><p>What this doesn't mean: <span class="red"><strong>if \(a_n \to 0\), then \(\sum a_n\) converges</strong>.</p></span></div>
+    <div id="sentence3" style="opacity: 0;"><p>Moreover, if  <span class="red">\(a_n \to 0\),</span><span class="yellow"><strong>then \(\sum a_n\) can either diverge or converge</strong>.</p></span></div>
+    <div id="input1" style="opacity:0";>
+      <p>Enter your sequence in series notation (please enter it exactly as a computer should read it, ie 2n+3 => 2*n+3):</p>
+      <label>\( \sum_{n=1}^{\infty} \) <input type="text" id="seriesInput" placeholder="n^2">
       </label>
-      <input type="range" id="term-slider" min="1" max="1000" value="1" />
+      <button onclick="showNext()">Input Series</button>
     </div>
-    <!-- <div id="canvas-wrapper">
-      <canvas id="stacked-box-canvas" width="400" height="3000"></canvas>
-    </div> -->
-    <div style="display: flex; gap: 1em; margin-top: 1em;">
-  <div style="display: flex; flex-direction: column; align-items: center;">
-    <h3 id="canvas1-title"style="color: #00ccff; margin-bottom: 0.3em;">Divergent Series: \\(a_n = 1.01^{n-1}\\)</h3>
-    <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
-      <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
-    </div>
-  </div>
-  <div style="display: flex; flex-direction: column; align-items: center;">
-    <h3 id="canvas2-title" style="color: #00ccff; margin-bottom: 0.3em;">Convergent Series: \\(a_n = 0.99^{n-1}\\)</h3>
-    <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; display: none;">
-      <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
-    </div>
-    <button id="canvas2-button" style="margin-top: 0.5em; opacity:0;" onclick="explainGraphs()">Continue</button>
-    <p id="graph-explanation" style="opacity:0; max-width: 400px; margin-top: 0.5em; text-align: center;">
-      Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
-    </p>
+    <div id="plotsBox">
+      <div id="series1">
+<div id="plotSpace1" style="position: relative;">
+  <div id="plot1"></div>
+
+  <div id="slider-wrapper">
+    <label for="n-slider">Max n-value: <span id="n-value-label">20</span></label><br>
+    <input type="range" id="n-slider" min="1" max="100" value="20">
   </div>
 </div>
+        <div id="userQuiz1">Hello!</div>
+      </div>
 
-  <div id="canvas-wrapper-1" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; opacity: 0;">
-    <canvas id="stacked-box-canvas-1" width="400" height="3000"></canvas>
-  </div>
-  <div style="display: flex; flex-direction: column; align-items: center;">
-  <div id="canvas-wrapper-2" style="width: 420px; height: 600px; overflow-y: scroll; border: 1px solid black; opacity: 0;">
-    <canvas id="stacked-box-canvas-2" width="400" height="3000"></canvas>
-  </div>
-  <button id="canvas2-button" style="margin-top: 0.5em; opacity:0;" onclick="explainGraphs()">Continue</button>
-  <p id="graph-explanation" style="opacity: 0; max-width: 400px; margin-top: 0.5em; text-align: center;">
-  Even though \\(a_n \\to 0\\), the right-hand series (with \\(a_n = 0.99^{n-1}\\)) converges, while the left-hand one (with \\(a_n = 1.01^{n-1}\\)) diverges because the terms don't shrink to zero. This illustrates that the divergence test only tells us when a series definitely diverges — not when it converges DONE.
-</p>
-
-</div>
-
-</div>
+      <div id="box2"></div>
+    </div>
 <script>
-
-let currentIndex = -1;
+showAllTags();
+let currentIndex = 0;
+coords = getCoords("1/n");
+plotSeries("plot1", "1/n", coords);
 document.addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
-            if (currentIndex === -1) {
               showNext();
-            }
-            return
-          }
-          if (event.key === "Backspace") {
-            if (currentIndex === -2) {
-              currentIndex = -1;
-              return
-            }
-            else {
-              goBack();
-            }
           }
         });
-   function fadeIn(el) {
-        el.style.opacity = "0";    
 
-    el.style.animation = "fadeIn 0.6s forwards";
-  }
+        document.getElementById("n-slider").addEventListener("input", function () {
+  const maxN = parseInt(this.value);
+  document.getElementById("n-value-label").textContent = maxN;
 
-
-    function fadeOut(el) {
-    el.style.opacity = "1";    
-    el.style.animation = "fadeOut 0.6s forwards";
-  }
-  function explainGraphs() {
-    const para = document.getElementById("graph-explanation");
-    para.style.display = "block";
-    MathJax.typeset();
-  }
-
-  function showNext() {
-    currentIndex++;
-    console.log(currentIndex);
-    if (currentIndex === 0) {
-      const divergenceTest = document.getElementById("divergence-test");
-      divergenceTest.innerHTML = `**If \\(a_n \\not\\to 0\\), then \\(\\sum a_n\\) diverges.** <button onclick="showNext()">Continue</button>`;
-      fadeIn(divergenceTest);
-      MathJax.typeset();
-    }
-    
-    if (currentIndex === 1) {
-    const converse = document.getElementById("converse");
-    converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
-      <button onclick="showNext()">Continue</button>`;
-    fadeIn(converse);
-    MathJax.typeset();
-    }
-
-    if (currentIndex === 2) {
-    const converse = document.getElementById("converse");
-    converse.innerHTML = `What this doesn't mean: **If \\(a_n \\to 0\\), then \\(\\sum a_n\\) converges.**
-      <button onclick="showNext()">Continue</button>`;
-    fadeIn(converse);
-    MathJax.typeset();
-    }
-
-    if (currentIndex === 3) {
-      showDivergenceGraph();
-    }
-  }
-
-
-  function showDivergenceGraph() {
-    const canvas1 = document.getElementById("stacked-box-canvas-1");
-    const canvas2 = document.getElementById("stacked-box-canvas-2");
-    const wrapper1 = document.getElementById("canvas-wrapper-1");
-    const wrapper2 = document.getElementById("canvas-wrapper-2");
-    const sliderContainer = document.getElementById("slider-container");
-    const slider = document.getElementById("term-slider");
-    const termCountLabel = document.getElementById("term-count");
-
-    wrapper1.style.display = "block";
-    wrapper2.style.display = "block";
-    document.getElementById("canvas2-button").style.display = "inline-block";
-    sliderContainer.style.display = "block";
-    MathJax.typeset(); 
-
-
-    const contexts = [
-      { canvas: canvas1, ctx: canvas1.getContext("2d"), a_n: n => Math.pow(1.01, n - 1) },
-      { canvas: canvas2, ctx: canvas2.getContext("2d"), a_n: n => Math.pow(0.99, n - 1) }
-    ];
-
-    const boxWidth = 100;
-    let currentTermCount = 1;
-    const baseX = 150;
-
-    const states = contexts.map(() => ({ boxes: [] }));
-    let globalMaxTotalHeight = 0;
-
-    function clearCanvas(ctx, canvas) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function computeGlobalMaxHeight(n) {
-      const totals = contexts.map(({ a_n }) =>
-        Array.from({ length: n }, (_, i) => a_n(i + 1)).reduce((a, b) => a + b, 0)
-      );
-      globalMaxTotalHeight = Math.max(...totals);
-    }
-
-    function updateBoxes(index, n) {
-      const { a_n } = contexts[index];
-      const boxes = [];
-      for (let i = 1; i <= n; i++) {
-        const value = a_n(i);
-        boxes.push({ index: i, value, targetHeight: value, currentHeight: 0 });
-      }
-      states[index].boxes = boxes;
-      computeGlobalMaxHeight(n);
-    }
-
-    function animate(index) {
-      const { ctx, canvas } = contexts[index];
-      const boxes = states[index].boxes;
-
-      clearCanvas(ctx, canvas);
-
-      const scaleY = canvas.height / (globalMaxTotalHeight * 1.1);
-      let y = canvas.height;
-
-      for (let box of boxes) {
-        const fullHeight = box.value * scaleY;
-        if (box.currentHeight < fullHeight) {
-          box.currentHeight += (fullHeight - box.currentHeight) * 0.1;
-          if (Math.abs(fullHeight - box.currentHeight) < 0.5) {
-            box.currentHeight = fullHeight;
-          }
-        }
-
-        y -= box.currentHeight;
-
-        ctx.fillStyle = "rgba(0, 100, 255, 0.6)";
-        ctx.fillRect(baseX, y, boxWidth, box.currentHeight);
-
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(baseX, y, boxWidth, box.currentHeight);
-
-        ctx.fillStyle = "black";
-        ctx.font = "12px sans-serif";
-        ctx.fillText(`a_${box.index} = ${box.value.toFixed(2)}`, baseX + 5, y + 16);
-      }
-
-      requestAnimationFrame(() => animate(index));
-    }
-
-    // Initialize both graphs
-    [0, 1].forEach(i => {
-      updateBoxes(i, currentTermCount);
-      animate(i);
-    });
-    // Initialize canvas titles
-document.getElementById("canvas1-title").innerHTML = `\\(a_1 = 1.0000\\)`;
-document.getElementById("canvas2-title").innerHTML = `\\(a_1 = 1.0000\\)`;
-MathJax.typeset();
-
-
-slider.addEventListener("input", () => {
-  const n = parseInt(slider.value);
-  termCountLabel.textContent = n;
-
-  // Update canvas titles with a_n values
-  const a1 = Math.pow(1.01, n - 1).toFixed(4);
-  const a2 = Math.pow(0.99, n - 1).toFixed(4);
-  document.getElementById("canvas1-title").innerHTML = `\\(a_${n}= ${a1}\\not\\to 0\\), then \\(\\sum a_n\\) diverges`;
-  document.getElementById("canvas2-title").innerHTML = `\\(a_${n} = ${a2}\\to 0\\), then \\(\\sum a_n\\) ?`;
-  MathJax.typeset();
-
-  if (n !== currentTermCount) {
-    currentTermCount = n;
-    [0, 1].forEach(i => updateBoxes(i, n));
-  }
+  const coords = getCoords("1/n", maxN);
+  plotSeries("plot1", "1/n", coords);
 });
 
+function showAllTags() {
+  const allElements = document.querySelectorAll('*');
+  allElements.forEach(el => {
+    el.style = "opacity: 1;";
+  });
+}
+function fadeIn(el) {
+    el.style.opacity = "0";    
+
+el.style.animation = "fadeIn 0.6s forwards";
+}
+
+
+function fadeOut(el) {
+el.style.opacity = "1";    
+el.style.animation = "fadeOut 0.6s forwards";
+}
+
+
+function showNext() {
+  currentIndex++;
+  console.log(currentIndex);
+  if (currentIndex === 1) {
+    fadeIn(sentence1);
+    MathJax.typeset();
   }
+
+  if (currentIndex === 2) {
+    fadeIn(sentence2);
+    MathJax.typeset();
+  }
+
+  if (currentIndex === 3) {
+    fadeIn(input1);
+    MathJax.typeset();
+  }
+
+}
+
+
+function getCoords(seriesStr,maxN=20) {
+  let seriesFn;
+  try {
+    // Compile the string into a function of n
+    seriesFn = new Function("n", "return " + seriesStr);
+  } catch (e) {
+    console.error("Invalid series string:", e);
+    alert("Invalid series input.");
+    return;
+  }
+
+  // Generate values
+  const xVals = [];
+  const yVals = [];
+  for (let n = 1; n <= maxN; n++) {
+    try {
+      const y = seriesFn(n);
+      if (typeof y === 'number' && !isNaN(y)) {
+        xVals.push(n);
+        yVals.push(y);
+      }
+    } catch (e) {
+      console.error(`Error evaluating series at n=${n}:`, e);
+    }
+  }
+  console.log(xVals, yVals);
+  return [xVals, yVals];
+}
+
+
+function plotSeries(divID, series, coords) {
+  Plotly.newPlot(divID, [{
+  x: coords[0],
+  y: coords[1],
+  mode: 'markers',
+  type: 'scatter',
+  marker: {
+    size: 8,
+    color: '#00ccff'
+  }
+}], {
+  width: 1000,
+  height: 500,
+  title: {
+    text: `Scatter Plot of ${series}`,
+    font: { color: '#00ccff' }
+  },
+  plot_bgcolor: '#111',
+  paper_bgcolor: '#000',
+  font: { color: '#00ccff' },
+  xaxis: {
+    title: { text: 'a_n', font: { color: '#00ccff' } },
+    showticklabels: false,
+    ticks: '',
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  },
+  yaxis: {
+    title: { text: 'Value', font: { color: '#00ccff' } },
+    showticklabels: false,
+    ticks: '',
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  }
+});
+;
+          }
+
+
+
 </script>
 
   </body>
