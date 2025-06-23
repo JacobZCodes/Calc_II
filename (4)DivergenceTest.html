@@ -78,11 +78,11 @@
     transform: scale(0.95);
   }
 
-  input[type="range"] {
-    width: 60%;
+  /* input[type="range"] {
+    width: 100%;
     margin-top: 1em;
     accent-color: #00ccff;
-  }
+  } */
 
   #sentences {
     margin-top: 1em;
@@ -134,34 +134,35 @@ input[type="text"]:focus {
 }
 
 
-#box1 {
-  padding-top: 3em;
-  display:flex;
-  justify-content: space-evenly;
+select {
+  background-color: #111;
+  color: #00ccff;
+  border: 1px solid #00ccff;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: 'TangoSans_Bold', sans-serif;
+  font-size: 16px;
+  box-shadow: 0 0 8px #00ccff33;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none; /* removes default arrow styling */
+}
+
+select:focus {
+  border-color: #33ffff;
+  box-shadow: 0 0 12px #33ffff;
+}
+
+option {
+  background-color: #111;
+  color: #00ccff;
 }
 
 
-#slider-wrapper {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.7); /* optional: dark transparent bg */
-  padding: 8px;
-  border-radius: 12px;
-  box-shadow: 0 0 12px #00ccff66;
-}
 
-#slider-wrapper input[type="range"] {
-  width: 50%;
-  margin-top: 0.5em;
-  accent-color: #00ccff;
-}
 
-#plotSpace1 {
-  position: relative;
-}
+
+
 
 </style>
 
@@ -180,22 +181,50 @@ input[type="text"]:focus {
       </label>
       <button onclick="showNext()">Input Series</button>
     </div>
-    <div id="plotsBox">
-      <div id="series1">
-<div id="plotSpace1" style="position: relative;">
-  <div id="plot1"></div>
-
-  <div id="slider-wrapper">
-    <label for="n-slider">Max n-value: <span id="n-value-label">20</span></label><br>
-    <input type="range" id="n-slider" min="1" max="100" value="20">
-  </div>
-</div>
-        <div id="userQuiz1">Hello!</div>
+<div id="area1" style="display: flex; align-items: center;">
+  <div id="plotSpace1" style="position: relative;display: flex; margin-top: 2em; flex-direction: column; height: 350px;"  >
+    <div id="label-row" style="display: flex; align-items: center; z-index: 10; align-content: baseline;">
+      <div id="slider-wrapper" style="height: fit-content; width: fit-content; line-height: 1; margin: 0 auto; z-index: 10; top: 40px;">
+          <label for="n-slider"><span id="n-value-label">a_n = n</span></label><br>
+          <input  width=50px; type="range" id="n-slider" min="1" max="100" value="20">
       </div>
 
-      <div id="box2"></div>
+      <div id="quiz1" style="display:flex; position: relative; left: 500px;">
+        <div id="quiz1box">
+          <div id="guessInput1">
+            <label for="convergenceOptions">My series will</label>
+                    <select name="convergenceOptions" id="convergenceOptions">
+              <option value="converge">converge</option>
+              <option value="diverge">diverge</option>
+              <option value="either">converge or diverge</option>
+            </select>
+            <br>
+            <label for="arrowOptions">because a_n</label>
+              
+            <select name="arrowOptions" id="arrowOptions">
+              <option value="approaches">approaches</option>
+              <option value="!approaches">does not approach</option>
+            </select>
+            the value 0.
+          </div>
+          <div>
+            <button id="submitGuess">Submit Guess</button>
+          </div>
+        </div>
+      </div>
+
     </div>
+
+    <div id="plot1" style="position:relative; top: -70px;"></div>
+  </div>
+
+</div>
+
+
+
 <script>
+
+
 showAllTags();
 let currentIndex = 0;
 coords = getCoords("1/n");
@@ -206,18 +235,21 @@ document.addEventListener("keydown", function (event) {
           }
         });
 
-        document.getElementById("n-slider").addEventListener("input", function () {
-  const maxN = parseInt(this.value);
-  document.getElementById("n-value-label").textContent = maxN;
+document.getElementById("n-slider").addEventListener("input", function () { 
+  const n = parseInt(this.value);
+  const seriesFn = new Function("n", "return 1/n");
+  const value = seriesFn(n);
+  document.getElementById("n-value-label").textContent = n;
 
-  const coords = getCoords("1/n", maxN);
+  document.getElementById("n-value-label").innerHTML = `a<sub>${n}</sub> = <span id="n-value-label">${value.toFixed(4)}</span>`;
+  const coords = getCoords("1/n", n);
   plotSeries("plot1", "1/n", coords);
 });
 
 function showAllTags() {
   const allElements = document.querySelectorAll('*');
   allElements.forEach(el => {
-    el.style = "opacity: 1;";
+    el.style.opacity = "1";
   });
 }
 function fadeIn(el) {
@@ -279,13 +311,12 @@ function getCoords(seriesStr,maxN=20) {
       console.error(`Error evaluating series at n=${n}:`, e);
     }
   }
-  console.log(xVals, yVals);
   return [xVals, yVals];
 }
 
 
 function plotSeries(divID, series, coords) {
-  Plotly.newPlot(divID, [{
+  Plotly.react(divID, [{
   x: coords[0],
   y: coords[1],
   mode: 'markers',
@@ -297,10 +328,6 @@ function plotSeries(divID, series, coords) {
 }], {
   width: 1000,
   height: 500,
-  title: {
-    text: `Scatter Plot of ${series}`,
-    font: { color: '#00ccff' }
-  },
   plot_bgcolor: '#111',
   paper_bgcolor: '#000',
   font: { color: '#00ccff' },
@@ -325,9 +352,6 @@ function plotSeries(divID, series, coords) {
 });
 ;
           }
-
-
-
 </script>
 
   </body>
