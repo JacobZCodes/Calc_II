@@ -192,8 +192,8 @@ option {
     <div id="plotSpace1" style="position: relative;display: flex; margin-top: 2em; flex-direction: column; height: 350px;"  >
       <div id="label-row" style="display: flex; align-items: center; z-index: 10; align-content: baseline;">
         <div id="slider-wrapper" style="height: fit-content; width: fit-content; line-height: 1; margin: 0 auto; z-index: 10; position: relative;top: 40px; left: 200px;">
-            <label id="plot1-label" for="n-slider"><span id="n-value-label">a_n = n</span></label><br>
-            <input  width=50px; type="range" id="n-slider" min="1" max="100" value="20">
+            <label id="plot1-label" for="n-slider1"><span id="n-value-label1">a_n = n</span></label><br>
+            <input  width=50px; type="range" id="n-slider1" min="1" max="100" value="20">
         </div>
 
         <div id="quiz1" style="display:flex; position: relative; left: 500px; top: 80px;">
@@ -228,8 +228,8 @@ option {
     <div id="plotSpace2" style="position: relative;display: flex; margin-top: 2em; flex-direction: column; height: 350px;"  >
       <div id="label-row2" style="display: flex; position: relative; right: 250px;align-items: center; justify-content: flex-start; gap: 0; z-index: 10; align-content: baseline;">
         <div id="slider-wrapper2" style="height: fit-content; width: fit-content; line-height: 1; margin: 0 auto; z-index: 10; position: relative;top: 40px; left: 200px;">
-            <label id="plot2-label" for="n-slider"><span id="n-value-label">a_n = n</span></label><br>
-            <input  width=50px; type="range" id="n-slider" min="1" max="100" value="20">
+            <label id="plot2-label" for="n-slider2"><span id="n-value-label2">a_n = n</span></label><br>
+            <input  width=50px; type="range" id="n-slider2" min="1" max="100" value="20">
         </div>
 
         <div id="quiz2" style="display:flex; position: relative;">
@@ -431,15 +431,27 @@ document.addEventListener("keydown", function (event) {
           }
         });
 
-document.getElementById("n-slider").addEventListener("input", function () { 
+document.getElementById("n-slider1").addEventListener("input", function () { 
   const n = parseInt(this.value);
   const seriesFn = series1Info[1];
   const value = seriesFn(n);
-  document.getElementById("n-value-label").textContent = n;
+  document.getElementById("n-value-label1").textContent = n;
 
-  document.getElementById("n-value-label").innerHTML = `a<sub>${n}</sub> = <span id="n-value-label">${value.toFixed(4)}</span>`;
+  document.getElementById("n-value-label1").innerHTML = `a<sub>${n}</sub> = <span id="n-value-label1">${value.toFixed(4)}</span>`;
   const coords = getCoords(series1Info[0], n);
   plotSeries("plot1", series1Info[0], coords);
+});
+
+
+document.getElementById("n-slider2").addEventListener("input", function () { 
+  const n = parseInt(this.value);
+  const seriesFn = series2Info[1];
+  const value = seriesFn(n);
+  document.getElementById("n-value-label2").textContent = n;
+
+  document.getElementById("n-value-label2").innerHTML = `a<sub>${n}</sub> = <span id="n-value-label2">${value.toFixed(4)}</span>`;
+  const coords = getCoords(series2Info[0], n);
+  plotSeries("plot2", series2Info[0], coords);
 });
 
 function showAllTags() {
