@@ -112,7 +112,17 @@
   .yellow {
   color:lightyellow; /* light red text */
   padding-left: 0.4em;
+}
 
+  .green {
+  color:lightgreen; /* light red text */
+  padding-left: 0.4em;
+}
+
+
+  .purple {
+  color: purple; /* light red text */
+  padding-left: 0.4em;
 }
 
 input[type="text"] {
@@ -179,42 +189,41 @@ option {
       <p>Enter your sequence in series notation (please enter it exactly as a computer should read it, ie 2n+3 => 2*n+3):</p>
       <label>\( \sum_{n=1}^{\infty} \) <input type="text" id="seriesInput" placeholder="n^2">
       </label>
-      <button onclick="showNext()">Input Series</button>
+      <button id="seriesInputBtn">Input Series</button>
     </div>
-<div id="area1" style="display: flex; align-items: center;">
+<div id="area1" style="display: flex; align-items: center; position:relative; opacity: 0;">
   <div id="plotSpace1" style="position: relative;display: flex; margin-top: 2em; flex-direction: column; height: 350px;"  >
     <div id="label-row" style="display: flex; align-items: center; z-index: 10; align-content: baseline;">
-      <div id="slider-wrapper" style="height: fit-content; width: fit-content; line-height: 1; margin: 0 auto; z-index: 10; top: 40px;">
-          <label for="n-slider"><span id="n-value-label">a_n = n</span></label><br>
+      <div id="slider-wrapper" style="height: fit-content; width: fit-content; line-height: 1; margin: 0 auto; z-index: 10; position: relative;top: 40px; left: 200px;">
+          <label id="plot1-label" for="n-slider"><span id="n-value-label">a_n = n</span></label><br>
           <input  width=50px; type="range" id="n-slider" min="1" max="100" value="20">
       </div>
 
-      <div id="quiz1" style="display:flex; position: relative; left: 500px;">
+      <div id="quiz1" style="display:flex; position: relative; left: 500px; top: 80px;">
         <div id="quiz1box">
           <div id="guessInput1">
             <label for="convergenceOptions">My series will</label>
                     <select name="convergenceOptions" id="convergenceOptions">
-              <option value="converge">converge</option>
-              <option value="diverge">diverge</option>
-              <option value="either">converge or diverge</option>
+              <option value=-1>converge</option>
+              <option value=1>diverge</option>
+              <option value=0>converge or diverge</option>
             </select>
             <br>
             <label for="arrowOptions">because a_n</label>
               
             <select name="arrowOptions" id="arrowOptions">
-              <option value="approaches">approaches</option>
-              <option value="!approaches">does not approach</option>
+              <option value=1>approaches</option>
+              <option value=0>does not approach</option>
             </select>
             the value 0.
           </div>
           <div>
             <button id="submitGuess">Submit Guess</button>
+            <p id="feedback"></p>
           </div>
         </div>
       </div>
-
     </div>
-
     <div id="plot1" style="position:relative; top: -70px;"></div>
   </div>
 
@@ -223,12 +232,117 @@ option {
 
 
 <script>
+let series1Info;
+let series2Info;
+document.getElementById("submitGuess").addEventListener("click", function () {
+    const divergenceValue = document.getElementById("convergenceOptions").value;
+    const arrowValue = document.getElementById("arrowOptions").value;
+    const userAnswers = [divergenceValue, arrowValue];
+    const correctAnswers = getCorrectAnswers(myFunc);
+    const feedback = document.getElementById("feedback");
+    feedback.innerHTML = giveFeedback(userAnswers, correctAnswers);
+    const continueBtn = document.getElementById("continue");
+    if (continueBtn) {
+      continueBtn.addEventListener("click", function () { // remove quiz + update title of first plot + rename earlier button...
+
+        document.getElementById("quiz1").remove();
+              const plot1label = document.getElementById("plot1-label");
+      updatePlot1Label(plot1label, "1/n", correctAnswers);
+      });
+
+    }
+
+  });
+
+ 
+  // store first series text + function
+  document.getElementById("seriesInputBtn").addEventListener("click", function () {
+    let series1Str = document.getElementById("seriesInput").value;
+    let series1Fn= convertSeriesStrToFunc(series1Str);
+    series1Info = [series1Str, series1Fn];
+    console.log("Series 1 Info: ", series1Info);
+    showNext();
+  });
 
 
-showAllTags();
+
+function myFunc(n) {
+  return 1/n;
+}
+
+function updatePlot1Label(plot1label, seriesStr, correctAnswers=-1) {
+  if (correctAnswers == -1) { // we just want to set the title to the function
+    const textToInsert = `${seriesStr}`;
+    plot1label.insertAdjacentHTML("afterbegin", `<div>${textToInsert}</div>`);
+    return;
+  }
+  let divergenceValue = correctAnswers[0];
+  let verb;
+  if (divergenceValue == 1) {
+    verb = `diverge`;
+  }
+  else {
+    verb = 'diverge or converge';
+  }
+  const textToInsert = `${seriesStr} will <span class="purple">${verb}</span>`;
+  plot1label.insertAdjacentHTML("afterbegin", `<div>${textToInsert}</div>`);
+}
+function getCorrectAnswers(seriesFn) {
+  if (isInconclusive(seriesFn)) { // inconclusive test [0], approaching zero [1]
+    return [0,1];
+  }
+  return [1,0];
+}
+function isInconclusive(seriesFn) {
+  if (seriesFn(10000) < 1) {
+    return true;
+  }
+}
+
+function arraysEqual(a, b) {
+  return a.length === b.length && a.every((val, i) => val === b[i]);
+} 
+function giveFeedback(answers, correctAnswers) {
+  let userAnswers = answers.map(str => +str); // strings to int
+  console.log("user answers: ", userAnswers);
+  console.log("correct answers: ", correctAnswers);
+  if (userAnswers[0] == -1) { // this will never be correct
+    console.log("super wrong");
+    return HTMLConvergenceFeedback;
+  }
+  if (!arraysEqual(userAnswers,correctAnswers)) {
+    console.log("wrong");
+    return HTMLIncorrectFeedback;
+  }
+  console.log("correct!");
+
+  return getCorrectFeedback(correctAnswers);
+}
+
+function getCorrectFeedback(correctAnswers) {
+  let divergenceValue = correctAnswers[0];
+  let verb;
+  if (divergenceValue == 1) { // ask for inconclsuive 
+    verb = `<span class="purple">converges or diverges</span>`;
+  }
+  else { // ask for divergent
+    verb = `<span class="purple">diverges</span>`;
+  }
+  return `<span class="green">Correct! Now find a series that ${verb} this time.</span><button id="continue">Continue</button>`;
+}
+
+
+const HTMLConvergenceFeedback = `<span class="red">With the Divergence Test, we can never know if our series converges. Try again. </span>`;
+
+const HTMLIncorrectFeedback = `<span class="yellow">Incorrect. Please try again. </span>`;
+
+
+
+
+// showAllTags();
 let currentIndex = 0;
-coords = getCoords("1/n");
-plotSeries("plot1", "1/n", coords);
+// coords = getCoords("1/n");
+// plotSeries("plot1", "1/n", coords);
 document.addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
               showNext();
@@ -237,13 +351,13 @@ document.addEventListener("keydown", function (event) {
 
 document.getElementById("n-slider").addEventListener("input", function () { 
   const n = parseInt(this.value);
-  const seriesFn = new Function("n", "return 1/n");
+  const seriesFn = series1Info[1];
   const value = seriesFn(n);
   document.getElementById("n-value-label").textContent = n;
 
   document.getElementById("n-value-label").innerHTML = `a<sub>${n}</sub> = <span id="n-value-label">${value.toFixed(4)}</span>`;
-  const coords = getCoords("1/n", n);
-  plotSeries("plot1", "1/n", coords);
+  const coords = getCoords(series1Info[0], n);
+  plotSeries("plot1", series1Info[0], coords);
 });
 
 function showAllTags() {
@@ -279,23 +393,43 @@ function showNext() {
   }
 
   if (currentIndex === 3) {
+    fadeIn(sentence3);
+    MathJax.typeset();
+  }
+  if (currentIndex === 4) {
     fadeIn(input1);
     MathJax.typeset();
   }
 
+  if (currentIndex === 5) {
+    console.log("here!");
+    let coords1 = getCoords(series1Info[0]);
+    plotSeries("plot1", series1Info[0], coords1);
+    document.getElementById("area1").style.opacity =1;
+  }
 }
 
-
-function getCoords(seriesStr,maxN=20) {
+function convertSeriesStrToFunc(seriesStr) {
   let seriesFn;
   try {
-    // Compile the string into a function of n
     seriesFn = new Function("n", "return " + seriesStr);
+    return seriesFn;
   } catch (e) {
     console.error("Invalid series string:", e);
     alert("Invalid series input.");
     return;
-  }
+  }}
+
+function getCoords(seriesStr,maxN=20) {
+  let seriesFn = convertSeriesStrToFunc(seriesStr);
+  // try {
+  //   // Compile the string into a function of n
+  //   seriesFn = new Function("n", "return " + seriesStr);
+  // } catch (e) {
+  //   console.error("Invalid series string:", e);
+  //   alert("Invalid series input.");
+  //   return;
+  // }
 
   // Generate values
   const xVals = [];
