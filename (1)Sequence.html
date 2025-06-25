@@ -175,21 +175,21 @@ const p2 = document.getElementById("2");
 const p3 = document.getElementById("3");
 const sentences = document.getElementById("sentences");
 let keyCooldown = false;
-  document.addEventListener("keydown", function (event) {
-      if (keyCooldown) return;
+    document.addEventListener("keydown", function (event) {
+        if (keyCooldown) return;
 
-  keyCooldown = true;
+    keyCooldown = true;
 
-  setTimeout(() => {
-    keyCooldown = false;
-  }, 500); 
-    if (event.key === "Enter") {
-      showNext();
-    }
-    if (event.key === "Backspace") {
-      goBack();
-    }
-  });
+    setTimeout(() => {
+      keyCooldown = false;
+    }, 500); 
+      if (event.key === "Enter") {
+        showNext();
+      }
+      if (event.key === "Backspace") {
+        goBack();
+      }
+    });
 
   function goBack() {
     currentIndex--;
