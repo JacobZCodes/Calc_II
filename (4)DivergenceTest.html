@@ -168,7 +168,29 @@ option {
   color: #00ccff;
 }
 
+#next-lesson-btn {
+  margin: 2em auto 0 auto;     /* centers the button horizontally */
+  display: block;              /* makes margin auto work */
+  width: 250px;                /* more rectangular shape */
+  border-radius: 12px;         /* less pill-shaped */
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #00ccff;
+  color: #000;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
 
+#next-lesson-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ccff;
+}
+
+#next-lesson-btn:active {
+  transform: scale(0.95);
+}
 
 </style>
 
@@ -195,7 +217,6 @@ option {
             <label id="plot1-label" for="n-slider1"><span id="n-value-label1">a_n = n</span></label><br>
             <input  width=50px; type="range" id="n-slider1" min="1" max="100" value="20">
         </div>
-
         <div id="quiz1" style="display:flex; position: relative; left: 500px; top: 80px;">
           <div id="quiz1box">
             <div id="guessInput1">
@@ -216,12 +237,16 @@ option {
             </div>
             <div>
               <button id="submitGuess">Submit Guess</button>
-              <p id="feedback"></p>
             </div>
           </div>
         </div>
+        <div id="feedback"></div>
+        <!-- <p id="feedback"></p> -->
       </div>
       <div id="plot1" style="position:relative; top: -70px;"></div>
+<button id="next-lesson-btn" class="next-lesson" onclick="window.location.href='(5)IntegralTest.html'" style="opacity: 0; position: relative; z-index: 10; left: 500px; bottom:150px;">
+  Next Lesson
+</button>
     </div>
   </div>
   <div id="area2" style="display: flex; align-items: center; position:relative; opacity: 0;">
@@ -252,7 +277,7 @@ option {
             </div>
             <div>
               <button id="submitGuess2">Submit Guess</button>
-              <p id="feedback2"></p>
+              <p id="feedback2" style=" max-width: 400px; overflow-wrap: break-word; "></p>
             </div>
           </div>
         </div>
@@ -293,12 +318,43 @@ document.getElementById("submitGuess").addEventListener("click", function () {
 
   });
 
+document.getElementById("submitGuess2").addEventListener("click", function () {
+    const divergenceValue = document.getElementById("convergenceOptions2").value;
+    const arrowValue = document.getElementById("arrowOptions2").value;
+    const userAnswers = [divergenceValue, arrowValue];
+    const correctAnswers = getCorrectAnswers(series2Info[1]);
+    const feedback = document.getElementById("feedback2");
+    feedback.innerHTML = giveFeedback(userAnswers, correctAnswers);
+    // 
+    const continueBtn = document.getElementById("continue2");
+    if (continueBtn) {
+      continueBtn.addEventListener("click", function () { // remove quiz + update title of first plot + rename earlier button + adjust label + rename button...
+        document.getElementById("quiz2").remove();
+        const plot2label = document.getElementById("plot2-label");
+        const plotspace2 = document.getElementById("plotSpace2");
+        plotspace2.style.position = "relative";
+        const wrapper2  = document.getElementById("slider-wrapper2");
+        // slider wrapper 2 top to 0 px
+        wrapper2.style.top = "0px";
+        // update plot2 title...
+        updatePlotLabel(plot2label, series2Info[0], correctAnswers);
+        // next lesson button at bottom
+        document.getElementById("next-lesson-btn").style.opacity = "1";
+
+        
+      });
+
+    }
+
+  });
+
+
  
   // store first series text + function
   let clickCount = 0;
   let area2 = document.getElementById("area2");
   let plot2label = document.getElementById("plot2-label");
-  HTMLWrongSeries = `<span class ="yellow warning"><p>Input a series that acts differently than your first series</p></span>`
+  HTMLWrongSeries = `<span class ="yellow warning">Input a series that acts differently than your first series</span>`
   document.getElementById("seriesInputBtn").addEventListener("click", function () {
     if (clickCount > 0) { // second series
       series2Str = document.getElementById("seriesInput").value;
@@ -384,6 +440,7 @@ function isInconclusive(seriesFn) {
 function arraysEqual(a, b) {
   return a.length === b.length && a.every((val, i) => val === b[i]);
 } 
+let correctCounter = 0;
 function giveFeedback(answers, correctAnswers) {
   let userAnswers = answers.map(str => +str); // strings to int
   console.log("user answers: ", userAnswers);
@@ -396,9 +453,21 @@ function giveFeedback(answers, correctAnswers) {
     console.log("wrong");
     return HTMLIncorrectFeedback;
   }
-  console.log("correct!");
 
-  return getCorrectFeedback(correctAnswers);
+  if (correctCounter == 0) {
+    correctCounter++;
+    console.log("Giving continue...");
+    return getCorrectFeedback(correctAnswers);
+  }
+  else {
+    console.log("Giving continue2...");
+    return giveFinalCorrectFeedback();
+  }
+
+}
+
+function giveFinalCorrectFeedback() {
+  return `<span class="green">Correct!</span><button id="continue2" style="position: relative; left:40px;">Examine Graphs</button>`;
 }
 
 function getCorrectFeedback(correctAnswers) {
@@ -410,13 +479,13 @@ function getCorrectFeedback(correctAnswers) {
   else { // ask for divergent
     verb = `<span class="purple">diverges</span>`;
   }
-  return `<span class="green">Correct! Now find a series that ${verb} this time.</span><button id="continue">Continue</button>`;
+  return `<span class="green" >Correct! Now find a series that ${verb} this time.</span><button id="continue">Continue</button>`;
 }
 
 
 const HTMLConvergenceFeedback = `<span class="red">With the Divergence Test, we can never know if our series converges. Try again. </span>`;
 
-const HTMLIncorrectFeedback = `<span class="yellow">Incorrect. Please try again. </span>`;
+const HTMLIncorrectFeedback = `<span class="yellow">Incorrect. Please try again.</span>`;
 
 
 
