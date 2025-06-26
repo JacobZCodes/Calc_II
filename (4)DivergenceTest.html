@@ -122,7 +122,6 @@
 
   .purple {
   color: purple; /* light red text */
-  padding-left: 0.4em;
 }
 
 input[type="text"] {
@@ -235,15 +234,16 @@ option {
               </select>
               the value 0.
             </div>
-            <div>
+            <div id="feedback-row" style="display:flex; align-items: center;">
               <button id="submitGuess">Submit Guess</button>
+              <p id="feedback" style=" max-width: 200px; overflow-wrap: break-word;min-height: 100px; "></p>
             </div>
           </div>
         </div>
-        <div id="feedback"></div>
-        <!-- <p id="feedback"></p> -->
+        
       </div>
       <div id="plot1" style="position:relative; top: -70px;"></div>
+      
 <button id="next-lesson-btn" class="next-lesson" onclick="window.location.href='(5)IntegralTest.html'" style="opacity: 0; position: relative; z-index: 10; left: 500px; bottom:150px;">
   Next Lesson
 </button>
@@ -275,9 +275,9 @@ option {
               </select>
               the value 0.
             </div>
-            <div>
+            <div id="feedback-row2" style="display:flex; align-items: center;">
               <button id="submitGuess2">Submit Guess</button>
-              <p id="feedback2" style=" max-width: 400px; overflow-wrap: break-word; "></p>
+              <p id="feedback2" style=" max-width: 200px; overflow-wrap: break-word; min-height: 100px"></p>
             </div>
           </div>
         </div>
@@ -293,16 +293,24 @@ option {
 <script>
 let series1Info;
 let series2Info;
+let continueBtn;
 document.getElementById("submitGuess").addEventListener("click", function () {
+    let isCorrect = false;
+    const feedbackRow = document.getElementById("feedback-row");
     const divergenceValue = document.getElementById("convergenceOptions").value;
     const arrowValue = document.getElementById("arrowOptions").value;
     const userAnswers = [divergenceValue, arrowValue];
     const correctAnswers = getCorrectAnswers(series1Info[1]);
     const feedback = document.getElementById("feedback");
     feedback.innerHTML = giveFeedback(userAnswers, correctAnswers);
-    const continueBtn = document.getElementById("continue");
-    if (continueBtn) {
-      continueBtn.addEventListener("click", function () { // remove quiz + update title of first plot + rename earlier button + adjust label + rename button...
+    if (feedback.textContent.includes("Correct!")) { // append continue button too..
+      isCorrect = true;
+      continueBtn = document.createElement("button");
+      continueBtn.innerText = "Continue";
+      feedbackRow.appendChild(continueBtn);
+    }
+    if (isCorrect && continueBtn) {
+        continueBtn.addEventListener("click", function () { // remove quiz + update title of first plot + rename earlier button + adjust label + rename button...
         document.getElementById("quiz1").remove();
         const plot1label = document.getElementById("plot1-label");
         updatePlotLabel(plot1label, series1Info[0], correctAnswers);
@@ -319,15 +327,22 @@ document.getElementById("submitGuess").addEventListener("click", function () {
   });
 
 document.getElementById("submitGuess2").addEventListener("click", function () {
+    let continueBtn;
+    let feedbackRow2 = document.getElementById("feedback-row2");
+    let isCorrect = false;
     const divergenceValue = document.getElementById("convergenceOptions2").value;
     const arrowValue = document.getElementById("arrowOptions2").value;
     const userAnswers = [divergenceValue, arrowValue];
     const correctAnswers = getCorrectAnswers(series2Info[1]);
     const feedback = document.getElementById("feedback2");
     feedback.innerHTML = giveFeedback(userAnswers, correctAnswers);
-    // 
-    const continueBtn = document.getElementById("continue2");
-    if (continueBtn) {
+    if (feedback.textContent.includes("Correct!")) { // append continue button too..
+      isCorrect = true;
+      continueBtn = document.createElement("button");
+      continueBtn.innerText = "Examine Graphs";
+      feedbackRow2.appendChild(continueBtn);
+    }
+    if (isCorrect && continueBtn) {
       continueBtn.addEventListener("click", function () { // remove quiz + update title of first plot + rename earlier button + adjust label + rename button...
         document.getElementById("quiz2").remove();
         const plot2label = document.getElementById("plot2-label");
@@ -356,39 +371,58 @@ document.getElementById("submitGuess2").addEventListener("click", function () {
   let plot2label = document.getElementById("plot2-label");
   HTMLWrongSeries = `<span class ="yellow warning">Input a series that acts differently than your first series</span>`
   document.getElementById("seriesInputBtn").addEventListener("click", function () {
+    const warnings = document.querySelectorAll('.warning');
     if (clickCount > 0) { // second series
+      // return if btn text contains another
+      if (!document.getElementById("seriesInputBtn").textContent.includes("another")) {
+        return;
+      }
+      const area2 = document.getElementById("area2");
+      const computedOpacity = window.getComputedStyle(area2).opacity;
+      // return if area2 is already on
+      if (computedOpacity !== "0" ){
+        console.log("area2 is light...");
+        return;
+      }
       series2Str = document.getElementById("seriesInput").value;
       let series2Fn = convertSeriesStrToFunc(series2Str);
       series2Info = [series2Str, series2Fn];
       if (seriesIsDifferent()) { // clear area then pplot series
-        const warning = area2.querySelector('.warning');
-        if (warning) warning.remove();
+        warnings.forEach(w => w.remove());
         coords2 = getCoords(series2Str);
         plotSeries("plot2",series2Str, coords2);
         updatePlotLabel(plot2label, series2Info[0]);
         area2.style.opacity = "1";
       }
-      else { // have user try again...
-        const warning = document.createElement("span");
-        warning.className = "yellow warning";
-        warning.innerHTML = HTMLWrongSeries;
-        area2.appendChild(warning);
-        area2.style.opacity = "1";
-
-
+      else { // append warning to button
+        // if warning already exists, skip all of this
+        console.log("firing as expected...");
+        if (warnings.length == 0) {
+          console.log("should be firing...");
+          const input1div= document.getElementById("input1");
+          const warning = document.createElement("span");
+          warning.className = "yellow warning";
+          warning.innerHTML = HTMLWrongSeries;
+          warning.style.position = "relative";
+          warning.style.display = "inline-block";
+          warning.style.maxWidth = "300px";
+          input1div.appendChild(warning);
+          // area2.style.opacity = "1";
+        }
       }
-
-
+    }
+    if (clickCount == 0) {
+      let series1Str = document.getElementById("seriesInput").value;
+      let series1Fn= convertSeriesStrToFunc(series1Str);
+      series1Info = [series1Str, series1Fn];
+      console.log("Series 1 Info: ", series1Info);
+      let coords1 = getCoords(series1Info[0]);
+      plotSeries("plot1", series1Info[0], coords1);
+      let plot1_label = document.getElementById("plot1-label");
+      updatePlotLabel(plot1_label, series1Info[0]);
+      document.getElementById("area1").style.opacity =1;
     }
     clickCount++;
-    
-    
-    let series1Str = document.getElementById("seriesInput").value;
-    let series1Fn= convertSeriesStrToFunc(series1Str);
-    series1Info = [series1Str, series1Fn];
-    console.log("Series 1 Info: ", series1Info);
-
-    showNext();
   });
 
 
@@ -467,7 +501,7 @@ function giveFeedback(answers, correctAnswers) {
 }
 
 function giveFinalCorrectFeedback() {
-  return `<span class="green">Correct!</span><button id="continue2" style="position: relative; left:40px;">Examine Graphs</button>`;
+  return `<span class="green">Correct!</span>`;
 }
 
 function getCorrectFeedback(correctAnswers) {
@@ -479,7 +513,7 @@ function getCorrectFeedback(correctAnswers) {
   else { // ask for divergent
     verb = `<span class="purple">diverges</span>`;
   }
-  return `<span class="green" >Correct! Now find a series that ${verb} this time.</span><button id="continue">Continue</button>`;
+  return `<span class="green" >Correct! Now find a series that ${verb} this time.</span>`;
 }
 
 
@@ -496,6 +530,9 @@ let currentIndex = 0;
 // plotSeries("plot1", "1/n", coords);
 document.addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
+              if (currentIndex === 4) {
+                return;
+              }
               showNext();
           }
         });
@@ -564,13 +601,6 @@ function showNext() {
     MathJax.typeset();
   }
 
-  if (currentIndex === 5) {
-    let coords1 = getCoords(series1Info[0]);
-    plotSeries("plot1", series1Info[0], coords1);
-    let plot1_label = document.getElementById("plot1-label");
-    updatePlotLabel(plot1_label, series1Info[0]);
-    document.getElementById("area1").style.opacity =1;
-  }
 }
 
 function convertSeriesStrToFunc(seriesStr) {
