@@ -1,203 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Series Animation Example</title>
-  <style>
-    @font-face {
-      font-family: 'TangoSans_Bold';
-      src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
-    }
-    body {
-      background-color: #000;
-      color: #00ccff;
-      font-family: 'TangoSans_Bold', sans-serif;
-      text-align: center;
-      padding: 2em;
-    }
+  <head>
+    <meta charset="UTF-8">
+    <title>Series Animation Example</title>
+    <style>
+      @font-face {
+        font-family: 'TangoSans_Bold';
+        src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+      }
 
+      body {
+        background-color: #000;
+        color: #00ccff;
+        font-family: 'TangoSans_Bold', sans-serif;
+        text-align: center;
+        padding: 2em;
+      }
 
+      p {
+        margin-top: 1em;
+      }
 
-    p {
-      margin-top: 1em;
-    }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
 
-    @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+        }
+      }
+
+      .purple {
+        color: purple;
+      }
+
+      .yellow {
+        color: yellow;
+      }
+
+      .question {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+
+      input[type="text"] {
+        background-color: #111;
+        /* dark input background */
+        color: #00ccff;
+        /* cyan text color */
+        border: 1px solid #00ccff;
+        /* cyan border */
+        border-radius: 4px;
+        /* rounded corners */
+        padding: 10px 12px;
+        font-size: 16px;
+        width: 20%;
+        height: 3px;
+        box-shadow: 0 0 8px #00ccff33;
+        /* subtle cyan glow */
+        outline: none;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        border-color: #33ffff;
+        box-shadow: 0 0 12px #33ffff;
+      }
+
+.box {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: 0 auto;
+  align-items: flex-start;
+  row-gap: 1em;
+  border: 2px solid #00ccff;
+  border-radius: 10px;
+  padding: 1.5em;
+  background-color: #111;
+  box-shadow: 0 0 12px #00ccff55;
 }
 
-    @keyframes fadeOut {
-  to {
-    opacity: 0;
-  }
-}
-  </style>
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body>
+    <h1>
+      <b>Series</b>
+    </h1>
+    <div id="sentences">
+      <p id="0">A <span class="purple">partial sum</span> is the summation of the first n terms of our sequence </p>
+      <div id="1"></div>
+      <p> Let \(a_n = {10,20,30,40,50,60,70,80,90,100}\). Then a <span class="purple">partial sum</span> of the first 3 terms is \(10+20+30=60\) </p>
+      <p>So we say <span class="yellow">\(S_3 = 60\) </span>to mean "the sum of the first 3 terms in our sequence is 60" </p>
+    </div>
+    <div id="quiz" class="box">
+      <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
+      <div class="question">
+        <label id= "label-s4" for="s4">\(S_4=\)</label>
+        <input id="s4" type="text">
+      </div>
+      <div class="question">
+        <label id= "label-s5" for="s5">\(S_5=\)</label>
+        <input id="s5" type="text">
+      </div>
+      <div class="question">
+        <label id= "label-s6" for="s6">\(S_6=\)</label>
+        <input id="s6" type="text">
+      </div>
+      <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
+        <button id="check-answers-btn">Check Answers</button>
+      </div>
+    </div>
+    <div id="partialSumLesson">
+      <p>We formally define our <span class="purple">partial sum</span> as:</p>
+      <div class="box" style="display:flex; flex-direction: column;">
+        <h3>Partial Sum</h3>
+        <div>here</div>
+      </div>
+    </div>
+    <div id="infiniteSeriesLesson">
+        <p>Partial Sum</p>
+        <p>Latex</p>
+    </div>
+    <div id="conclusion"></div>
+    <div id="next-lesson-btn">Explore Divergencen</div>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-  <h1><b>Series</b></h1>
-  <div id="sentences">
-    <p id="0"></p>
-    <p id="1"></p>
-    <p id="2"></p>
-    <p id="3"></p>
-    <p id="4"></p>
-    <p id="5"></p>
-    <p id="6"></p>
-    <p id="7"></p>
-    <p id="8"></p>
-    <p id="9"></p>
-    <p id="10"></p>
-  </div>
+    <script>
+      // MathJax.typeset();
+      const correctAnswers = [100, 150, 210]
+      let wrongAnswers = [0, 0, 0];
+      let checkAnswersBtn = document.getElementById("check-answers-btn");
+      let labels4 = document.getElementById("label-s4"); 
+      let labels5 = document.getElementById("label-s5"); 
+      let labels6 = document.getElementById("label-s6"); 
+      function checkAnswers(answers) {
+        console.log("Ansewres: ", answers);
+        for (let i = 0; i < 3; ++i) {
+          if (answers[i] !== correctAnswers[i]) {
+            wrongAnswers[i] = 1;
+          }
+          else {
+            wrongAnswers[i] = 0;
+          }
+        }
+      }
 
+      function isWrong() {
+        for (let i = 0; i < 3; ++i) {
+          if (wrongAnswers[i] === 1) {
+            return true;
+          }
+        }
+        return false;
+      }
+      function changeCheckAnswersBtnText(inputNum) {
+        // -1 wrong, 1 right, 0 reset
+        if (inputNum === -1) {
+          changeCheckAnswersButtonToWrong();
+        }
+        else if (inputNum === 1) {
+          changeCheckAnswersButtonToCorrect();
+        }
+        else if (inputNum === 0) {
+          changeCheckAnswersButtonToDefault();
+        }
+      }
+      function setElementColor(el,color) {
+        el.style.color = color;
+      }
 
-  <script>
-  
-  function fadeIn(el) {
-        el.style.opacity = "0";    
+      function setElementText(el, text) {
+        el.innerText = text;
+      }
 
-    el.style.animation = "fadeIn 0.6s forwards";
-  }
+      function changeCheckAnswersButtonToWrong() {
+        setElementColor(checkAnswersBtn, "red");
+        setElementText(checkAnswersBtn, "Try Again");
+      }
 
+      function changeCheckAnswersButtonToCorrect() {
+        setElementColor(checkAnswersBtn, "green");
+        setElementText(checkAnswersBtn, "Correct!");
+      }
 
-    function fadeOut(el) {
-    el.style.opacity = "1";    
-    el.style.animation = "fadeOut 0.6s forwards";
-  }
-  function hideAllParagraphs() {
-  const paragraphs = document.querySelectorAll('p');
-  paragraphs.forEach(p => {
-    p.style.opacity = 0;
-  });
-}
+      function changeCheckAnswersButtonToDefault() {
+        setElementColor(checkAnswersBtn, "black");
+        setElementText(checkAnswersBtn, "Check Answers");
+      }
 
-function getParagraphElement(id) {
-  return document.getElementById(id.toString());
-}
+      function getLabelElementGivenIndex(i) {
+        switch (i) {
+          case 0:
+            return labels4;
+            break;
+          case 1:
+            return labels5;
+            break;
+          case 2:
+            return labels6;
+            break;
+        }
+      }
+      function changeQuestionColors() {
+        // 0 - s4, 1 - s5, 2 - s6
+        for (let i =0; i<3; ++i) {
+          if (wrongAnswers[i] === 1) { // change label to red
+            setElementColor(getLabelElementGivenIndex(i), "red");
+          }
+          else { // change label to green
+            setElementColor(getLabelElementGivenIndex(i), "green");
+          }
+        }
+      }
 
-  function populateAllParagraphs() {
-  const paragraphs = document.querySelectorAll('p');
-  for (let i = 0; i < paragraphs.length; i++) {
-    paragraphs[i].innerHTML = sentenceList[i];
-  }
-}
+      document.getElementById("check-answers-btn").addEventListener("click", function() {
+        const s4 = parseInt(document.getElementById("s4").value.trim());
+        const s5 = parseInt(document.getElementById("s5").value.trim());
+        const s6 = parseInt(document.getElementById("s6").value.trim());
+        const answers = [s4, s5, s6];
+        // check for wrong answers
+        checkAnswers(answers);
+        if (isWrong()) {
+          // change S4's text color
+          changeQuestionColors();
+          // change button text + color to Wrong
+          changeCheckAnswersBtnText(-1);
+        }
+        else if (!isWrong()) {
+          // reset all labels to green
+          changeQuestionColors();
+          // change buttont to say correct
+          changeCheckAnswersBtnText(1);
+          // next div appear
+        }
 
-  function showNext() {
-    currentIndex++;
-    console.log(currentIndex);
-    switch(currentIndex) {
-      case 0:
-        fadeIn(getParagraphElement(0));
-        break;
-      case 1: 
-      fadeIn(getParagraphElement(1));
-      break;
-      case 2: 
-      fadeIn(getParagraphElement(2));
-      break;
-      case 3: 
-            fadeIn(getParagraphElement(3));
-      break;
-      case 4:
-              fadeIn(getParagraphElement(4));
-      break;
-      case 5:
-              fadeIn(getParagraphElement(5));
-      break;
-      case 6:
-              fadeIn(getParagraphElement(6));
-      break;
-            case 7:
-              fadeIn(getParagraphElement(7));
-      break;
-            case 8:
-              fadeIn(getParagraphElement(8));
-      break;
-            case 9:
-              fadeIn(getParagraphElement(9));
-      break;
-            case 10:
-              fadeIn(getParagraphElement(10));
-      break;
-      case 11:
-        currentIndex = 10;
-        break;
-    }
-  }
-
-  function goBack() {
-    currentIndex--;
-    console.log(currentIndex);
-    switch(currentIndex) {
-      case 9:
-        fadeOut(getParagraphElement(10));
-        break;
-      case 8:
-                fadeOut(getParagraphElement(9));
-        break;
-      case 7:
-                fadeOut(getParagraphElement(8));
-        break;
-      case 6:
-                fadeOut(getParagraphElement(7));
-        break;
-      case 5:
-                fadeOut(getParagraphElement(6));
-        break;
-      case 4:
-                fadeOut(getParagraphElement(5));
-        break;
-      case 3:
-                fadeOut(getParagraphElement(4));
-        break;
-      case 2:
-                fadeOut(getParagraphElement(3));
-        break;
-      case 1:
-                fadeOut(getParagraphElement(2));
-        break;
-      case 0:
-                fadeOut(getParagraphElement(1));
-        break;
-      case -1:
-        currentIndex = 0;
-
-    }
-  }
-    const sentenceList = [
-      'A "partial sum" is the summation of the first "n" terms of our sequence.<br>',
-      'If our sequence is 10,20,30,40,50,60,70,80,90,100, then:<br>',
-      'A partial sum of the first 3 terms is: 10 + 20 + 30 = 60<br>',
-      'A partial sum of the first 5 terms is: 10 + 20 + 30 + 40 + 50 = 150<br>',
-      'In general, we denote a partial sum as S_n, where "n" is the number of terms in the sequence that we are adding.<br><br>$$S_n = \\sum_{i=1}^{n} a_i$$ where a_i denotes our sequence<br>',
-      'But a question arises: How do we sum up an "infinite" number of terms?<br>',
-      'We take the limit of our partial sum as n approaches infinity.<br><br>$$\\lim_{n \\to \\infty} S_n = \\lim_{n \\to \\infty} \\sum_{i=1}^{n} a_i$$<br>',
-      'This special partial sum is called an infinite series (hereafter series)<br>',
-      'Mathematicians are very concerned as to whether a series "converges" or "diverges"<br>',
-      'Informally, a series diverges when the series will never stop growing, while converges corresponds to a series that eventually stops growing<br>',
-      'The next lesson will formally define convergence and divergence<br>',
-    ];
-
-    populateAllParagraphs();
-    hideAllParagraphs();
-    let currentIndex = -1;
-
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      showNext();
-    }
-    if (event.key === "Backspace") {
-      goBack();
-    }
-  });
-
-
-  </script>
-</body>
+      });
+    </script>
+  </body>
 </html>
