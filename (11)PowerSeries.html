@@ -149,6 +149,9 @@
     </div>
 
     <div id="expandedSection"></div>
+    <div id="evaluationSection" style="padding-left: 1em;">
+      <p>dummy text</p>
+    </div>
   </div>
 </div>
 <!-- <p>But what does it even mean for the series to be <em>centered</em> <a target="_blank" href="https://www.desmos.com/calculator/gy6tkj8sjw">somewhere?</a></p>
@@ -157,6 +160,18 @@
 <a href="https://www.desmos.com/calculator/vdjbwpn07h" target="_blank">Power Series: Visualizing Interval of Convergence</a> -->
 </div>
   <script>
+    
+
+    // function computeCenterExpression(xVal, center, n) {
+    //   return (xVal - center) ** n;
+    // }
+
+    // function computeSequenceExpression(n) {
+    //   // turn user inputted sequence into a function
+    //   let seqAsFunc = new Function("n", `return ${sequence};`);
+    //   return seqAsFunc(n);
+
+    // }
     let sequence; // a_n = ...
     let center; // a
     let centerExpression; // (x-a)
@@ -165,14 +180,25 @@
     let generalSeries = document.getElementById("generalSeries");
     let expandedSection = document.getElementById("expandedSection");
     let nSliderLabel = document.getElementById("n-slider-label");
+    let evaluationSection = document.getElementById("evaluationSection");
     let strippedLatexList;
 
 
     document.getElementById("evaluate-polynomial-btn").addEventListener("click", function() {
       // get strippedLatexList and join it together
       let temp = `\\( ${strippedLatexList.join(' + ')} \\)`;
-      // replace all instances of variable "x" in the latex 
+      let xVal = 1;  // dynamicize me
+      // replace all instances of variable "x" in the latex and display
+      temp = temp.replace(/\bx\b/g, `(${xVal})`);
+      console.log(temp);
+      expandedSection.innerHTML = temp;
+      // evaluate at current n-label n
+      let currentN = parseInt(nSliderLabel.innerText.replace(/[^\d\-]/g, ''), 10);
+      
+      evaluationSection.innerText = evaluatePolynomial(1,currentN);
+      MathJax.typeset();
     })
+
 
   document.getElementById("n-slider").addEventListener("input", function () { 
   // clean n
@@ -198,7 +224,29 @@
 
     }
     )
+    function computeCenterExpression(xVal, center, n) {
+      console.log(`Center (${n}): `, (xVal - center) ** n);
+      return (xVal - center) ** n;
+    }
 
+    function computeSequenceExpression(n) {
+      let seqAsFunc = new Function("n", `return ${sequence};`);
+      console.log(`Sequence (${n}): `, seqAsFunc(n));
+      return seqAsFunc(n);
+    }
+
+    function evaluatePolynomial(xVal, n) {
+      let rollingSum = 0;
+      let summandList = [];
+      for (let i=1; i<=n; ++i) {
+        summandList[i-1] = computeSequenceExpression(i) * computeCenterExpression(xVal, center,i)
+        
+        rollingSum += summandList[i-1];
+      }
+      console.log(summandList);
+      return rollingSum;
+      
+    }
     function buildCenterExpressionWithoutNPower(center){
       centerExpression = center === 0
       ? "x"
@@ -211,10 +259,11 @@
     function stripLatexList() {
       return latexList.map(s => s.replace(/^\\\(|\\\)$/g, ''));
     }
-    function variabilizeSequence(sequence,n) {
+    function replaceNInSequenceWithVariable(n, sequence) {
       return sequence.replace(/n/g,n);
     }
-    
+
+
     function buildInitialLatex(sequence, center) {
       // don't variaibilze n since we're displaying sequence as is
       centerExpression = buildCenterExpressionWithoutNPower(center);
@@ -224,7 +273,7 @@
 
 
     function buildLatexForGivenN(n,sequence, center) {
-      clean_sequence = variabilizeSequence(sequence,n);
+      clean_sequence = replaceNInSequenceWithVariable(n,sequence);
      
       const latex = `\\(${clean_sequence} \\cdot ${centerExpression}^${n} \\)`;
       return latex;
