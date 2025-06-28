@@ -119,8 +119,8 @@
     <h3 style="padding-bottom: 0.5em;">Your Turn</h3>
     <p>Create a power series of the form \( \sum_{n=1}^{\infty} a_n (x - a)^n \)</p>
     <div id="question">
-      <label id= "label-an" for="an">\(a_n=\)</label>
-      <input id="an" type="text">
+      <label id= "label-an" for="sequence">\(a_n=\)</label>
+      <input id="sequence" type="text">
     </div>
     <div id="question">
     <span>\( (x - \)</span>
@@ -131,11 +131,24 @@
     </div>
     </div>
   </div>
-  <div id="userPlaySection">
-    <div id="userGeneratedLatexSection"></div>
-    <div id="generatedLatexExpressionsSection"></div>
+  <div id="latexSection" style="display:flex;">
+    <div id="xInputSection" style="display:flex; flex-direction: column;">
+        <label id= "x-label" for="x">Enter an x</label>
+        <input id="x" type="text">
+        <button id="evaluate-polynomial-btn" style="position: relative;">Evaluate Polynomial</button>
+    </div>
+    <div id="generalSeriesSection">
+      <div id="generalSeries">
 
-    
+      </div>
+      <div id="termSlider">
+          <input  width=50px; type="range" id="n-slider" min="0" max="10" value="0"><br>
+          <label id="n-slider-label" for="n-slider">n = 0</label>
+
+      </div>
+    </div>
+
+    <div id="expandedSection"></div>
   </div>
 </div>
 <!-- <p>But what does it even mean for the series to be <em>centered</em> <a target="_blank" href="https://www.desmos.com/calculator/gy6tkj8sjw">somewhere?</a></p>
@@ -144,45 +157,94 @@
 <a href="https://www.desmos.com/calculator/vdjbwpn07h" target="_blank">Power Series: Visualizing Interval of Convergence</a> -->
 </div>
   <script>
-    let user_power_series;
-    let user_an; // a_n = ...
-    let user_center; // (x-a)^n
-    let userGeneratedLatexSection = document.getElementById("userGeneratedLatexSection");
-    let userPlaySection = document.getElementById("userPlaySection");
-    let generatedLatexExpressionsSection = document.getElementById("generatedLatexExpressionsSection");
+    let sequence; // a_n = ...
+    let center; // a
+    let centerExpression; // (x-a)
+    let latexList = []; // [a1 * (x-a)^1, a2 * (x-a)^2, a3 * (x-a)^3]
+    let latexExpression;
+    let generalSeries = document.getElementById("generalSeries");
+    let expandedSection = document.getElementById("expandedSection");
+    let nSliderLabel = document.getElementById("n-slider-label");
+    let strippedLatexList;
+
+
+    document.getElementById("evaluate-polynomial-btn").addEventListener("click", function() {
+      // get strippedLatexList and join it together
+      let temp = `\\( ${strippedLatexList.join(' + ')} \\)`;
+      // replace all instances of variable "x" in the latex 
+    })
+
+  document.getElementById("n-slider").addEventListener("input", function () { 
+  // clean n
+  let n = parseInt(this.value);
+  // update visual on the slider
+  nSliderLabel.innerText = `n = ${n}`;
+  // update latex list and strip it
+  buildLatexListUpToN(n, sequence, center);
+  console.log(`[${n}] = ${latexList}`);
+  strippedLatexList = stripLatexList();
+  // convert stripped latex list into a latex expression
+  expandedSection.innerHTML =`\\( ${strippedLatexList.join(' + ')} \\)`;
+  MathJax.typeset();  
+  });
     document.getElementById("submitPowerSeriesBtn").addEventListener("click", function() {
       // TO DO: sanitize values
       // collect values
-      user_an = document.getElementById("an").value;
-      user_center = parseInt(document.getElementById("center").value);
-      console.log("a_n: ", user_an);
-      console.log("a: ", user_center);
+      sequence = document.getElementById("sequence").value;
+      center = parseInt(document.getElementById("center").value);
       // return values as latex
-      userGeneratedLatexSection.innerHTML = buildLatexForUserInput(user_an, user_center);
+      generalSeries.innerHTML = buildInitialLatex(sequence, center);
 
-      generatedLatexExpressionsSection.innerHTML = buildLatexForGivenN(5, user_an, user_center);
-      MathJax.typeset();  
+
     }
     )
-    function buildLatexForUserInput(user_an, user_center) {
-      const a = user_center === 0
+
+    function buildCenterExpressionWithoutNPower(center){
+      centerExpression = center === 0
       ? "x"
-      : user_center > 0
-        ? `(x - ${user_center})`
-        : `(x + ${Math.abs(user_center)})`;
-      const latex = `\\[ \\sum_{n=1}^{\\infty} ${user_an} \\cdot ${a}^n \\]`;
+      : center > 0
+        ? `(x - ${center})`
+        : `(x + ${Math.abs(center)})`;
+      return centerExpression;
+    }
+
+    function stripLatexList() {
+      return latexList.map(s => s.replace(/^\\\(|\\\)$/g, ''));
+    }
+    function variabilizeSequence(sequence,n) {
+      return sequence.replace(/n/g,n);
+    }
+    
+    function buildInitialLatex(sequence, center) {
+      // don't variaibilze n since we're displaying sequence as is
+      centerExpression = buildCenterExpressionWithoutNPower(center);
+      const latex = `\\( \\sum_{n=1}^{\\infty} ${sequence} \\cdot ${centerExpression}^n = \\)`;
       return `<div>${latex}</div>`;
     }
 
-    function buildLatexForGivenN(n,user_an, user_center) {
-      let user_an_cleaned = user_an.replace(/n/g, n);
-      let user_center_cleaned = `(x-${user_center})^${n}`;
+
+    function buildLatexForGivenN(n,sequence, center) {
+      clean_sequence = variabilizeSequence(sequence,n);
      
-
-      const latex = `\\[${user_an_cleaned} \\cdot ${user_center_cleaned} \\]`;
-
+      const latex = `\\(${clean_sequence} \\cdot ${centerExpression}^${n} \\)`;
       return latex;
     }
+
+    function buildLatexListUpToN(n,sequence, center) {
+      // reset latexList
+      latexList = [];
+      for (let i=1; i<=n; ++i) {
+        latexList[i-1] = buildLatexForGivenN(i,sequence,center)
+      }
+    }
+      
+    //   let latexList;
+    //   for (let i=0; i<n; ++i) {
+        
+    //   }
+    // }
+
+
     
   </script>
 </body>
