@@ -15,38 +15,18 @@
         font-family: 'TangoSans_Bold', sans-serif;
         text-align: center;
         padding: 2em;
+        display: flex;
+        flex-direction: column;
         row-gap: 2em;
-
       }
 
       p {
         margin-top: 1em;
+        text-align: start;
       }
 
-      @keyframes fadeIn {
-        to {
-          opacity: 1;
-        }
-      }
-
-      @keyframes fadeOut {
-        to {
-          opacity: 0;
-        }
-      }
-
-      .purple {
-        color: purple;
-      }
-
-      .yellow {
-        color: yellow;
-      }
-
-      .question {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
+      .arrow {
+        opacity: 0;
       }
 
       input[type="text"] {
@@ -60,43 +40,19 @@
         /* rounded corners */
         padding: 10px 12px;
         font-size: 16px;
-        width: 20%;
+        width:8px;
         height: 3px;
         box-shadow: 0 0 8px #00ccff33;
         /* subtle cyan glow */
         outline: none;
         transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        right: 50px;
       }
 
-      input[type="text"]:focus {
-        border-color: #33ffff;
-        box-shadow: 0 0 12px #33ffff;
+      .submit {
+        position: relative;
+        right: 50px;
       }
-
-    button {
-      margin-top: 1em;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      background-color: #00ccff;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
-      animation: fadeIn 1s forwards;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00ccff;
-      /* animation: fadeIn 1s forwards; */
-    }
-
-    button:active {
-      transform: scale(0.95);
-      /* animation: fadeIn 1s forwards; */
-    }
 
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -109,15 +65,241 @@
       In order to evaluate e^1.2, we can build an approximating function at a nearby point, x=0. We choose this 
       point because it is easy to work with for this specific function; e^0 = 1.
     </div>
+    <div id="work" style="display: flex; column-gap: 1em;">
       <div id="divDeg1" style="max-width: 400px;">
-      To build an approximating function, f, of degree 1 (f(x) = c_0 + c_1x), we need:
-      <ul>
-        f(0) = 0
-        f'(0) = d/dx(e^x)|x=0
-      </ul>
+        To build an approximating function, f, of degree 1 (f(x) = c_0 + c_1x), we need:
+        <div id="workDeg1" style="display: flex; flex-direction: column;">
+          <p>f(0) = e^0  >>> c_0 =1 </p>
+          <p>f'(0) = d/dx(e^x)|x=0  >>> c1=1 >>> f(x) = x + 1</p>
+          <p><label>f(x) = </label> <input id="deg1-c0" type="text"> <label> + <input id="deg1-c1" type="text"> x</label></p>
+          <div>
+            <button id="approx-submit1" class="submit" style="align-self: center">Submit Approximation</button>
+          </div>        
+        </div>
+      </div>
+      <div id="divDeg2" style="max-width: 400px;">
+        Build an approximating function of degree 2 (f(x) = c0 + c1x + c2x^2)
+        <div id="workDeg2">
+          <p >f(0) = e^0  >>>  <label>c0 = </label><input id="deg2-c0" type="text"></span></p>
+          <p>f'(0) = d/dx(e^x)|x=0  >>> <label>c1 = </label><input  id="deg2-c1"type="text"></p>
+          <p>f''(0) = d2dx2(e^x)|x=0 >>> <label>c2 = </label><input id="deg2-c2" type="text"></p>
+          <div>
+            <button class="submit" id="submit2" style="align-self: center">Submit Constants</button>
+          </div>     
+          <p><label>f(x) = </label> <input  id="approx-deg2-c0" type="text"> <label> + <input id="approx-deg2-c1"  type="text"> x</label><label> + <input id="approx-deg2-c2"  type="text"> x^2</label></p>
+          <div>
+            <button id="approx-submit2" class="submit" style="align-self: center">Submit Approximation</button>
+          </div>        
+        </div>
+      </div>
+      <div id="divDeg3" style="max-width: 400px;">
+        Build an approximating function of degree 3 (f(x) = c0 + c1x + c2x^2 + c3x^2)
+        <div id="workDeg3">
+          <p >f(0) = e^0  >>>  <label>c0 = </label><input id="deg3-c0" type="text"></span></p>
+          <p>f'(0) = d/dx(e^x)|x=0  >>> <label>c1 = </label><input id="deg3-c1"  type="text"></p>
+          <p>f''(0) = d2dx2(e^x)|x=0 >>> <label>c2 = </label><input id="deg3-c2" type="text"></p>
+          <p>f'''(0) = d3dx3(e^x)|x=0 >>> <label>c3 = </label><input id="deg3-c3" type="text"></p>
+          <div>
+            <button  class="submit" id="submit3"  style="align-self: center">Submit Constants</button>
+          </div>        
+          <p><label>f(x) = </label> <input id="approx-deg3-c0" type="text"> <label> + <input id="approx-deg3-c1" type="text"> x</label><label> + <input id="approx-deg3-c2"  type="text"> x^2</label><label> + <input id="approx-deg3-c3" type="text"> x^3</label></p> 
+          <div>
+            <button id="approx-submit3" class="submit" style="align-self: center">Submit Approximation</button>
+          </div>        
+        </div>
+      </div>
     </div>
   </body>
   <script>
+    document.getElementById("approx-submit1").addEventListener("click", function() {
+      let inputs = [];
+      let userAnswerCorrectness = [-1,-1];
+      let deg1_c0 = document.getElementById("deg1-c0");
+      let deg1_c1 = document.getElementById("deg1-c1");
+      let deg1_inputs = [deg1_c0, deg1_c1];
+      inputs = [parseFloat(deg1_c0.value), parseFloat(deg1_c1.value)];
+      console.log("Inputs, ", inputs);
+      updateUserAnswerCorrectness(userAnswerCorrectness, inputs);
+      // update button colors
+      for (let i=0; i<2; ++i) {
+        console.log("here!");
+        if (userAnswerCorrectness[i] === -1) {
+          // change text color to red
+          deg1_inputs[i].style.color = "red";
+        }
+        else {
+          deg1_inputs[i].style.color = "green";
+        }
+      }
+      // if all text is green, change button to green text + plot graph
+      if (isAllCorrect(userAnswerCorrectness)) {
+        this.style.color = 'green';
+        showTrace(traces, trace_deg1);
+      }
+
+      
+    });
+    document.getElementById("submit2").addEventListener("click", function() {
+      let inputs = [];
+      let userAnswerCorrectness = [-1,-1, -1];
+      let deg2_c0 = document.getElementById("deg2-c0");
+      let deg2_c1 = document.getElementById("deg2-c1");
+      let deg2_c2 = document.getElementById("deg2-c2");      
+      let deg2_inputs = [deg2_c0, deg2_c1, deg2_c2];
+      inputs = [parseFloat(deg2_c0.value), parseFloat(deg2_c1.value), parseFloat(deg2_c2.value)];
+      updateUserAnswerCorrectness(userAnswerCorrectness, inputs);
+      // update button colors
+      for (let i=0; i<3; ++i) {
+        if (userAnswerCorrectness[i] === -1) {
+          // change text color to red
+          deg2_inputs[i].style.color = "red";
+        }
+        else {
+          deg2_inputs[i].style.color = "green";
+        }
+      }
+      // if all text is green, change button to green text + plot graph
+      if (isAllCorrect(userAnswerCorrectness)) {
+        console.log("green!");
+      }
+    });
+    document.getElementById("submit3").addEventListener("click", function() {
+      let inputs = [];
+      let userAnswerCorrectness = [-1,-1, -1, -1];
+      let deg3_c0 = document.getElementById("deg3-c0");
+      let deg3_c1 = document.getElementById("deg3-c1");
+      let deg3_c2 = document.getElementById("deg3-c2");     
+      let deg3_c3 = document.getElementById("deg3-c3");
+      let deg3_inputs = [deg3_c0, deg3_c1, deg3_c2, deg3_c3];
+      inputs = [parseFloat(deg3_c0.value), parseFloat(deg3_c1.value), parseFloat(deg3_c2.value), parseFloat(deg3_c3.value)];
+      updateUserAnswerCorrectness(userAnswerCorrectness, inputs);
+      // update button colors
+      for (let i=0; i<4; ++i) {
+        if (userAnswerCorrectness[i] === -1) {
+          // change text color to red
+          deg3_inputs[i].style.color = "red";
+        }
+        else {
+          deg3_inputs[i].style.color = "green";
+        }
+      }
+      // if all text is green, change button to green text + plot graph
+      if (isAllCorrect(userAnswerCorrectness)) {
+        console.log("green!");
+      }
+    });
+    document.getElementById("approx-submit2").addEventListener("click", function() {
+      let inputs = [];
+      let userAnswerCorrectness = [-1,-1, -1];
+      let approx_deg2_c0 = document.getElementById("approx-deg2-c0");
+      let approx_deg2_c1 = document.getElementById("approx-deg2-c1");
+      let approx_deg2_c2 = document.getElementById("approx-deg2-c2");      
+      let approx_deg2_inputs = [approx_deg2_c0, approx_deg2_c1, approx_deg2_c2];
+      approx_deg2_inputs_values  = [parseFloat(approx_deg2_c0.value), parseFloat(approx_deg2_c1.value), parseFloat(approx_deg2_c2.value)];
+      updateUserAnswerCorrectness(userAnswerCorrectness, approx_deg2_inputs_values);
+      // update button colors
+      for (let i=0; i<3; ++i) {
+        if (userAnswerCorrectness[i] === -1) {
+          // change text color to red
+          approx_deg2_inputs[i].style.color = "red";
+        }
+        else {
+          approx_deg2_inputs[i].style.color = "green";
+        }
+      }
+      // if all text is green, change button to green text + plot graph
+      if (isAllCorrect(userAnswerCorrectness)) {
+        showTrace(traces, trace_deg2);
+        console.log("green!");
+      }
+    });
+
+    document.getElementById("approx-submit3").addEventListener("click", function() {
+      let inputs = [];
+      let userAnswerCorrectness = [-1,-1, -1,-1];
+      let approx_deg3_c0 = document.getElementById("approx-deg3-c0");
+      let approx_deg3_c1 = document.getElementById("approx-deg3-c1");
+      let approx_deg3_c2 = document.getElementById("approx-deg3-c2");      
+      let approx_deg3_c3 = document.getElementById("approx-deg3-c3");    
+      let approx_deg3_inputs = [approx_deg3_c0, approx_deg3_c1, approx_deg3_c2, approx_deg3_c3];
+      approx_deg3_inputs_values  = [parseFloat(approx_deg3_c0.value), parseFloat(approx_deg3_c1.value), parseFloat(approx_deg3_c2.value), parseFloat(approx_deg3_c3.value)];
+      console.log("Vlas,", approx_deg3_inputs_values);
+      updateUserAnswerCorrectness(userAnswerCorrectness, approx_deg3_inputs_values);
+      // update button colors
+      for (let i=0; i<4; ++i) {
+        if (userAnswerCorrectness[i] === -1) {
+          // change text color to red
+          approx_deg3_inputs[i].style.color = "red";
+        }
+        else {
+          approx_deg3_inputs[i].style.color = "green";
+        }
+      }
+      // if all text is green, change button to green text + plot graph
+      if (isAllCorrect(userAnswerCorrectness)) {
+        showTrace(traces, trace_deg3);
+        console.log("green!");
+      }
+    });   
+    
+    function updateUserAnswerCorrectness(userAnswerCorrectness, inputs) {
+      let inputsSize = inputs.length;
+      for (let i=0; i<inputsSize; ++i) {
+        userAnswerCorrectness[i] = checkInput(i, inputs[i]);
+      }
+    }
+
+    function isAllCorrect(userAnswerCorrectness) {
+      let size = userAnswerCorrectness.length;
+      for (let i=0; i<size; ++i) {
+        if (userAnswerCorrectness[i] === -1) {
+          return false
+        }
+      }
+      return true
+    }
+    function checkInput(cIndex, value) {
+      console.log("C_index", cIndex);
+      console.log("Value", value);
+      // c0 = 1 , c1 = 1, c2 = 1/2, c3 = 1/6
+      switch (cIndex) {
+        case 0:
+          if (value === 1) {
+            return 1
+          }
+          else {
+            return -1
+          }
+          break;
+        case 1:
+          if (value === 1) {
+            return 1
+          }
+          else {
+            return -1
+          }
+          break;
+        case 2:
+          if (value === 0.5) {
+            return 1
+          }
+          else {
+            return -1
+          }
+          break;
+        case 3:
+          if (value === (0.17)) {
+            return 1
+          }
+          else {
+            return -1
+          }
+          break;
+      }
+    }
+    function changeColorOfInput(inputID, color) {
+      document.getElementById(inputID).style.color = color;
+    }    
     function e(x) {
       return Math.exp(x)
     }
@@ -136,8 +318,9 @@
       return x**3 / 6 + x**2 / 2 + x + 1
     }
 
-    function showTrace(trace) {
-      trace.visible = true;
+    function showTrace(traces, newTrace, layout = {title: {text: 'e^x'}}) {
+      traces.push(newTrace);
+      Plotly.newPlot('divGraph', traces, layout);
     }
 
     function hideTrace(trace) {
@@ -172,6 +355,7 @@
     }
 
 
+
     point_e_unknown = getPointForFunction(e,'?', 'blue', 3, 12);
     point_deg1 = getPointForFunction(deg1,'D_1', 'black', 3, 3);
     point_deg2 = getPointForFunction(deg2,'D_2', 'yellow', 3, 3);
@@ -188,26 +372,29 @@
     trace_deg1 = {
         x: xValues,
         y: getRange(deg1),
-        mode:'lines'
+        mode:'lines',
+        name: "Degree 1"
     };
     trace_deg2 = {
         x: xValues,
         y: getRange(deg2),
-        mode:'lines'
+        mode:'lines',
+        name: "Degree 2"
     };
     trace_deg3 = {
         x: xValues,
         y: getRange(deg3),
-        mode:'lines'
+        mode:'lines',
+        name: "Degree 3"
     };
 
-
-    
     layout = {
         title: {text: 'e^x'}
     };
-    traces.push(trace_e_x, trace_deg1, trace_deg2, trace_deg3, point_e_unknown);
+    traces.push(trace_e_x,  point_e_unknown);
+
    
     Plotly.newPlot('divGraph', traces, layout);
+
   </script>
 </html>
