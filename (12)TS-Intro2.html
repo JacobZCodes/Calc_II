@@ -15,6 +15,8 @@
         font-family: 'TangoSans_Bold', sans-serif;
         text-align: center;
         padding: 2em;
+        row-gap: 2em;
+
       }
 
       p {
@@ -102,22 +104,110 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
-    <div id="graph-e_x"></div>
+    <div id="divGraph" style="height: 300px;"></div>
+    <div id="divExplainApproximation" style="max-width: 400px;">
+      In order to evaluate e^1.2, we can build an approximating function at a nearby point, x=0. We choose this 
+      point because it is easy to work with for this specific function; e^0 = 1.
+    </div>
+      <div id="divDeg1" style="max-width: 400px;">
+      To build an approximating function, f, of degree 1 (f(x) = c_0 + c_1x), we need:
+      <ul>
+        f(0) = 0
+        f'(0) = d/dx(e^x)|x=0
+      </ul>
+    </div>
   </body>
   <script>
-    const xValues = [];
-    for (let i=-5.1; i<=5; i+=0.1) {
+    function e(x) {
+      return Math.exp(x)
+    }
+    function getRange(f) {
+      return xValues.map(each => f(each));
+    }
+    
+    function deg1(x) {
+      return x + 1
+    }
+    function deg2(x) {
+      return x**2 / 2 + x + 1
+    }
+
+    function deg3(x) {
+      return x**3 / 6 + x**2 / 2 + x + 1
+    }
+
+    function showTrace(trace) {
+      trace.visible = true;
+    }
+
+    function hideTrace(trace) {
+      trace.visible = false;
+    }
+    // trace_deg1 = 
+    // trace_deg2 
+    // trace_deg3
+    function getPointForFunction(f, label, color, pointSize, labelSize) {
+      return { 
+      x: [1.2],
+      y: [f(1.2)],
+      mode: 'markers+text',
+      type: 'scatter',
+      text: [label],
+      textposition: 'top center',
+      marker: {
+        size: pointSize,
+        color: color
+      },
+      textfont: {
+        size: labelSize,
+        color: color
+      },
+      showlegend:false
+    }
+    }     
+    let xValues = [];
+    let traces = [];
+    for (let i=-2; i<=2; i+=0.1) {
         xValues.push(i);
     }
+
+
+    point_e_unknown = getPointForFunction(e,'?', 'blue', 3, 12);
+    point_deg1 = getPointForFunction(deg1,'D_1', 'black', 3, 3);
+    point_deg2 = getPointForFunction(deg2,'D_2', 'yellow', 3, 3);
+    point_deg3 = getPointForFunction(deg3,'D_3', 'green', 3, 3);
+
+
+
     trace_e_x = {
         x: xValues,
         y: xValues.map(each => Math.exp(each)),// how to make this e^0, e^5, etc..],
+        mode:'lines',
+        name: 'e^x'
+    };
+    trace_deg1 = {
+        x: xValues,
+        y: getRange(deg1),
         mode:'lines'
     };
+    trace_deg2 = {
+        x: xValues,
+        y: getRange(deg2),
+        mode:'lines'
+    };
+    trace_deg3 = {
+        x: xValues,
+        y: getRange(deg3),
+        mode:'lines'
+    };
+
+
+    
     layout = {
         title: {text: 'e^x'}
     };
+    traces.push(trace_e_x, trace_deg1, trace_deg2, trace_deg3, point_e_unknown);
    
-    Plotly.newPlot('graph-e_x', [trace_e_x], layout);
+    Plotly.newPlot('divGraph', traces, layout);
   </script>
 </html>
