@@ -40,7 +40,7 @@
         /* rounded corners */
         padding: 10px 12px;
         font-size: 16px;
-        width:8px;
+        width:30px;
         height: 3px;
         box-shadow: 0 0 8px #00ccff33;
         /* subtle cyan glow */
@@ -54,63 +54,180 @@
         right: 50px;
       }
 
+             button {
+      margin-top: 1em;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1s forwards;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+      /* animation: fadeIn 1s forwards; */
+    }
+
+    button:active {
+      transform: scale(0.95);
+      /* animation: fadeIn 1s forwards; */
+    }
+
+    .purple {
+      color: purple;
+    }
+
+    .yellow {
+      color: yellow;
+    }
+
+    .orange-red {
+      color: orangered
+    }
+        .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+        }
+      }
+
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
     <div id="divGraph" style="height: 300px;"></div>
-    <div id="divExplainApproximation" style="max-width: 400px;">
-      In order to evaluate e^1.2, we can build an approximating function at a nearby point, x=0. We choose this 
-      point because it is easy to work with for this specific function; e^0 = 1.
+    <div id="explanations" style="display: flex;">
+      <div id="divExplainApproximation" style="max-width: 400px; opacity: 0;">
+        In order to evaluate \(e^{1.2}\), we can build an approximating function at a nearby point, \(x=0\). We choose this 
+        point because it is easy to work with for this specific function; \(e^0 = 1\).
+      </div>
+      <div id="divExplainApproximation2" style="max-width: 400px; opacity: 0;">
+        We define an <span class="purple">approximating function</span> as a function that helps us discover an <span class="yellow">unknown y-value \((e^{1.2})\)</span> 
+        that lives on our <span class="orange-red">original function \((e^x)\)</span>. This approximating function is created using a nearby <span class="orange-red">known x-value (\(x=0\))</span> that maps to an "easily" computable y-value <span class="orange-red">(\(e^0\))</span>.
+      </div>
+      <div id="divExplainApproximation3" style="max-width: 400px; opacity: 0;">
+        The idea behind approximating functions is that, as we increase their degree, we see an increase in <span class="purple">accuracy</span>. 
+        We define <span class="purple">accuracy</span> as how close the y-value of our <span class="purple">approximating function, \(f\)</span>, gets to our original function, \(e^x\),
+        at the y-value we are concerned with finding. The goal of this exercise is to show that as we increase the degree of 
+        our approximating function, \(f\), that <span class="orange-red">\(|e^{1.2} - f(1.2) |\)</span> gets smaller.
+      </div>
+      <div id="divExplainApproximation4" style="max-width: 400px; opacity: 0;">
+        <div>
+        Select the magnifying glass labeled "Zoom" on the graph above and zoom in on the "?" point. Keep zooming in so that you can see the higher degree approximating functions
+        get closer to the "?" point.
+        </div>
+        <button id="next-lesson">
+          Next Lesson
+        </button>
+      </div>
     </div>
     <div id="work" style="display: flex; column-gap: 1em;">
-      <div id="divDeg1" style="max-width: 400px;">
-        To build an approximating function, f, of degree 1 (f(x) = c_0 + c_1x), we need:
+      <div id="divDeg1" style="max-width: 400px; opacity: 0;">
+        To build an approximating function, \(f\), of degree 1 (\(f(x) = c_0 + c_1x\)), we need:
         <div id="workDeg1" style="display: flex; flex-direction: column;">
-          <p>f(0) = e^0  >>> c_0 =1 </p>
-          <p>f'(0) = d/dx(e^x)|x=0  >>> c1=1 >>> f(x) = x + 1</p>
-          <p><label>f(x) = </label> <input id="deg1-c0" type="text"> <label> + <input id="deg1-c1" type="text"> x</label></p>
+          <p>\(f(0) = e^0  \implies c_0 = 1 \) </p>
+          <p>\(f'(0) = \frac{d}{dx} e^x |_{x=0}  \implies c_1=1\)</p>
+          <p>\(f(x) = x + 1\)</p>
+          <p><label>\(f(x) = \)  </label> <input id="deg1-c0" type="text"> <label> \(+\) <input id="deg1-c1" type="text"> \(x\)</label></p>
           <div>
             <button id="approx-submit1" class="submit" style="align-self: center">Submit Approximation</button>
           </div>        
         </div>
       </div>
       <div id="divDeg2" style="max-width: 400px;">
-        Build an approximating function of degree 2 (f(x) = c0 + c1x + c2x^2)
         <div id="workDeg2">
-          <p >f(0) = e^0  >>>  <label>c0 = </label><input id="deg2-c0" type="text"></span></p>
-          <p>f'(0) = d/dx(e^x)|x=0  >>> <label>c1 = </label><input  id="deg2-c1"type="text"></p>
-          <p>f''(0) = d2dx2(e^x)|x=0 >>> <label>c2 = </label><input id="deg2-c2" type="text"></p>
-          <div>
-            <button class="submit" id="submit2" style="align-self: center">Submit Constants</button>
-          </div>     
-          <p><label>f(x) = </label> <input  id="approx-deg2-c0" type="text"> <label> + <input id="approx-deg2-c1"  type="text"> x</label><label> + <input id="approx-deg2-c2"  type="text"> x^2</label></p>
-          <div>
-            <button id="approx-submit2" class="submit" style="align-self: center">Submit Approximation</button>
-          </div>        
+          <div id="constants2" style="opacity: 0;">
+            Build an approximating function of degree 2: \(f(x) = c_0 + c_1x + c_2x^2\). Round fractions to the hundreths place.
+          
+            <p> \(f(0) = e^0  \implies  \)<label>\(c0 = \)</label><input id="deg2-c0" type="text"></span></p>
+            <p>\(f'(0) = \frac{d}{dx}(e^x)|_x=0  \implies \)<label>\(c_1 = \)</label><input  id="deg2-c1"type="text"></p>
+            <p>\(f''(0) = \frac{d^2}{dx^2}e^x|_x=0 \implies \)<label>\(c2 = \)</label><input id="deg2-c2" type="text"></p>
+            <div>
+              <button class="submit" id="submit2" style="align-self: center">Submit Constants</button>
+            </div>
+          </div>
+          <div id="approximation2" style="opacity: 0;">     
+            <p><label>\(f(x) = \)</label> <input  id="approx-deg2-c0" type="text"> <label> + <input id="approx-deg2-c1"  type="text"> \(x\)</label><label> \(+\) <input id="approx-deg2-c2"  type="text"> \(x^2\)</label></p>
+            <div>
+              <button id="approx-submit2" class="submit" style="align-self: center">Submit Approximation</button>
+            </div>       
+          </div> 
         </div>
       </div>
       <div id="divDeg3" style="max-width: 400px;">
-        Build an approximating function of degree 3 (f(x) = c0 + c1x + c2x^2 + c3x^2)
         <div id="workDeg3">
-          <p >f(0) = e^0  >>>  <label>c0 = </label><input id="deg3-c0" type="text"></span></p>
-          <p>f'(0) = d/dx(e^x)|x=0  >>> <label>c1 = </label><input id="deg3-c1"  type="text"></p>
-          <p>f''(0) = d2dx2(e^x)|x=0 >>> <label>c2 = </label><input id="deg3-c2" type="text"></p>
-          <p>f'''(0) = d3dx3(e^x)|x=0 >>> <label>c3 = </label><input id="deg3-c3" type="text"></p>
-          <div>
-            <button  class="submit" id="submit3"  style="align-self: center">Submit Constants</button>
-          </div>        
-          <p><label>f(x) = </label> <input id="approx-deg3-c0" type="text"> <label> + <input id="approx-deg3-c1" type="text"> x</label><label> + <input id="approx-deg3-c2"  type="text"> x^2</label><label> + <input id="approx-deg3-c3" type="text"> x^3</label></p> 
-          <div>
-            <button id="approx-submit3" class="submit" style="align-self: center">Submit Approximation</button>
-          </div>        
+          <div id="constants3" style="opacity: 0;">
+            Build an approximating function of degree 3 \(f(x) = c0 + c1x + c2x^2 + c3x^2\).  Round fractions to the hundreths place.
+            <p >\(f(0) = e^0  \implies  \)<label>\(c_0 = \)</label><input id="deg3-c0" type="text"></span></p>
+            <p>\(f'(0) = \frac{d}{dx} e^x|_x=0  \implies \)<label>\(c_1 = \)</label><input id="deg3-c1"  type="text"></p>
+            <p>\(f''(0) = \frac{d2}{dx2} e^x |_x=0 \implies \)<label>\(c_2 = \)</label><input id="deg3-c2" type="text"></p>
+            <p>\(f'''(0) = \frac{d3}{dx3} e^x|_x=0 \implies \)<label>\(c_3 = \)</label><input id="deg3-c3" type="text"></p>
+            <div>
+              <button  class="submit" id="submit3"  style="align-self: center">Submit Constants</button>
+            </div>
+          </div>
+          <div id="approximation3" style="opacity: 0;">    
+            <p style="width:420px;"><label>\(f(x) = \)</label> <input id="approx-deg3-c0" type="text"> <label> \(+\) <input id="approx-deg3-c1" type="text"> \(x\)</label><label> \(+\) <input id="approx-deg3-c2"  type="text"> \(x^2\)</label><label> \(+\) <input id="approx-deg3-c3" type="text"> \(x^3\)</label></p> 
+            <div>
+              <button id="approx-submit3" class="submit" style="align-self: center">Submit Approximation</button>
+            </div>        
+          </div>    
         </div>
       </div>
     </div>
   </body>
   <script>
+    alert("Push 'Enter' to continue. There is no back button.")
+    let currentIndex = -1;
+    MathJax.typeset();
+    document.addEventListener("keydown", function (event) {
+          currentIndex++;
+          if (event.key === "Enter") {
+              if (currentIndex === 4) {
+                return;
+              }
+              showNext();
+          }
+        });
+    function showNext() {
+      switch (currentIndex) {
+        case 0:
+          fadeIn(document.getElementById("divExplainApproximation"));
+          break;
+        case 1:
+          fadeIn(document.getElementById("divExplainApproximation2"));
+          break;      
+        case 2:
+          fadeIn(document.getElementById("divExplainApproximation3"));
+          break;
+        case 3:
+          fadeIn(document.getElementById("divDeg1"));
+          break;      }
+    }    
     document.getElementById("approx-submit1").addEventListener("click", function() {
       let inputs = [];
       let userAnswerCorrectness = [-1,-1];
@@ -135,6 +252,10 @@
       if (isAllCorrect(userAnswerCorrectness)) {
         this.style.color = 'green';
         showTrace(traces, trace_deg1);
+        fadeIn(document.getElementById("constants2"));
+      }
+      else {
+        this.style.color = 'red';
       }
 
       
@@ -160,7 +281,11 @@
       }
       // if all text is green, change button to green text + plot graph
       if (isAllCorrect(userAnswerCorrectness)) {
-        console.log("green!");
+        this.style.color = 'green';
+        fadeIn(document.getElementById("approximation2"));
+      }
+      else {
+        this.style.color = 'red';
       }
     });
     document.getElementById("submit3").addEventListener("click", function() {
@@ -185,7 +310,12 @@
       }
       // if all text is green, change button to green text + plot graph
       if (isAllCorrect(userAnswerCorrectness)) {
+        this.style.color = 'green';
         console.log("green!");
+        fadeIn(document.getElementById("approximation3"));
+      }
+      else {
+        this.style.color = 'red';
       }
     });
     document.getElementById("approx-submit2").addEventListener("click", function() {
@@ -210,7 +340,11 @@
       // if all text is green, change button to green text + plot graph
       if (isAllCorrect(userAnswerCorrectness)) {
         showTrace(traces, trace_deg2);
-        console.log("green!");
+        this.style.color = 'green';
+        fadeIn(document.getElementById("constants3"));
+      }
+      else {
+        this.style.color = 'red';
       }
     });
 
@@ -238,10 +372,26 @@
       // if all text is green, change button to green text + plot graph
       if (isAllCorrect(userAnswerCorrectness)) {
         showTrace(traces, trace_deg3);
-        console.log("green!");
+        this.style.color = 'green';
+        fadeIn(document.getElementById("divExplainApproximation4"));
+      }
+      else {
+        this.style.color = 'red';
       }
     });   
     
+    function fadeIn(el) {
+    el.style.opacity = "0";    
+
+el.style.animation = "fadeIn 0.6s forwards";
+}
+
+
+function fadeOut(el) {
+el.style.opacity = "1";    
+el.style.animation = "fadeOut 0.6s forwards";
+}
+
     function updateUserAnswerCorrectness(userAnswerCorrectness, inputs) {
       let inputsSize = inputs.length;
       for (let i=0; i<inputsSize; ++i) {
@@ -318,7 +468,7 @@
       return x**3 / 6 + x**2 / 2 + x + 1
     }
 
-    function showTrace(traces, newTrace, layout = {title: {text: 'e^x'}}) {
+    function showTrace(traces, newTrace, layout = darkLayout) {
       traces.push(newTrace);
       Plotly.newPlot('divGraph', traces, layout);
     }
@@ -388,13 +538,45 @@
         name: "Degree 3"
     };
 
-    layout = {
-        title: {text: 'e^x'}
-    };
+darkLayout = {
+    title: {
+    text: 'Taylor Series',
+    font: {
+      family: 'TangoSans_Bold, sans-serif', // or any custom font
+      size: 32,                            // 🔠 font size in px
+      color: '#00ccff'                     // 🎨 title color
+    },
+    // x: 0.5,       // center title (0 = left, 1 = right)
+    // xanchor: 'center'
+  },
+  // width: 1000,
+  // height: 500,
+  plot_bgcolor: '#111',
+  paper_bgcolor: '#000',
+  font: { color: '#00ccff' },
+  xaxis: {
+    title: { text: 'x', font: { color: '#00ccff' } },
+    showticklabels: false,
+    ticks: '',
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  },
+  yaxis: {
+    title: { text: 'f(x)', font: { color: '#00ccff' } },
+    showticklabels: false,
+    ticks: '',
+    gridcolor: '#333',
+    zerolinecolor: '#555',
+    linecolor: '#00ccff',
+    tickcolor: '#00ccff'
+  }
+};
     traces.push(trace_e_x,  point_e_unknown);
 
    
-    Plotly.newPlot('divGraph', traces, layout);
+    Plotly.newPlot('divGraph', traces, darkLayout);
 
   </script>
 </html>
