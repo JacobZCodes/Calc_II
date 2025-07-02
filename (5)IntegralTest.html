@@ -92,7 +92,7 @@
       }
 
       .height-input {
-        width: 20px;
+        width: 35px;
       }
 
       .width-input {
@@ -248,6 +248,7 @@
               border-radius: 6px;
               font-family: 'TangoSans_Bold', sans-serif;
               ">        
+              <button id="rectangles">Submit</button>
             </div>          
           </div>        
       </div>
@@ -271,9 +272,112 @@
             <p id="explanation-text3" style="margin: 0;"></p>
           </div>
           <h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
+        <div style="position: relative;">
+            <div id="plot3"></div>
+            <div class="heights">
+              <input class="height-input" type="text" id="a2-" placeholder="a2-" style="
+              position: absolute;
+              top: 260px;    /* adjust this */
+              left: 225px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">              
+              <input class="height-input" type="text" id="a3-" placeholder="a3-" style="
+              position: absolute;
+              top: 270px;    /* adjust this */
+              left: 300px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">         
+              <input class="height-input" type="text" id="a4-" placeholder="a4-" style="
+              position: absolute;
+              top: 280px;    /* adjust this */
+              left: 375px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">        
+              <input class="height-input" type="text" id="a5-" placeholder="a5-" style="
+              position: absolute;
+              top: 290px;    /* adjust this */
+              left: 445px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">              
+            </div>
+          <div class="widths">
+              <input class="width-input" type="text" id="width-a2-" placeholder="width-a2-" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 245px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a3-" placeholder="width-a3-" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 320px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a4-" placeholder="width-a4-" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 390px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a5-" placeholder="width-a5-" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 465px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">        
+              <button id="rectangles-">Submit</button>
+            </div>          
+          </div>        
         </div>
-        <div id="plot3"></div>
-        <p id="inequality2" style="display: none;"></p>
+
       </div>
     </div>
     <div id="bottom-text" style="margin-top: 2em;">
@@ -332,10 +436,132 @@
     type: 'scatter'
   }], darkThemeLayout);
 
+  function checkRectangles() {
+    let isCorrect = true;
+    let correcta1value = 1;
+    let correcta2value = 0.5;
+    let correcta3value = 0.33;
+    let correcta4value = 0.25;
+    let correcta5value = 0.2;
+    let a1 = document.getElementById("a1");
+    let a2 = document.getElementById("a2");
+    let a3 = document.getElementById("a3");
+    let a4 = document.getElementById("a4");
+    let a5 = document.getElementById("a5");
+    let widtha1 = document.getElementById("width-a1");
+    let widtha2 = document.getElementById("width-a2");
+    let widtha3 = document.getElementById("width-a3");
+    let widtha4 = document.getElementById("width-a4");
+    let widtha5 = document.getElementById("width-a5");
+    let inputsToCheck = [a1,a2,a3,a4,a5,widtha1,widtha2,widtha3,widtha4, widtha5]
+
+    // loop thru inputs to check and see if they're right
+    for (let i=0; i<inputsToCheck.length; ++i) {
+      // i [1,5] map to an
+      let currentInputValue = parseFloat(inputsToCheck[i].value);
+      switch (i) {
+        case 0:
+          if (currentInputValue != correcta1value) {
+            // update isCorrect status to false
+            isCorrect = false;
+            // change text to red
+            a1.style.color = 'red';
+          }
+          else {
+            // change text to green
+            a1.style.color = 'green';
+          }
+          break;
+        case 1:
+          if (currentInputValue != correcta2value) {
+            // update isCorrect status to false
+            isCorrect = false;
+            // change text to red
+            a2.style.color = 'red';
+          }
+          else {
+            // change text to green
+            a2.style.color = 'green';
+          }
+          break;
+        case 2:
+          if (currentInputValue != correcta3value) {
+            // update isCorrect status to false
+            isCorrect = false;
+            // change text to red
+            a3.style.color = 'red';
+          }
+          else {
+            // change text to green
+            a3.style.color = 'green';
+          }
+          break;
+        case 3:
+          if (currentInputValue != correcta4value) {
+            // update isCorrect status to false
+            isCorrect = false;
+            // change text to red
+            a4.style.color = 'red';
+          }
+          else {
+            // change text to green
+            a4.style.color = 'green';
+          }
+          break;
+        case 4:
+          if (currentInputValue != correcta5value) {
+            // update isCorrect status to false
+            isCorrect = false;
+            // change text to red
+            a5.style.color = 'red';
+          }
+          else {
+            // change text to green
+            a5.style.color = 'green';
+          }
+          break;
+        default: // all the widths need to be 1
+          if (currentInputValue != 1) {
+            isCorrect = false;
+            inputsToCheck[i].style.color = 'red';
+          }
+          else {
+            inputsToCheck[i].style.color = 'green';
+          }
+          break;
+      }
+    }
+
+    if (isCorrect) {
+      return [true, inputsToCheck]
+    }
+    return false
+  }
+
+  function labelAndResizeHeights(inputsToCheck) {
+    // an's live from [0-4]
+    for (let i=0; i<5; ++i) {
+      let currentInput = inputsToCheck[i];
+      currentInput.style.width = "55px";
+      currentInput.value = `a${i+1} = ${currentInput.value}`;
+    }
+  }
+  document.getElementById("rectangles").addEventListener("click", function() {
+    let [isCorrect, inputsToCheck] = checkRectangles();
+    if (isCorrect) {
+      // update text to an = ...
+      labelAndResizeHeights(inputsToCheck);
+      // move on 
+    }
+    else {
+      return;
+    }
+  });
+
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
       clickCount++;
-      console.log(clickCount);
+      // console.log(clickCount);
 
       if (clickCount === 1) {
         document.getElementById("plot1-title").innerHTML = `Now we draw the function 1/x which passes through our n points`;
