@@ -90,51 +90,171 @@
         margin-top: 1em;
         font-size: 18px;
       }
-    </style>
+
+      .height-input {
+        width: 20px;
+      }
+
+      .width-input {
+        width: 20px;
+      }    </style>
   </head>
   <body>
     <h2>Integral Test</h2>
     <div id="plots-container">
       <div class="plot-box">
-<div style="position: relative; text-align: center;">
-  <!-- Explanation box floats far left -->
-  <div id="explanation-box" style="
-    display: none;
-    position: absolute;
-    left: -5px;  /* Push far to the left */
-    z-index: 10;
-    top: 0;
-    border: 1px solid #00ccff;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #111;
-    color: #00ccff;
-    max-width: 250px;
-    text-align: left;
-  ">
-    <p id="explanation-text" style="margin: 0;">
-  
-</p>
-  </div>
-
-  <!-- Title stays centered -->
-  <h3 id="plot1-title" style="margin: 0; max-width: 600px; display: inline-block;">
-    The integral test allows us to use integrals to help us classify series. We start out graphing the first few points of 1/n, n is natural number
-  </h3>
-</div>
-
-
-
-
-<div id="plot1"></div>
-
-        <div id="plot1"></div>
-        <p id="inequality1" style="display: block;"></p>
+        <div style="position: relative; text-align: center;">
+          <!-- Explanation box floats far left -->
+          <div id="explanation-box" style="
+            display: none;
+            position: absolute;
+            left: -5px;  /* Push far to the left */
+            z-index: 10;
+            top: 0;
+            border: 1px solid #00ccff;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #111;
+            color: #00ccff;
+            max-width: 250px;
+            text-align: left;
+          ">
+            <p id="explanation-text" style="margin: 0;"></p>
+          </div>
+        </div>
+        <h3 id="plot1-title" style="margin: 0; max-width: 600px; display: inline-block;"> The integral test allows us to use integrals to help us classify series. We start out graphing the first few points of 1/n, n is natural number </h3>
+        <div style="position: relative;">
+            <div id="plot1"></div>
+            <div class="heights">
+              <input class="height-input" type="text" id="a1" placeholder="a1" style="
+              position: absolute;
+              top: 180px;    /* adjust this */
+              left: 150px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="height-input" type="text" id="a2" placeholder="a2" style="
+              position: absolute;
+              top: 240px;    /* adjust this */
+              left: 230px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="height-input" type="text" id="a3" placeholder="a3" style="
+              position: absolute;
+              top: 260px;    /* adjust this */
+              left: 305px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="height-input" type="text" id="a4" placeholder="a4" style="
+              position: absolute;
+              top: 275px;    /* adjust this */
+              left: 375px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="height-input" type="text" id="a5" placeholder="a5" style="
+              position: absolute;
+              top: 280px;    /* adjust this */
+              left: 450px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">        
+            </div>
+          <div class="widths">
+              <input class="width-input" type="text" id="width-a1" placeholder="width-a1" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 170px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a2" placeholder="width-a2" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 245px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a3" placeholder="width-a3" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 320px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a4" placeholder="width-a4" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 390px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">
+              <input class="width-input" type="text" id="width-a5" placeholder="width-a5" style="
+              position: absolute;
+              top: 320px;    /* adjust this */
+              left: 465px;   /* adjust this */
+              z-index: 20;
+              background-color: #000;
+              color: #00ccff;
+              border: 1px solid #00ccff;
+              padding: 4px 8px;
+              border-radius: 6px;
+              font-family: 'TangoSans_Bold', sans-serif;
+              ">        
+            </div>          
+          </div>        
       </div>
       <div class="plot-box" id="plot3-box" style="display: none;">
         <div style="position: relative; text-align: center;">
-  <!-- Explanation box floats far left -->
-  <div id="explanation-box3" style="
+          <!-- Explanation box floats far left -->
+          <div id="explanation-box3" style="
     display: none;
     position: absolute;
     left: -5px;  /* Push far to the left */
@@ -148,29 +268,23 @@
     max-width: 250px;
     text-align: left;
   ">
-    <p id="explanation-text3" style="margin: 0;">
-  
-</p>
-  </div>
-
-<h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
-</div>
-        
+            <p id="explanation-text3" style="margin: 0;"></p>
+          </div>
+          <h3 id="plot3-title">We willl now reconsider our same graph but with right endpoint rectanlges </h3>
+        </div>
         <div id="plot3"></div>
         <p id="inequality2" style="display: none;"></p>
       </div>
     </div>
-<div id="bottom-text" style="margin-top: 2em;">
-  <p id="step13-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
+    <div id="bottom-text" style="margin-top: 2em;">
+      <p id="step13-text" style="display: none; font-size: 1.1em; color: #00ccff;"></p>
+      <div id="step14-15-wrapper" style="display: flex; justify-content: center; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
+        <p id="step14-text" style="display: none; font-size: 1.1em; color: #00ccff; max-width: 400px; text-align: left;"></p>
+        <div id="step15-text" style="display: none;"></div>
+      </div>
+    </div>
 
-  <div id="step14-15-wrapper" style="display: flex; justify-content: center; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
-    <p id="step14-text" style="display: none; font-size: 1.1em; color: #00ccff; max-width: 400px; text-align: left;"></p>
-    <div id="step15-text" style="display: none;"></div>
-  </div>
-</div>
 
-    <!-- <button id="animate-button">Continue Animation</button> -->
-    <!-- KEEP ALL YOUR <head> AND <body> AS IS UNTIL... -->
 
 <script>
   const darkThemeLayout = {
@@ -315,13 +429,13 @@
         document.getElementById("plot1-title").innerHTML = `We see that the area of the rectangles is: \\( \\sum_{n=1}^{6} \\frac{1}{n} \\)`;
         document.getElementById("explanation-box").style.display = "block";
         document.getElementById("explanation-text").innerHTML = 'Area Rectangles: \\( \\sum_{n=1}^{6} \\frac{1}{n} \\)';
-      MathJax.typeset();
+        MathJax.typeset();
 
       } else if (clickCount === 5) {
-document.getElementById("plot1-title").innerHTML = `Now consider the area under the curve, shaded in purple; it's always less than the area of our rectangles. The area under the curve is \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`;
-MathJax.typeset();
-document.getElementById("explanation-text").innerHTML += `Area Under Curve: \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`
-MathJax.typeset();
+        document.getElementById("plot1-title").innerHTML = `Now consider the area under the curve, shaded in purple; it's always less than the area of our rectangles. The area under the curve is \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`;
+        MathJax.typeset();
+        document.getElementById("explanation-text").innerHTML += `Area Under Curve: \\( \\int_{1}^{6} \\frac{1}{x} \\, dx \\)`
+        MathJax.typeset();
         const xFill = [], yFill = [];
         for (let x = 1; x <= 6; x += 0.05) {
           xFill.push(x);
@@ -396,7 +510,7 @@ MathJax.typeset();
         const verticalTraces = [], labelTraces = [];
         for (let i = 2; i <= 6; i++) {
           const yTop = 1 / i;
-const yMid = yTop / 2;
+          const yMid = yTop / 2;
 
           verticalTraces.push({
             x: [i, i],
