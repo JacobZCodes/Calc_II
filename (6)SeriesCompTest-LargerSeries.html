@@ -57,6 +57,50 @@
   max-width: 300px;
 }
 
+select {
+  background-color: #111;
+  color: #00ccff;
+  border: 1px solid #00ccff;
+  border-radius: 6px;
+  font-family: 'TangoSans_Bold', sans-serif;
+  font-size: 16px;
+  padding: 4px 8px;
+  outline: none;
+  appearance: none; /* Hide default OS styling */
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #33ffff;
+  box-shadow: 0 0 6px #00ccff;
+}
+
+option {
+  background-color: #111;
+  color: #00ccff;
+}
+
+  button {
+    margin-top: 1em;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    background-color: #00ccff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ccff;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
   </style>
 </head>
 <body>
@@ -64,11 +108,90 @@
   <div id="rules" style="display: none;"></div>
   <div class="flex-container">
     <div class="column">
-      <div id="math-container"></div>
+      <div id="math-container" style="position: relative;">
+        <div id="seriesInput" style="display: flex;">
+          <div id="series1" style="font-size: larger;">
+            Create a series <span id ="firstLatexFraction"style="font-size: larger;">\[\frac{1}{n}\]</span>
+            <label id="labelForExponent" for="exponent" style="position: relative"> </label>
+            <select id="exponent" style="
+            position: relative;
+            bottom: 90px;
+            left: 110px;
+            width: 30px;
+            height: 25px;
+            ">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+            <button id="buttonExponent">Submit Series</button>
+          </div>
+          <div id="series2" style="font-size: larger; opacity: 0;">
+            Create another series <span id ="secondLatexFraction"style="font-size: larger;"></span>
+            <label id="labelForConstant" for="constant" style="position: relative"> </label>
+            <select id="constant" style="
+            position: relative;
+            bottom: 85px;
+            left: 125px;
+            width: 30px;
+            height: 40px;
+            ">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>            
+            <button id="buttonConstant">Submit Series</button>
+          </div>
+        </div>
+      </div>
       <div id="plot"></div>
     </div>
     <div class="column">
-      <div id="right-math"></div>
+      <div id="right-math">
+        <div id="seriesInput3" style="display: flex;"></div>
+            <div id="userSeriesDisplaySection" style="font-size:larger; opacity: 0;"></div>
+            <div id="series3" style="font-size: larger; opacity: 0;">
+              Create another series <span id ="thirdLatexFraction"style="font-size: larger;"></span>
+              <label id="labelForThirdConstant" for="thirdConstant" style="position: relative"> </label>
+              <select id="thirdConstant" style="
+              position: relative;
+              bottom: 85px;
+              left: 125px;
+              width: 30px;
+              height: 40px;
+              ">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>      
+              <button id="buttonThirdConstant">Submit Series</button> 
+            </div>    
+             
+        </div>
+            
+          </div>
+      </div>
       <div id="plot2"></div>
       <div id="right-next-text"></div>
       <div id="plot3"></div>
@@ -76,6 +199,8 @@
   </div>
 
   <script>
+    let userExponent;
+    let userConstant;
     let step = 0;
     const mathContainer = document.getElementById('math-container');
     const rightMath = document.getElementById('right-math');
@@ -105,27 +230,78 @@
         }
       };
 
-    const initialLine = document.createElement('div');
-    initialLine.innerHTML = 'Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} \\text{ and } \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} \\]';
-    mathContainer.appendChild(initialLine);
+    
+    document.getElementById("buttonExponent").addEventListener("click", function () {
+      // redraw LATEX without label
+      userExponent = parseInt(document.getElementById("exponent").value);
+      document.getElementById("firstLatexFraction").innerHTML = `\\[\\frac{1}{n^{${userExponent}}}\\]`;
+      // remove button, select, and label from DOM
+      document.getElementById("labelForExponent").remove();
+      document.getElementById("exponent").remove();
+      document.getElementById("buttonExponent").remove();      
+      // show second series prompt
+      document.getElementById("series2").style.opacity = 1;
+      // update its html
+      document.getElementById("secondLatexFraction").innerHTML =  `\\[\\frac{1}{n^{${userExponent}}+4}\\]`;
+      MathJax.typeset();
+      // show new prompt
+      // console.log("Penis!")
+    })
 
+    document.getElementById("buttonConstant").addEventListener("click", function () {
+      // redraw LATEX without label
+      userConstant = parseInt(document.getElementById("constant").value);
+      console.log(userConstant);
+      document.getElementById("secondLatexFraction").innerHTML = `\\[\\frac{1}{n^{${userExponent}}+${userConstant}}\\]`;
+      // remove button, select, and label from DOM
+      document.getElementById("labelForConstant").remove();
+      document.getElementById("constant").remove();
+      document.getElementById("buttonConstant").remove();   
+      doStep1();
+      MathJax.typeset();
+      // move on
+
+    })
+
+    function doStep1() {
+        const nextLine = document.createElement('div');
+        nextLine.innerHTML = `We know that \\( \\frac{1}{n^{${userExponent}}} > \\frac{1}{n^{${userExponent}} + ${userConstant}} \\). Now we plot the partial sums of these series.`;
+        mathContainer.appendChild(nextLine);
+        MathJax.typeset();
+        step = 1;
+    }
+
+    function series1(n) {
+      return 1 / n ** userExponent
+    }
+
+    function series2(n) {
+      return 1 / (n ** userExponent + userConstant)
+    }
     function nextStep() {
+      if (step === 0 ) {
+        return;
+      }
+      if (step === 5) {
+        return;
+      }
       step++;
+    
 
       if (step === 1) {
         const nextLine = document.createElement('div');
-        nextLine.innerHTML = 'We know that \\( \\frac{1}{n^2} > \\frac{1}{n^2 + 10} \\). Now we plot the partial sums of these series.';
+        nextLine.innerHTML = `We know that \\( \\frac{1}{n^{${userExponent}}} > \\frac{1}{n^{${userExponent}} + ${userConstant}} \\). Now we plot the partial sums of these series.`;
         mathContainer.appendChild(nextLine);
         MathJax.typeset();
 
-      } else if (step === 2) {
+      } else if (step === 2) { // plotting series
         plotDiv.innerHTML = '';
         const n = Array.from({ length: 30 }, (_, i) => i + 1);
         let sum1 = 0, sum2 = 0;
         const partial1 = [], partial2 = [];
         n.forEach(i => {
-          sum1 += 1 / (i ** 2);
-          sum2 += 1 / (i ** 2 + 1);
+          sum1 += series1(i);
+          sum2 += series2(i);
           partial1.push(sum1);
           partial2.push(sum2);
         });
@@ -133,11 +309,11 @@
         Plotly.newPlot(plotDiv, [
           {
             x: n, y: partial1, mode: 'markers+lines',
-            name: 'Partial Sums of 1/n²', marker: { color: '#00ccff' }, line: { color: '#00ccff' }
+            name: 'Partial Sums of First Series', marker: { color: '#00ccff' }, line: { color: '#00ccff' }
           },
           {
             x: n, y: partial2, mode: 'markers+lines',
-            name: 'Partial Sums of 1/(n²+1)', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' }
+            name: 'Partial Sums of Second Series', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' }
           }
         ], darkLayout);
 
@@ -150,12 +326,15 @@
         MathJax.typeset();
 
       } else if (step === 4) {
-        const nextLine = document.createElement('div');
-        nextLine.innerHTML = 'Now we consider the three series: \\[ \\sum_{n=1}^{\\infty} 2 \\cdot 2^{n-1} , \\quad \\sum_{n=1}^{\\infty} \\left( 2 + 2(n-1) \\right), \\quad \\sum_{n=1}^{\\infty} 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\]';
-        rightMath.appendChild(nextLine);
+        console.log("here!")
+        document.getElementById("userSeriesDisplaySection").innerHTML = `Consider your two series \\( \\frac{1}{n^{${userExponent}}}, \\frac{1}{n^{${userExponent}} + ${userConstant}} \\)`;
+        document.getElementById("userSeriesDisplaySection").style.opacity = 1;
+        // const nextLine = document.createElement('div');
+        // nextLine.innerHTML = 'Now we consider the three series: \\[ \\sum_{n=1}^{\\infty} 2 \\cdot 2^{n-1} , \\quad \\sum_{n=1}^{\\infty} \\left( 2 + 2(n-1) \\right), \\quad \\sum_{n=1}^{\\infty} 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\]';
+        // rightMath.appendChild(nextLine);
         MathJax.typeset();
 
-      } else if (step === 5) {
+      } else if (step === 5) { // now construct a third series 
         const nextLine = document.createElement('div');
         nextLine.innerHTML = 'We see that \\( 2 \\cdot 2^{n-1} > 2 + 2(n-1) > 2 \\cdot \\left( \\frac{1}{2} \\right)^{n-1} \\)';
         rightMath.appendChild(nextLine);
@@ -197,7 +376,8 @@
     }
 
     document.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') nextStep();
+      if (event.key === 'Enter') 
+      nextStep();
     });
   </script>
 </body>
