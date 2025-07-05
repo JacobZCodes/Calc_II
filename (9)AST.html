@@ -69,11 +69,177 @@
     em {
       color: #88ff00;
     }
+
+      @font-face {
+        font-family: 'TangoSans_Bold';
+        src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+      }
+
+      body {
+        background-color: #000;
+        color: #00ccff;
+        font-family: 'TangoSans_Bold', sans-serif;
+        text-align: center;
+        padding: 2em;
+      }
+
+      p {
+        margin-top: 1em;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+        }
+      }
+
+      .purple {
+        color: purple;
+      }
+
+      .yellow {
+        color: yellow;
+      }
+
+      .question {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+
+      input[type="text"] {
+        background-color: #111;
+        /* dark input background */
+        color: #00ccff;
+        /* cyan text color */
+        border: 1px solid #00ccff;
+        /* cyan border */
+        border-radius: 4px;
+        /* rounded corners */
+        padding: 10px 12px;
+        font-size: 16px;
+        width: 20%;
+        height: 3px;
+        box-shadow: 0 0 8px #00ccff33;
+        /* subtle cyan glow */
+        outline: none;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        border-color: #33ffff;
+        box-shadow: 0 0 12px #33ffff;
+      }
+
+.box {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: 0 auto;
+  align-items: center;
+  row-gap: 1em;
+  border: 2px solid #00ccff;
+  border-radius: 10px;
+  padding: 1.5em;
+  background-color: #111;
+  box-shadow: 0 0 12px #00ccff55;
+}
+
+
+.lesson-box {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 150px;
+  margin: 0 auto;
+  align-items: center;
+  row-gap: 1em;
+  border: 2px solid #00ccff;
+  border-radius: 10px;
+  padding: 1.5em;
+  background-color: #111;
+  box-shadow: 0 0 12px #00ccff55;
+}
+    .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+
+    button {
+      margin-top: 1em;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1s forwards;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ccff;
+      /* animation: fadeIn 1s forwards; */
+    }
+
+    button:active {
+      transform: scale(0.95);
+      /* animation: fadeIn 1s forwards; */
+    }
   </style>
 </head>
 <body>
   <h3>Alternating Series Test (AST)</h3>
-
+  <div id="quiz" class="box">
+    <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
+    <div class="question">
+      <label id= "label-s2" for="s2">\(S_2=\)</label>
+      <input id="s2" type="text">
+    </div>
+    <div class="question">
+      <label id= "label-s3" for="s3">\(S_3=\)</label>
+      <input id="s3" type="text">
+    </div>
+    <div class="question">
+      <label id= "label-s4" for="s4">\(S_4=\)</label>
+      <input id="s4" type="text">
+    </div>
+    <div class="question">
+      <label id= "label-s5" for="s5">\(S_5=\)</label>
+      <input id="s5" type="text">
+    </div>
+    <div class="question">
+      <label id= "label-s6" for="s6">\(S_6=\)</label>
+      <input id="s6" type="text">
+    </div>
+    <div class="question">
+      <label id= "label-s7" for="s7">\(S_7=\)</label>
+      <input id="s7" type="text">
+    </div> 
+    <div class="question">
+      <label id= "label-s8" for="s8">\(S_8=\)</label>
+      <input id="s8" type="text">
+    </div>        
+    <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
+      <button id="check-answers-btn" style="position: relative;">Check Answers</button>
+    </div>
+  </div>
   <label for="termsSlider">Number of terms (n): <span id="termCount">5</span></label>
   <input type="range" id="termsSlider" min="1" max="50" value="5" />
 
