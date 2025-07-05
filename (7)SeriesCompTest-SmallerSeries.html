@@ -117,6 +117,15 @@
     </div>
 
     <script>
+      const params = new URLSearchParams(window.location.search);
+      let userExp = parseFloat(params.get(`userExp`)); 
+      let userConstant = parseFloat(params.get(`userConstant`));
+      let thirdUserConstant= parseFloat(params.get(`thirdUserConstant`));
+      let firstFrac;
+      let secondFrac;
+      let thirdFrac;
+      console.log(userExp, userConstant, thirdUserConstant);
+      populateFractions();
       let step = 0;
       const mathContainer = document.getElementById('math-container');
       const rightMath = document.getElementById('right-math');
@@ -144,42 +153,92 @@
           autorange: true
         }
       };
+      function populateFractions() {
+        firstFrac = `\\frac{1}{n^{${userExp}}}`;
+        secondFrac  = `\\frac{1}{n^{${userExp}} + ${userConstant}}`;
+        thirdFrac = `\\frac{1}{n^{${userExp}} + ${thirdUserConstant}}`;
+        let secondFracCopy = secondFrac;
+        let thirdFracCopy = thirdFrac;
+        // put second and third frac in order
+        if (userConstant > thirdUserConstant) {
+          secondFrac = thirdFracCopy;
+          thirdFrac = secondFracCopy;
+        }
+        MathJax.typeset();
+    }
+    function series1(n) {
+      return 1 / n ** userExp
+    }
+
+    function series2(n) {
+      return 1 / (n ** userExp + userConstant)
+    }
+
+    function series3(n) {
+      return 1 / (n ** userExp + thirdUserConstant)
+    }
 
       const initialLine = document.createElement('div');
       initialLine.innerHTML =
-        '<br><br><br><br><br><br><br>Consider the series: \\[ \\sum_{n=1}^{k} \\frac{1}{n^2} , \\quad \\sum_{n=1}^{k} \\frac{1}{n^2 + 1} , \\quad \\sum_{n=1}^{k} 2 \\cdot 2^{n-1} \\]';
+      `
+      <br><br><br><br><br><br><br>
+      Consider your previous three series: 
+      \\[ \\sum_{n=1}^{k} ${thirdFrac} , \\quad \\sum_{n=1}^{k} ${secondFrac} , \\quad \\sum_{n=1}^{k} ${firstFrac} \\]
+      `;    
       mathContainer.appendChild(initialLine);
+      MathJax.typeset();
 
       function nextStep() {
         step++;
         if (step === 1) {
           const nextLine = document.createElement('div');
           nextLine.innerHTML =
-            'Let us examine our smallest series, \\( \\frac{1}{n^2 + 1} \\). We know that \\( \\frac{1}{n^2 + 1} < \\frac{1}{n^2} \\) and \\( \\frac{1}{n^2 + 1} < 2 \\cdot 2^{n-1} \\). Now we plot the sums of these series.';
+            `Let us examine our smallest series, \\( ${thirdFrac} \\). We know that \\( ${thirdFrac} < ${secondFrac} \\) and \\( ${thirdFrac} < ${firstFrac} \\). Now we plot the sums of these series.`;
           mathContainer.appendChild(nextLine);
           MathJax.typeset();
         } else if (step === 2) {
           plotDiv.innerHTML = '';
-          const n = Array.from({ length: 20 }, (_, i) => i + 1);
-          let sum1 = 0,
-            sum2 = 0,
-            sumExp = 0;
-          const partial1 = [],
-            partial2 = [],
-            partialExp = [];
-          n.forEach(i => {
-            sum1 += 1 / (i ** 2);
-            sum2 += 1 / (i ** 2 + 1);
-            sumExp += 2 * 2 ** (i - 1);
-            partial1.push(sum1);
-            partial2.push(sum2);
-            partialExp.push(sumExp);
-          });
-          Plotly.newPlot(plotDiv, [
-            { x: n, y: partial1, mode: 'markers+lines', name: 'Partial Sums of 1/n²', marker: { color: '#00ccff' }, line: { color: '#00ccff' } },
-            { x: n, y: partial2, mode: 'markers+lines', name: 'Partial Sums of 1/(n²+1)', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' } },
-            { x: n, y: partialExp, mode: 'markers+lines', name: 'Partial Sums of 2·2ⁿ⁻¹', marker: { color: '#ff4444' }, line: { color: '#ff4444' } }
-          ], darkLayout);
+        const n = Array.from({ length: 30 }, (_, i) => i + 1);
+        let sumSeries1 = 0, sumSeries2 = 0, sumSeries3 = 0;
+        const partialSum1 = [], partialSum2 = [], partialSum3 = [];
+        n.forEach(i => {
+          const series1term = series1(i);
+          const series2term = series2(i);
+          const series3term = series3(i);
+          sumSeries1 += series1term;
+          sumSeries2 += series2term;
+          sumSeries3 += series3term;
+          partialSum1.push(sumSeries1);
+          partialSum2.push(sumSeries2);
+          partialSum3.push(sumSeries3);
+        });
+
+        Plotly.newPlot(plotDiv, [
+          { x: n, y: partialSum1, mode: 'markers+lines', name: `1/n^${userExp}`, marker: { color: '#ff4444' }, line: { color: '#ff4444' } },
+          { x: n, y: partialSum2, mode: 'markers+lines', name: `1/n^${userExp} + ${userConstant}`, marker: { color: '#00ccff' }, line: { color: '#00ccff' } },
+          { x: n, y: partialSum3, mode: 'markers+lines', name: `1/n^${userExp} + ${thirdUserConstant}`, marker: { color: '#88ff00' }, line: { color: '#88ff00' } }
+        ], darkLayout);
+                  
+          // const n = Array.from({ length: 20 }, (_, i) => i + 1);
+          // let sum1 = 0,
+          //   sum2 = 0,
+          //   sumExp = 0;
+          // const partial1 = [],
+          //   partial2 = [],
+          //   partialExp = [];
+          // n.forEach(i => {
+          //   sum1 += 1 / (i ** 2);
+          //   sum2 += 1 / (i ** 2 + 1);
+          //   sumExp += 2 * 2 ** (i - 1);
+          //   partial1.push(sum1);
+          //   partial2.push(sum2);
+          //   partialExp.push(sumExp);
+          // });
+          // Plotly.newPlot(plotDiv, [
+          //   { x: n, y: partial1, mode: 'markers+lines', name: 'Partial Sums of 1/n²', marker: { color: '#00ccff' }, line: { color: '#00ccff' } },
+          //   { x: n, y: partial2, mode: 'markers+lines', name: 'Partial Sums of 1/(n²+1)', marker: { color: '#ffcc00' }, line: { color: '#ffcc00' } },
+          //   { x: n, y: partialExp, mode: 'markers+lines', name: 'Partial Sums of 2·2ⁿ⁻¹', marker: { color: '#ff4444' }, line: { color: '#ff4444' } }
+          // ], darkLayout);
         } else if (step === 3) {
   const nextLine = document.createElement('div');
   nextLine.innerHTML =
@@ -193,13 +252,13 @@ document.getElementById('rules2-content').innerHTML = `
   MathJax.typeset();
 } else if (step === 4) {
           const nextLine = document.createElement('div');
-          nextLine.innerHTML ='Now we consider the two series: \\[ \\sum_{n=1}^{\\infty} 3^n\\ , \\quad \\sum_{n=0}^{\\infty} 4^n \\]';
+          nextLine.innerHTML =`Now we consider the two series: \\[ ${secondFrac}\\ , \\quad \\sum_{n=0}^{\\infty} ${thirdFrac} \\]`;
           rightMath.appendChild(nextLine);
           MathJax.typeset();
         } else if (step === 5) {
           const nextLine = document.createElement('div');
           nextLine.innerHTML =
-            'We see that \\( 4^n > \\3^n \\)';
+            `We know that \\( ${secondFrac} > ${thirdFrac} \\)`;
           rightMath.appendChild(nextLine);
           MathJax.typeset();
         } else if (step === 6) {
@@ -210,31 +269,31 @@ document.getElementById('rules2-content').innerHTML = `
   MathJax.typeset();
 
   const n = Array.from({ length: 20 }, (_, i) => i + 1);
-  let sumExp = 0, sumHarmonic = 0;
-  const partialExp = [], partialHarmonic = [];
+  let sumFrac2 = 0, sumFrac3 = 0;
+  const partialSumFrac2 = [], partialSumFrac3 = [];
   n.forEach(i => {
-    const expTerm = 3 ** i;
-    const harmonicTerm = 4 ** i;
-    sumExp += expTerm;
-    sumHarmonic += harmonicTerm;
-    partialExp.push(sumExp);
-    partialHarmonic.push(sumHarmonic);
+    const termFrac2 = series2(i);
+    const termFrac3 = series3(i);
+    sumFrac2 += termFrac2;
+    sumFrac3+= termFrac3;
+    partialSumFrac2.push(sumFrac2);
+    partialSumFrac3.push(sumFrac3);
   });
 
   Plotly.newPlot(plot2Div, [
     {
       x: n,
-      y: partialExp,
+      y: partialSumFrac2,
       mode: 'markers+lines',
-      name: '2ⁿ',
+      name: `1/n^${userExp} + ${userConstant}`,
       marker: { color: '#ff4444' },
       line: { color: '#ff4444' }
     },
     {
       x: n,
-      y: partialHarmonic,
+      y: partialSumFrac3,
       mode: 'markers+lines',
-      name: '1/n',
+      name: `1/n^${userExp} + ${thirdUserConstant}`,
       marker: { color: '#00ccff' },
       line: { color: '#00ccff' }
     }
@@ -247,6 +306,9 @@ document.getElementById('rules2-content').innerHTML += `
 
         } else if (step === 8) {
           alert("Next lesson");
+        }
+        else if (step === 9) {
+          window.location.href = "(8)SeriesCompTest-Final.html";
         }
       }
 
