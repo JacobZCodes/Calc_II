@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Geometric</title>
+	<script>
+	window.MathJax = {
+		tex: {
+			inlineMath: [
+				['$', '$'],
+				['\\(', '\\)']
+			]
+		},
+		svg: {
+			fontCache: 'global'
+		}
+	};
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+	<style>
+	@font-face {
+		font-family: 'TangoSans_Bold';
+		src: url('tangosans/TangoSans_Bold.ttf') format('truetype');
+	}
+	
+	body {
+		background-color: #000;
+		color: #00ccff;
+		font-family: 'TangoSans_Bold', sans-serif;
+		text-align: center;
+		padding: 2em;
+	}
+	
+	.box {
+		display: flex;
+		flex-direction: column;
+		width: 420px;
+		margin: 0 auto;
+		align-items: center;
+		border: 2px solid #00ccff;
+		border-radius: 10px;
+		padding: 1.5em;
+		background-color: #111;
+		box-shadow: 0 0 12px #00ccff55;
+        gap: 10px;
+	}
+	
+	.question {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+	
+	input[type="text"] {
+		background-color: #111;
+		/* dark input background */
+		color: #00ccff;
+		/* cyan text color */
+		border: 1px solid #00ccff;
+		/* cyan border */
+		border-radius: 4px;
+		/* rounded corners */
+		padding: 10px 12px;
+		font-size: 16px;
+		width: 20%;
+		height: 3px;
+		box-shadow: 0 0 8px #00ccff33;
+		/* subtle cyan glow */
+		outline: none;
+		transition: box-shadow 0.3s ease, border-color 0.3s ease;
+	}
+	
+	input[type="text"]:focus {
+		border-color: #33ffff;
+		box-shadow: 0 0 12px #33ffff;
+	}
+	
+	button {
+		margin-top: 1em;
+		padding: 12px 24px;
+		font-size: 16px;
+		font-weight: bold;
+		color: #000;
+		background-color: #00ccff;
+		border: none;
+		border-radius: 30px;
+		cursor: pointer;
+		transition: transform 0.2s ease, box-shadow 0.3s ease;
+		animation: fadeIn 1s forwards;
+	}
+	
+	button:hover {
+		transform: scale(1.05);
+		box-shadow: 0 0 15px #00ccff;
+		/* animation: fadeIn 1s forwards; */
+	}
+	
+	button:active {
+		transform: scale(0.95);
+		/* animation: fadeIn 1s forwards; */
+	}
+	</style>
+</head>
+
+<body>
+	<h2>Geometric Series</h2>
+	<p>Recall our earlier definition of a <span style="color: green;">geometric sequence</span></p>
+    <p>So we can define our geometric series as: <span style="color: green;">geometric series latex</span></p>
+    <div class="box">
+      <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
+      <div class="question" style="position: relative;right: 37px;">
+        <label>\(S_2= ar^0 + ar^1\)</label>
+      </div>
+      <div class="question">
+        <label >\(S_3=ar^0\)</label>
+        <!-- <input id="s3" type="text"> -->
+        <label>\( + a\)</label>
+        <input type="text">      
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+        
+
+        <label>\(+ a\)</label>
+        <input type="text">       
+      </div>      
+      <div class="question">
+        <label >\(S_4=ar^0\)</label>
+        <!-- <input id="s3" type="text"> -->
+        <label>\( + a\)</label>
+        <input type="text">      
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+        
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+        
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+    </div>
+
+    <div class="question">
+        <label >\(S_n=ar^0\)</label>
+        <!-- <input id="s3" type="text"> -->
+        <label>\( + a\)</label>
+        <input type="text">      
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+        
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+        
+
+        <label>\(+ a\)</label>
+        <input type="text">      
+
+
+        <label>\(...+ a\)</label>
+        <input type="text">       </div>
+      <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
+        <button id="check-answers-btn" style="position: relative;">Check Answers</button>
+      </div>
+    </div>
+	<script>
+	</script>
+</body>
+
+</html>
