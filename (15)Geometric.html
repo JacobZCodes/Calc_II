@@ -107,12 +107,16 @@
   </head>
   <body>
     <h2>Geometric Series</h2>
-    <p>Recall our earlier definition of a <span style="color: green;">geometric sequence</span>
+    <p>Recall our earlier definition of a <a href="(1)Sequence.html" style="color: white; font-style: italic;">
+  geometric sequence
+</a>
     </p>
-    <p>So we can define our geometric series as: <span style="color: green;">geometric series latex</span>
+    <p>So we can define our geometric series as: \(
+\sum_{n=1}^{\infty} a \cdot r^{n-1}
+\)
     </p>
     <div style="display: flex; flex-wrap: wrap;">
-      <div class="box" style="width: 475px;">
+      <div id="box1" class="box" style="width: 475px;">
         <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
         <p>Fill in the following exponents to find S_n</p>
         <div class="question" style="position: relative;right: 37px;">
@@ -152,7 +156,7 @@
           <button id="check-answers-btn-1" style="position: relative;">Check Answers</button>
         </div>
       </div>
-      <div class="box" style="width: 550px; ">
+      <div id="box2" class="box" style="width: 550px; opacity: 0;">
         <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
         <p>Fill in the following exponents to find r * S_n</p>
         <div class="question" style="position: relative;right: 37px;">
@@ -192,21 +196,22 @@
           <button id="check-answers-btn-2" style="position: relative;">Check Answers</button>
         </div>
       </div>
-      <div class="box">
+      <div id="box3" class="box" style="opacity: 0;">
         <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
         <div class="question" style="position: relative;right: 37px;">
           <label>\(S_n - rS_n= a - ar\)</label>
           <input id="box3-1" type="text" class="sequence">
         </div>
-        <div class="question" style="position: relative;right: 37px;">
+        <div id="sn-expression" class="question" style="opacity: 0;position: relative;right: 37px;">
             <label>\(S_n = \frac{a(1-r^n)}{1-r}\)</label>
         </div>
         <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
           <button id="check-answers-btn-3" style="position: relative;">Check Answers</button>
         </div>
       </div>
-      <div class="box" style="width: 900px; gap: 10px; position: relative; top: 30px;">
+      <div id="box4"class="box" style="width: 900px; gap: 10px; position: relative; top: 30px; opacity: 0;">
         <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Playing with Limits</h3>
+        <p>What happens when you choose |r| < 1?</p>
         <div style="display: flex; gap: 150px;">
             <div>
                 <div style="display: flex;">Input value for a: <input type="text" id="a" style="position: relative; left: 10px;"></div>
@@ -218,13 +223,37 @@
             <div class="question" style="position: relative;right: 37px; font-size: larger; gap: 50px;">
                 <div style="display: flex; flex-direction: column;">
                     <label id="limit-label">\(\lim_{n \to \infty} \frac{a(1-r^n)}{1-r}=\)</label>
-                    <input id="slider" type="range" min="0" max="100" value="0">
+                    <input id="slider" type="range" min="0" max="100" value="0" style="opacity: 0;">
                     <span id="n">n=0</span>
                 </div>                
                 <div id="RHS" style="position: relative; bottom: 19px; right: 20px; width: 215px;">\(?\)</div>
             </div>
         </div>
       </div>
+      <div id="box5"class="box" style="width: 400px; gap: 10px; position: relative; top: 30px; opacity: 0;">
+        <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Geometric Series</h3>
+        <p>We now observe the following: </p>
+  <div>
+    \[
+    \sum_{n=0}^{\infty} ar^n
+    \begin{cases}
+    \text{converges} & \text{if } |r| < 1 \\
+    \text{diverges}  & \text{if } |r| \geq 1
+    \end{cases}
+    \]
+  </div>
+        <div style="display: flex; gap: 150px;">
+            <div>
+                <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
+                <button id="next-btn" style="position: relative;">Next Lesson</button>
+                </div>            
+            </div>
+        </div>
+      </div>
+
+
+
+
     </div>
 
     <script>
@@ -245,6 +274,9 @@
             let limitLabel = document.getElementById("limit-label");
             let innerHTMLForLimitLabel = `\\(\\lim_{n \\to \\infty} \\frac{${a}(1-${r}^n)}{1-${r}}=\\)`;
             limitLabel.innerHTML = innerHTMLForLimitLabel;
+            // show slider and show next box
+            slider.style.opacity = 1;
+            document.getElementById("box5").style.opacity=1;
             MathJax.typeset();
         })
 
@@ -300,6 +332,7 @@
             // change buttont to say correct
             changeCheckAnswersBtnText(1, checkBox1Btn);
             // next div appear
+            document.getElementById("box2").style.opacity=1;
           }        
         })
 
@@ -344,7 +377,7 @@
             // change buttont to say correct
             changeCheckAnswersBtnText(1, checkBox2Btn);
             // next div appear
-          }        
+            document.getElementById("box3").style.opacity=1;          }        
         })
         checkBox3Btn.addEventListener("click", function() {
           const box1Input = document.getElementById("box3-1");
@@ -367,7 +400,9 @@
             changeQuestionColors(wrongAnswers, labelList);
             // change buttont to say correct
             changeCheckAnswersBtnText(1, checkBox3Btn);
-            // next div appear
+            // next div appear + sn expression appear
+            document.getElementById("box4").style.opacity=1;
+            document.getElementById("sn-expression").style.opacity=1;
           }        
         })
 
