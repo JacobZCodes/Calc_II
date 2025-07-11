@@ -26,7 +26,7 @@
   display: flex;
   flex-direction: column;
   width: 200px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   align-items: center;
   border: 2px solid #00ccff;
   border-radius: 10px;
@@ -114,7 +114,8 @@
   <strong>centered</strong> at \( x = a \).
 </p>
 
-<div style="display: flex; justify-content: center; align-items: flex-start; position: absolute;">
+<div id="student-work" style="display: flex; justify-content: center; align-items: center; position: relative; gap: 5px;
+left: 50px;">
   <div id="yourTurn" class="box">
     <h3 style="padding-bottom: 0.5em;">Your Turn</h3>
     <p>Create a power series of the form \( \sum_{n=1}^{\infty} a_n (x - a)^n \)</p>
@@ -132,46 +133,30 @@
     </div>
   </div>
   <div id="latexSection" style="display:flex;">
-    <div id="xInputSection" style="display:flex; flex-direction: column;">
-        <label id= "x-label" for="x">Enter an x</label>
-        <input id="x" type="text">
-        <button id="evaluate-polynomial-btn" style="position: relative;">Evaluate Polynomial</button>
-    </div>
     <div id="generalSeriesSection">
       <div id="generalSeries">
-
       </div>
-      <div id="termSlider">
-          <input  width=50px; type="range" id="n-slider" min="0" max="10" value="0"><br>
+      <div id="termSlider" style="display:flex; flex-direction: column; align-items: center;">
+          <input  width=50px; type="range" id="n-slider" min="0" max="5" value="0"><br>
           <label id="n-slider-label" for="n-slider">n = 0</label>
-
+          <div id="xInputSection" style="display:flex; flex-direction: row; align-items: center; justify-content: center;">
+              <label id= "x-label" for="x">x =  </label>
+              <input id="x" type="text" style="width: 10px; margin-left: 0.25em;">
+          </div>
+          <button id="evaluate-polynomial-btn" style="position: relative; width: 100px; font-size: smaller; text-align: center;">Submit</button>      
       </div>
     </div>
 
-    <div id="expandedSection"></div>
+    <div id="expandedSection" style="width: 575px; justify-content: flex-start; display: flex;"></div>
     <div id="evaluationSection" style="padding-left: 1em;">
-      <p>dummy text</p>
-    </div>
+      <!-- <p>dummy text</p> -->
+    </div>    
+
+
   </div>
 </div>
-<!-- <p>But what does it even mean for the series to be <em>centered</em> <a target="_blank" href="https://www.desmos.com/calculator/gy6tkj8sjw">somewhere?</a></p>
-<p>Please work through the next two Desmos links in order</p>
-<a href="https://www.desmos.com/calculator/hfxi3fttky" target="_blank">Power Series: Where Does it Converge?</a><br>
-<a href="https://www.desmos.com/calculator/vdjbwpn07h" target="_blank">Power Series: Visualizing Interval of Convergence</a> -->
 </div>
   <script>
-    
-
-    // function computeCenterExpression(xVal, center, n) {
-    //   return (xVal - center) ** n;
-    // }
-
-    // function computeSequenceExpression(n) {
-    //   // turn user inputted sequence into a function
-    //   let seqAsFunc = new Function("n", `return ${sequence};`);
-    //   return seqAsFunc(n);
-
-    // }
     let sequence; // a_n = ...
     let center; // a
     let centerExpression; // (x-a)
@@ -182,20 +167,22 @@
     let nSliderLabel = document.getElementById("n-slider-label");
     let evaluationSection = document.getElementById("evaluationSection");
     let strippedLatexList;
+    let xVal;
+    let innerHTMLWithXValue;
 
 
     document.getElementById("evaluate-polynomial-btn").addEventListener("click", function() {
       // get strippedLatexList and join it together
-      let temp = `\\( ${strippedLatexList.join(' + ')} \\)`;
-      let xVal = 1;  // dynamicize me
+      innerHTMLWithXValue = `\\( ${strippedLatexList.join(' + ')} \\)`;
+      xVal = parseInt( document.getElementById("x").value);
       // replace all instances of variable "x" in the latex and display
-      temp = temp.replace(/\bx\b/g, `(${xVal})`);
-      console.log(temp);
-      expandedSection.innerHTML = temp;
+      innerHTMLWithXValue = innerHTMLWithXValue.replace(/\bx\b/g, `(${xVal})`);
+      // console.log(temp);
+      expandedSection.innerHTML = innerHTMLWithXValue;
       // evaluate at current n-label n
       let currentN = parseInt(nSliderLabel.innerText.replace(/[^\d\-]/g, ''), 10);
       
-      evaluationSection.innerText = evaluatePolynomial(1,currentN);
+      evaluationSection.innerText = evaluatePolynomial(xVal,currentN);
       MathJax.typeset();
     })
 
@@ -205,33 +192,47 @@
   let n = parseInt(this.value);
   // update visual on the slider
   nSliderLabel.innerText = `n = ${n}`;
-  // update latex list and strip it
+  // build displayHTML
   buildLatexListUpToN(n, sequence, center);
-  console.log(`[${n}] = ${latexList}`);
   strippedLatexList = stripLatexList();
-  // convert stripped latex list into a latex expression
-  expandedSection.innerHTML =`\\( ${strippedLatexList.join(' + ')} \\)`;
+  let displayHTML = `\\( ${strippedLatexList.join(' + ')} \\)`;
+  if (!xVal){
+    expandedSection.innerHTML = displayHTML;
+  }
+  else {
+      // append summation to last element in latex list
+      let summationResult = evaluatePolynomial(xVal,n);
+      appendResultToEndOfLatexList(summationResult);
+      strippedLatexList = stripLatexList();
+      displayHTML = `\\( ${strippedLatexList.join(' + ')} \\)`;
+      displayHTML.replace(/\bx\b/g, `(${xVal})`); 
+      expandedSection.innerHTML = displayHTML;
+  }
   MathJax.typeset();  
   });
-    document.getElementById("submitPowerSeriesBtn").addEventListener("click", function() {
-      // TO DO: sanitize values
-      // collect values
-      sequence = document.getElementById("sequence").value;
-      center = parseInt(document.getElementById("center").value);
-      // return values as latex
-      generalSeries.innerHTML = buildInitialLatex(sequence, center);
 
-
+  document.getElementById("submitPowerSeriesBtn").addEventListener("click", function() {
+    // TO DO: sanitize values
+    // collect values
+    sequence = document.getElementById("sequence").value;
+    center = parseInt(document.getElementById("center").value);
+    // return values as latex
+    generalSeries.innerHTML = buildInitialLatex(sequence, center);
+    MathJax.typeset();
+  }
+  )
+    function appendResultToEndOfLatexList(result) {
+      let indexOfLastLatexElement = latexList.length - 1;
+      let lastLatexElement = latexList[indexOfLastLatexElement];
+      console.log("Last element: ", lastLatexElement);
+      latexList[indexOfLastLatexElement].replace(/\^(\d+)(?=\s*\\\))/g, `^$1 = ${result}`);;
     }
-    )
     function computeCenterExpression(xVal, center, n) {
-      console.log(`Center (${n}): `, (xVal - center) ** n);
       return (xVal - center) ** n;
     }
 
     function computeSequenceExpression(n) {
       let seqAsFunc = new Function("n", `return ${sequence};`);
-      console.log(`Sequence (${n}): `, seqAsFunc(n));
       return seqAsFunc(n);
     }
 
@@ -243,7 +244,6 @@
         
         rollingSum += summandList[i-1];
       }
-      console.log(summandList);
       return rollingSum;
       
     }
@@ -286,15 +286,12 @@
         latexList[i-1] = buildLatexForGivenN(i,sequence,center)
       }
     }
-      
-    //   let latexList;
-    //   for (let i=0; i<n; ++i) {
-        
-    //   }
-    // }
-
-
-    
+          
   </script>
 </body>
 </html>
+
+<!-- <p>But what does it even mean for the series to be <em>centered</em> <a target="_blank" href="https://www.desmos.com/calculator/gy6tkj8sjw">somewhere?</a></p>
+<p>Please work through the next two Desmos links in order</p>
+<a href="https://www.desmos.com/calculator/hfxi3fttky" target="_blank">Power Series: Where Does it Converge?</a><br>
+<a href="https://www.desmos.com/calculator/vdjbwpn07h" target="_blank">Power Series: Visualizing Interval of Convergence</a> -->
