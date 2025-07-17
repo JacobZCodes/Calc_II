@@ -103,11 +103,20 @@
       input[type="text"].sequence {
         position: relative; bottom: 10px; right: 5px; width: 8px;      
     }
+
+        .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+}
     </style>
   </head>
   <body>
     <h2>Geometric Series</h2>
-    <p>Recall our earlier definition of a <a href="(1)Sequence.html" style="color: white; font-style: italic;">
+    <p>Recall our earlier definition of a <a href="(1)Sequence.html" style="color: white; ">
   geometric sequence
 </a>
     </p>
@@ -245,7 +254,7 @@
         <div style="display: flex; gap: 150px;">
             <div>
                 <div id="button-space" style="width:100px; margin: 0 auto; padding-top: 10px;">
-                <button id="next-btn" style="position: relative;">Next Lesson</button>
+                <button id="next-btn" style="position: relative; right: 90px; bottom: 30px;" class="next-lesson">Next Lesson</button>
                 </div>            
             </div>
         </div>

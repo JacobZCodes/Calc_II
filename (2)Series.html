@@ -137,6 +137,8 @@
       /* animation: fadeIn 1s forwards; */
     }
 
+    
+
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -146,12 +148,11 @@
       <b>Series</b>
     </h1>
     <div id="sentences">
-      <p id="0">A <span class="purple">partial sum</span> is the summation of the first n terms of our sequence </p>
-      <div id="1"></div>
-      <p> Let \(a_n = {10,20,30,40,50,60,70,80,90,100}\). Then a <span class="purple">partial sum</span> of the first 3 terms is \(10+20+30=60\) </p>
-      <p>So we say <span class="yellow">\(S_3 = 60\) </span>to mean "the sum of the first 3 terms in our sequence is 60" </p>
+      <p id="0" style="opacity: 0;">A <span class="purple">partial sum</span> is the summation of the first n terms of our sequence </p>
+      <p id="1" style="opacity: 0;"> Let \(a_n = {10,20,30,40,50,60,70,80,90,100}\). Then a <span class="purple">partial sum</span> of the first 3 terms is \(10+20+30=60\) </p>
+      <p id="2" style="opacity: 0;">So we say <span class="yellow">\(S_3 = 60\) </span>to mean "the sum of the first 3 terms in our sequence is 60" </p>
     </div>
-    <div id="quiz" class="box">
+    <div style="opacity: 0;"id="quiz" class="box">
       <h3 style="margin: 0 auto; padding-bottom: 0.5em;">Your Turn</h3>
       <div class="question">
         <label id= "label-s4" for="s4">\(S_4=\)</label>
@@ -170,14 +171,14 @@
       </div>
     </div>
     <div id="lessons" style="display:flex; justify-content: space-evenly;">
-      <div id="partialSumLesson">
+      <div style="opacity: 0;"id="partialSumLesson">
         <p style="max-width: 300px;">We formally define our <span class="purple">partial sum</span> as:</p>
         <div class="lesson-box">
           <h3>Partial Sum</h3>
           <p>\(S_n = \sum_{i=0}^{n} a_i\)</p>
         </div>
       </div>
-      <div id="infiniteSeriesLesson">
+      <div style="opacity: 0;" id="infiniteSeriesLesson">
         <p style="max-width: 300px; max-height: 34px;">We define a <span class="yellow">partal sum of infinite terms</span> as an <span class="purple">infinite series</span></p>
         <div class="lesson-box">
           <h3>Infinite Series</h3>
@@ -188,7 +189,7 @@
       </div>
 
     </div>
-    <div id="conclusion-space" style="display: flex; padding-top: 50px; flex-direction: column; align-items: center;">
+    <div id="conclusion-space" style="display: flex; padding-top: 50px; flex-direction: column; align-items: center; opacity: 0;">
       <p style="max-width: 280px;">
         The major focus of studying series is based upon identifiy whether a series will <span class="purple">diverge or converge</span>.
         We will explore these concepts in the next lesson.
@@ -197,7 +198,51 @@
     </div>
 
     <script>
+      let clickNum = -1;
+      document.addEventListener("keydown", function (event) {
+        if (event.key  == "Enter") {
+          showNext();
+        }
+      });
+      function fadeIn(el) {
+        el.style.opacity = "0";    
+
+    el.style.animation = "fadeIn 0.6s forwards";
+  }
+  function showNext() {
+    clickNum++;
+    console.log("clicknum: ", clickNum);
+    switch (clickNum) {
+      case 0:
+        fadeIn(document.getElementById("0"));
+        break;
+      case 1:
+        fadeIn(document.getElementById("1"));
+        break;
+      case 2:
+        fadeIn(document.getElementById("2"));
+        break;        
+      case 3:
+        fadeIn(document.getElementById("quiz"));
+        break;
+      case 4:
+        if (isRight) {
+          fadeIn(document.getElementById("partialSumLesson"));
+        }
+        else {
+          clickNum = 3;
+        }
+        break;
+      case 5:
+        fadeIn(document.getElementById("infiniteSeriesLesson"));
+        break;
+      case 6:
+        fadeIn(document.getElementById("conclusion-space"));
+        break;        
+    }
+  }
       // MathJax.typeset();
+      let isRight = false;
       const correctAnswers = [100, 150, 210]
       let wrongAnswers = [0, 0, 0];
       let checkAnswersBtn = document.getElementById("check-answers-btn");
@@ -302,6 +347,9 @@
           changeQuestionColors();
           // change buttont to say correct
           changeCheckAnswersBtnText(1);
+
+          isRight = true;
+          showNext();
           // next div appear
         }
       });

@@ -188,8 +188,8 @@ let keyCooldown = false;
           event.preventDefault(); 
           return; 
         }        
-        if (currentIndex === 4) {
-          currentIndex = 4;
+        if (currentIndex >= 4) {
+          return;
         }
         else {
           showNext();

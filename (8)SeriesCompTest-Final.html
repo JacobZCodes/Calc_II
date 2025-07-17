@@ -11,7 +11,7 @@
   <!-- your styles and fonts here -->
 </head>
 
-<h3>Series Comparsion: Part III</h3>
+<h3>Series Comparsion: Final</h3>
 <h2 id="instructions">Now we have all of our rules: </h2>
 <div class="container">
   <div class="box">
@@ -33,6 +33,7 @@
     - If \( \sum b_n \) converges, so does \( \sum a_n \).<br>
     - If \( \sum a_n \) diverges, so does \( \sum b_n \).
   </div>
+  
 </div>
 
 <script>  let clickCount = 0;
@@ -50,13 +51,41 @@
       } else if (clickCount === 2) {
         document.getElementById("formal").innerHTML += `<br><br>If you are looking for <strong>convergence</strong>, examine the <strong>larger</strong> series.<br>If you are looking for <strong>divergence</strong>, examine the <strong>smaller</strong> series.`;
       } else if (clickCount === 3) {
-        alert("Next lesson");
+document.getElementById("formal").innerHTML += `<div class="button-wrapper"><button id="next-lesson-btn">Next Lesson</button></div>`;
       }
       // etc...
     }
   });</script>
 <style>
+.button-wrapper {
+  text-align: center;
+  margin-top: 2em;
+}
 
+#next-lesson-btn {
+  display: block;
+  width: 250px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #00ccff;
+  color: #000;
+  cursor: pointer;
+  border: none;
+  margin: 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+
+#next-lesson-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ccff;
+}
+
+#next-lesson-btn:active {
+  transform: scale(0.95);
+}
       @font-face {
       font-family: 'TangoSans_Bold';
       src: url('tangosans/TangoSans_Bold.ttf') format('truetype');

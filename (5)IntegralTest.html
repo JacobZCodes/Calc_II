@@ -848,7 +848,7 @@
         });
 
       } else if (clickCount === 3) {
-        document.getElementById("plot1-title").innerHTML = `Your Turn: Label the heights and widths of these rectangles.`;
+        document.getElementById("plot1-title").innerHTML = `Your Turn: Label the heights and widths of these rectangles (enter fractions as decimals to nearest hundreths place).`;
         let heights = document.getElementById("heights1");
         let widths = document.getElementById("widths1");
         heights.style.opacity = 1;
@@ -983,7 +983,7 @@
         });
 
       } else if (clickCount === 9) { // WORKING HERE
-        document.getElementById("plot3-title").innerHTML = `Your Turn: Label the heights & widths for each rectangle.`;
+        document.getElementById("plot3-title").innerHTML = `Your Turn: Label the heights & widths for each rectangle (round fractions to decimals to nearest hundreths place).`;
         let heights = document.getElementById("heights2");
         let widths = document.getElementById("widths2");
         heights.style.opacity = 1;
@@ -1103,10 +1103,23 @@
     text-align: center;
     line-height: 1.6em;
   ">
-    <strong style="color: #66ddee; font-size: 1.2em;">Integral Test:</strong><br><br>
+    <style="color: #66ddee; font-size: 1.2em;">Integral Test:<br><br>
     Let \\( f(x) \\) be a continuous, positive, decreasing function on \\( [1, \\infty) \\) and let \\( a_n = f(n) \\). Then:<br><br>
     - If \\( \\int_1^\\infty f(x)\\,dx \\) converges, then \\( \\sum_{n=1}^\\infty a_n \\) converges.<br>
     - If \\( \\int_1^\\infty f(x)\\,dx \\) diverges, then \\( \\sum_{n=1}^\\infty a_n \\) diverges.
+
+      <div style="margin-top: 2em;">
+    <button style="
+      background-color: #00ccff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #00ccff88;
+    ">Next Lesson</button>
+  </div>
   </div>
 `;
 MathJax.typeset();        

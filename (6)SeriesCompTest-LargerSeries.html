@@ -102,10 +102,46 @@ option {
   button:active {
     transform: scale(0.95);
   }
+
+  #next-lesson-btn {
+  width: 250px;                /* more rectangular shape */
+  border-radius: 12px;         /* less pill-shaped */
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #00ccff;
+  color: #000;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  opacity: 0;
+}
+
+#next-lesson-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ccff;
+}
+
+#next-lesson-btn:active {
+  transform: scale(0.95);
+}
   </style>
 </head>
 <body>
-  <h2>Series Comparison Test: Part I</h2>
+
+<div id="headerspace" style="
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8em;
+  margin-bottom: 2em; position: relative;
+  left: 160px;
+">
+  <h2 style="margin: 0;">Series Comparison Test: Part I</h2>
+  <button id="next-lesson-btn">Series Comparison Test: Part II</button>
+</div>
+
+
   <div id="rules" style="display: none; flex-direction: row;"></div>
   <div class="flex-container">
     <div class="column">
@@ -414,10 +450,10 @@ option {
 
       } else if (step === 8) {
         rules.innerHTML += `<br>If a larger series diverges, the smaller series can diverge or converge`;
+        // place button
+        document.getElementById("next-lesson-btn").style.opacity = 1;
 
-      } else if (step === 9) {
-        window.location.href = `(7)SeriesCompTest-SmallerSeries.html?userExp=${userExponent}&userConstant=${userConstant}&thirdUserConstant=${thirdUserConstant}`;
-      }
+      } 
     }
 
     document.addEventListener('keydown', function(event) {
