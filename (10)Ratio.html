@@ -72,6 +72,7 @@
       justify-content: center;
       gap: 2em;
       flex-wrap: wrap;
+      opacity: 0;
     }
 
     .case-box {
@@ -131,10 +132,16 @@
     }  </style>
 </head>
 <body>
-  <h2>Ratio Test: 3 Outcomes</h2>
+  <h2>Ratio Test</h2>
+  <h3>The ratio test allows us to quickly identify the end behavior of a series by comparing the ratio of successive terms,
+      \(a_{n+1}, a_n\) as n grows infinitely large. There are three cases of this comparison.
 
-  <label for="n-slider">Choose \( n \): <span id="n-value">1</span></label>
-  <input type="range" id="n-slider" min="1" max="150" value="1" />
+  </h3>
+
+  <div id="slider-container">
+    <label for="n-slider">Choose \( n \): <span id="n-value">1</span></label>
+    <input type="range" id="n-slider" min="1" max="150" value="1" />
+  </div>
 
   <div class="case-container">
     <!-- CASE I -->
@@ -162,7 +169,7 @@
     <div class="case-box">
       Let \( a_n = \frac{2^n}{n!} \)<br>
       <input type="text" id="input4">
-      <div class="ratio-output student-output" id="out4">out4</div>
+      <div class="ratio-output student-output" id="out4"></div>
       <button id="btn-out4">Submit</button>
     </div>
 
@@ -170,7 +177,7 @@
     <div class="case-box">
       Let \( a_n = n! \)<br>
       <input type="text" id="input5">      
-      <div class="ratio-output student-output" id="out5">out5</div>
+      <div class="ratio-output student-output" id="out5"></div>
       <button id="btn-out5">Submit</button>
     </div>
 
@@ -178,7 +185,7 @@
     <div class="case-box">
       Let \( a_n = \frac{1}{n} \)<br>
       <input type="text" id="input6">      
-      <div class="ratio-output student-output" id="out6" >out6</div>
+      <div class="ratio-output student-output" id="out6"></div>
       <button id="btn-out6">Submit</button>
     </div>
   </div>
