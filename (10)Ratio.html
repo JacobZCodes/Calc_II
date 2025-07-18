@@ -25,7 +25,7 @@
 
     h2 {
       text-align: center;
-      color: #ffcc00;
+      color: #00ccff;
     }
 
     label {
@@ -72,7 +72,7 @@
       justify-content: center;
       gap: 2em;
       flex-wrap: wrap;
-      opacity: 0;
+      /* opacity: 0; */
     }
 
     .case-box {
@@ -84,6 +84,7 @@
       box-sizing: border-box;
       font-size: 18px;
       line-height: 1.6em;
+      opacity: 0;
     }
 
     .case-box strong {
@@ -117,7 +118,7 @@
       border-radius: 30px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
-      animation: fadeIn 1s forwards;
+      /* animation: fadeIn 1s forwards; */
     }
 
     button:hover {
@@ -129,7 +130,24 @@
     button:active {
       transform: scale(0.95);
       /* animation: fadeIn 1s forwards; */
-    }  </style>
+    }  
+    .next-lesson {
+  width: 300px;
+  padding: 18px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px; /* make it rectangular instead of round */
+  margin-top: 4rem;   /* space it further down */
+  opacity: 0;
+
+}
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
 </head>
 <body>
   <h2>Ratio Test</h2>
@@ -138,26 +156,26 @@
 
   </h3>
 
-  <div id="slider-container">
+  <div id="slider-container" style="opacity: 0;">
     <label for="n-slider">Choose \( n \): <span id="n-value">1</span></label>
     <input type="range" id="n-slider" min="1" max="150" value="1" />
   </div>
 
   <div class="case-container">
     <!-- CASE I -->
-    <div class="case-box">
+    <div id="top1" class="case-box">
       Let \( a_n = \frac{2^n}{n!} \)<br>
       <div class="ratio-output" id="out1"></div>
     </div>
 
     <!-- CASE II -->
-    <div class="case-box">
+    <div id="top2" class="case-box">
       Let \( a_n = n! \)<br>
       <div class="ratio-output" id="out2"></div>
     </div>
 
     <!-- CASE III -->
-    <div class="case-box">
+    <div id="top3" class="case-box">
       Let \( a_n = \frac{1}{n} \)<br>
       <div class="ratio-output" id="out3"></div>
     </div>
@@ -166,7 +184,7 @@
   <!-- STUDENT INPUTS HERE -->
   <div class="case-container">
     <!-- CASE I -->
-    <div class="case-box">
+    <div id="bot1" class="case-box">
       Let \( a_n = \frac{2^n}{n!} \)<br>
       <input type="text" id="input4">
       <div class="ratio-output student-output" id="out4"></div>
@@ -174,7 +192,7 @@
     </div>
 
     <!-- CASE II -->
-    <div class="case-box">
+    <div id="bot2" class="case-box">
       Let \( a_n = n! \)<br>
       <input type="text" id="input5">      
       <div class="ratio-output student-output" id="out5"></div>
@@ -182,15 +200,31 @@
     </div>
 
     <!-- CASE III -->
-    <div class="case-box">
+    <div id="bot3" class="case-box">
       Let \( a_n = \frac{1}{n} \)<br>
       <input type="text" id="input6">      
       <div class="ratio-output student-output" id="out6"></div>
       <button id="btn-out6">Submit</button>
     </div>
   </div>
+  <div>
+    <button id="nl" class="next-lesson">Next Lesson</button>
+  </div>
   <script>
-    // if 
+    alert("If you see no buttons, push 'Enter' to progress");
+    let hasHitEnter = false;
+    document.addEventListener('keydown', function(event) {
+      if (event.key == "Enter") {
+        if (!hasHitEnter) {
+          console.log("calling");
+          fadeIn(document.getElementById("slider-container"));
+          fadeIn(document.getElementById("top1"));
+          fadeIn(document.getElementById("bot1"));
+          hasHitEnter = true;
+        }
+
+      }
+    }) 
     let input4 = document.getElementById("input4");
     let input5 = document.getElementById("input5");
     let input6 = document.getElementById("input6");
@@ -213,6 +247,19 @@
       if (isConvergingAbsolutely(out4_function)) {
         revealOut4Inequality = true;
         makeButtonRight(btn_out4,"Converges Absolutely");
+        let n = nVal.textContent;
+        let num = out4_function(n+1);
+        let denom = out4_function(n);
+        let r4 = num / denom;
+        let n_1 = parseInt(n) + 1;
+        let inequalityToShow = `$$0 \\leq \\left| \\frac{a_{${n_1}}}{a_${n}} \\right| = \\textcolor{#00ccff}{${r4.toFixed(4)}} < 1$$`;
+        out4.innerHTML = inequalityToShow;
+        MathJax.typeset();
+      
+
+        // reveal next stuff
+        fadeIn(document.getElementById("top2"));
+        fadeIn(document.getElementById("bot2"));
       }
         // show inequality
         // remove submit button
@@ -231,6 +278,17 @@
         revealOut5Inequality = true;
         console.log("about to fire");
         makeButtonRight(btn_out5,"Diverges");
+        // reveal next stuff
+        fadeIn(document.getElementById("top3"));
+        fadeIn(document.getElementById("bot3")); 
+        let n = nVal.textContent;
+        let num = out5_function(n+1);
+        let denom = out5_function(n);
+        let r5 = num / denom;
+        let n_1 = parseInt(n) + 1;
+        let inequalityToShow = `$$\\left| \\frac{a_{${n_1}}}{a_${n}} \\right| = \\color{#00ccff}{${r5.toFixed(4)}} > 1 $$`;
+        out5.innerHTML = inequalityToShow;
+        MathJax.typeset();
       }
         // show inequality
         // remove submit button
@@ -249,6 +307,19 @@
       if (isInconclusive(out6_function)) {
         revealOut6Inequality = true;
         makeButtonRight(btn_out6,"Inconclusive");
+                let n = nVal.textContent;
+
+        let num = out6_function(n+1);
+        let denom = out6_function(n);
+        let r6 = num / denom;
+                let n_1 = parseInt(n) + 1;
+
+        let inequalityToShow = `$$\\left| \\frac{a_{${n_1}}}{a_${n}} \\right| =\\color{#00ccff}{${r6.toFixed(4)}} = 1$$`;
+        out6.innerHTML = inequalityToShow;
+        // show next lesson btn
+        fadeIn(document.getElementById("nl"));
+        
+        MathJax.typeset();
       }
         // show inequality
         // remove submit button
@@ -270,6 +341,11 @@
       btn.disabled = true;
     }    
     
+    function fadeIn(el) {
+    el.style.opacity = "0";    
+
+el.style.animation = "fadeIn 0.6s forwards";
+}
     const slider = document.getElementById("n-slider");
     const nVal = document.getElementById("n-value");
 

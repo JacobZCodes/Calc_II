@@ -103,16 +103,19 @@
       .statement {
         opacity: 0;
       }  
+            @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
-    <h2>Functions as Power Series</h2>
-    <p>How can we take some rational function and convert it into an infinite power series?</p>
-    <p>Recall that a power series can be thought of as an infinite polnyomial</p>
-    <p>The idea is that we can somehow express a "finite polynomial" (our rational function) and convert it into an "infinite polynomial" (a power series)
+    <h2>Rational Functions as Power Series</h2>
+    <p>Is it possible to convert a rational function f(x) = p(x)/q(x) into a power series {power series} </p>
     </p>
     <div style="display: flex; align-items: center; justify-content: center; gap: 50px; flex-wrap: wrap;">
-        <div class="box" id="box1">
+        <div class="box" id="box1" style="opacity: 0;">
             <p>
             Recall the general form of a  <a href="(15)Geometric.html" style="color: white;">geometric sequence</a>      
             \(
@@ -124,17 +127,17 @@
             \) 
             </p>
 
-            <p>
-            If we can convert our rational function <span>\(f(x) = \frac{p(x)}{q(x)} \)</span> into the form \(f(x) = \frac{a}{1-r}\), then we 
+            <p id="key-insight" style="opacity: 0;">
+            KEY INSIGHT: If we can convert our rational function <span>\(f(x) = \frac{p(x)}{q(x)} \)</span> into the form \(f(x) = \frac{a}{1-r}\), then we 
             will be able to represent \(f(x) = \frac{a}{1-r}\) as a geometric series. 
             </p>
 
-            <p>
-            Our goal is to convert \(f(x) = \frac{p(x)}{q(x)} \) -> \(\sum_{n=1}^{\infty}ar^{n-1}\).
+            <p id="recap" style="opacity: 0;">
+            RECAP: Our goal is to convert \(f(x) = \frac{p(x)}{q(x)} \) -> \(\sum_{n=1}^{\infty}ar^{n-1}\).
             </p>
             
-            <o>
-            We will try to do this with an example function \(f(x) = 20/1+x^3\)
+            <o id="example" style="opacity: 0;">
+            EXAMPLE: We will try to do this with an example function \(f(x) = 20/1+x^3\)
             </o>
         </div>
         <div class="box" id="box2">
@@ -193,6 +196,42 @@
     </div>
   </body>
   <script>
+    let clickCount = 0;
+    document.addEventListener('keydown', function(event) {
+      if (event.key == "Enter") {
+        showNext();
+      }
+    })
+          function fadeIn(el) {
+    el.style.opacity = "0";    
+
+el.style.animation = "fadeIn 0.6s forwards";
+};
+function showNext() {
+  clickCount++;
+  switch (clickCount) {
+    case 1:
+      fadeIn(document.getElementById('box1'));
+      break;
+
+    case 2:
+      fadeIn(document.getElementById("key-insight"));
+      break;
+
+    case 3:
+      fadeIn(document.getElementById("recap"));
+      break;
+
+    case 4:
+      fadeIn(document.getElementById("example"));
+      break;
+
+    case 5:
+      fadeIn(document.getElementById("box2"));
+      break;
+
+  }
+}
     let numeratorLabel = document.getElementById("numerator");
     let denominatorLabel = document.getElementById("denominator");
     let checkFractionBtn = document.getElementById("checkFractionBtn");
