@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Series Comparison</title>
   <script>
-    alert("Push 'Enter' to progress");
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
       svg: { fontCache: 'global' }
@@ -138,7 +137,7 @@ option {
   left: 160px;
 ">
   <h2 style="margin: 0;">Series Comparison Test: Part I</h2>
-  <button id="next-lesson-btn">Series Comparison Test: Part II</button>
+  <button id="next-lesson-btn" onclick="window.location.href=`(8)SeriesCompTest-SmallerSeries.html`">Series Comparison Test: Part II</button>
 </div>
 
 
@@ -237,6 +236,8 @@ option {
   </div>
 
   <script>
+        alert("If you see no button, press 'Enter' to progress")
+
     let userExponent;
     let userConstant;
     let thirdUserConstant;

@@ -154,6 +154,7 @@
   </div>
 
 <script>
+  alert("If you see no button, press 'Enter' to progress")
   function fadeOutAndHide(el) {
   el.style.animation = "fadeOut 0.6s forwards";
   setTimeout(() => {
@@ -196,13 +197,13 @@ let keyCooldown = false;
         }
       }
 
-      if (event.key === "Backspace") {
-        if (event.target.tagName === 'INPUT' && event.key === "Backspace") {
-          event.preventDefault(); 
-          return;
-        }
-        goBack();
-      }
+      // if (event.key === "Backspace") {
+      //   if (event.target.tagName === 'INPUT' && event.key === "Backspace") {
+      //     event.preventDefault(); 
+      //     return;
+      //   }
+      //   goBack();
+      // }
     });
 
   function goBack() {
@@ -311,7 +312,6 @@ geometricBtn.style.display = "inline-block";
     }
     alert("✅ Great job! That is a valid arithmetic sequence.");
     showNext();
-
 
   }
 

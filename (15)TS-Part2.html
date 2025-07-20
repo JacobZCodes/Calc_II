@@ -65,7 +65,7 @@
       border-radius: 30px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
-      animation: fadeIn 1s forwards;
+      /* animation: fadeIn 1s forwards; */
     }
 
     button:hover {
@@ -90,15 +90,15 @@
     .orange-red {
       color: orangered
     }
-        .next-lesson {
+
+         .next-lesson {
   width: 300px;
   padding: 18px 32px;
   font-size: 20px;
   font-weight: bold;
   border-radius: 8px; /* make it rectangular instead of round */
   margin-top: 4rem;   /* space it further down */
-  opacity: 1;
-  animation: fadeIn 1s forwards;
+
 }
 
       @keyframes fadeIn {
@@ -117,6 +117,8 @@
         position: relative; bottom: 10px; right: 5px; left: 1px; width: 8px;      
     }
 
+
+
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
@@ -128,20 +130,20 @@
       <div id="divExplainApproximation" style="max-width: 400px; opacity: 1;">
         In order to get as accurate an approximation as possible, our goal is now to build an approximating function of degree n.
       </div>
-      <div id="divExplainApproximation2" style="max-width: 400px; opacity: 1;">
+      <div id="divExplainApproximation2" style="max-width: 400px; opacity: 0;">
         We wish for our approximating function of degree n to be equal to our desired function so we write: 
       </div>
       <div id="divExplainApproximation3" style="opacity: 1; margin-left: 50px; font-size: x-large; color: white;">
-        <span id="expansion" style="opacity: 1;">\(f(x) = e^x = c_0 + c_1x + c_2x^2 + c_3x^3 + \ldots c_nx^n\)</span>
-        <span id="1" style="opacity: 1;">\(f(x) = e^x = 1 + 1x + \frac{1}{2}x^2 + \frac{1}{6}x^3 + \ldots \frac{1}{n!}x^n\)</span>      
-        <span id="2" style="opacity: 1;">\(f(x) = e^x = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots \frac{x^n}{n!} = \sum_{n=0}^{\infty}\frac{x^n}{n!}\)</span>  
+        <span id="expansion" style="opacity: 0;">\(f(x) = e^x = c_0 + c_1x + c_2x^2 + c_3x^3 + \ldots c_nx^n\)</span>
+        <span id="1" style="opacity: 0;">\(f(x) = e^x = 1 + 1x + \frac{1}{2}x^2 + \frac{1}{6}x^3 + \ldots \frac{1}{n!}x^n\)</span>      
+        <span id="2" style="opacity: 0;">\(f(x) = e^x = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots \frac{x^n}{n!} = \sum_{n=0}^{\infty}\frac{x^n}{n!}\)</span>  
         <br>
-        <span id="3" style="font-size: medium; opacity: 1;">This is called a Taylor series expansion of \(e^x\) centered at \(a=0\).</span>   
+        <span id="3" style="font-size: medium; opacity: 0;">This is called a Taylor series expansion of \(e^x\) centered at \(a=0\).</span>   
 
     </div>
     </div>
     <div id="work" style="display: flex; column-gap: 3em;">
-      <div id="divDeg1" style="max-width: 400px; opacity: 1;">
+      <div id="divDeg1" style="max-width: 400px; opacity: 0;">
         Now we do exactly as before, but we this time we will work with this same degree n polynomial approximating function the entire time:
         <div id="workDeg1" style="display: flex; flex-direction: column;">
           <p>\(f(0) = e^0  = c_0 + c_1(0) + c_2(0)^2 + c_3(0)^3 + \ldots c_n(0)^n  \) </p>
@@ -153,7 +155,7 @@
           </div>        
         </div>
       </div>
-      <div id="divDeg2" style="max-width: 600px;">
+      <div id="divDeg2" style="max-width: 600px; opacity: 0;">
         <div id="workDeg2">
           <div id="constants2" style="opacity: 1;">
             <h2>\(c_2\)</h2>
@@ -166,7 +168,7 @@
           </div>
         </div>
       </div>
-      <div id="divDeg3" style="max-width: 600px;">
+      <div id="divDeg3" style="max-width: 600px; opacity: 0;">
         <div id="workDeg3">
           <div id="constants3" style="opacity: 1;">
             <h2>\(c_3\)</h2>
@@ -179,7 +181,7 @@
           </div>
         </div>
       </div>
-      <div id="divDeg4" style="max-width: 600px;">
+      <div id="divDeg4" style="max-width: 600px; opacity: 0;">
         <div id="workDeg4">
           <div id="constants4" style="opacity: 1;">
             <h2>\(c_n\)</h2>
@@ -188,13 +190,25 @@
             <p>\(f^n(0) \implies \)<label>\(c_n = \;\)</label><input id="final_constant" type="text"></p>
             <div>
               <button class="submit" id="submitConstants4Btn" style="align-self: center">Submit</button>
+              
             </div>
+            <!-- <div>
+              
+            </div> -->
           </div>
         </div>
       </div>
+
+      
     </div>
+    <button class="next-lesson" id="4" style="align-self: center; opacity: 0;" onclick="alertFinished()">Next Lesson</button>  
   </body>
   <script>
+    alert("If you see no button, press 'Enter' to progress")
+
+    function alertFinished() {
+      alert("All lessons completed!")
+    }
     function fadeIn(el) {
         el.style.opacity = "0";    
 
@@ -206,7 +220,6 @@
     el.style.opacity = "1";    
     el.style.animation = "fadeOut 0.6s forwards";
   }
-    alert("Push 'Enter' to continue. There is no back button.")
     let currentIndex = -1;
     MathJax.typeset();
     document.addEventListener("keydown", function (event) {
@@ -219,17 +232,19 @@
           }
         });
     function showNext() {
+      console.log("index:", currentIndex);
       switch (currentIndex) {
+        
+        // case 0:
+        //   fadeIn(document.getElementById("divExplainApproximation"));
+        //   break;
         case 0:
-          fadeIn(document.getElementById("divExplainApproximation"));
-          break;
-        case 1:
           fadeIn(document.getElementById("divExplainApproximation2"));
           break;      
-        case 2:
+        case 1:
           fadeIn(document.getElementById("expansion"));
           break;
-        case 3:
+        case 2:
           fadeIn(document.getElementById("divDeg1"));
           break;      }
     }    
@@ -256,7 +271,7 @@
         this.style.color = 'green';
         // show next block + disable btn
         document.getElementById("approx-submit1").disabled = true;
-        fadeIn(document.getElementById("constants2"));
+        fadeIn(document.getElementById("divDeg2"));
 
       }
       else {
@@ -302,7 +317,7 @@
             changeCheckAnswersBtnText(1, submitConstants2Btn);
             // show next block + disable btn
             submitConstants2Btn.disabled = true;
-            fadeIn(document.getElementById("constants3"));
+            fadeIn(document.getElementById("divDeg3"));
           }        
         })
 
@@ -338,7 +353,7 @@
             // change buttont to say correct
             changeCheckAnswersBtnText(1, submitConstants3Btn);
             submitConstants3Btn.disabled = true;
-            fadeIn(document.getElementById("constants4"));
+            fadeIn(document.getElementById("divDeg4"));
           }        
         })
 
@@ -371,7 +386,7 @@
             changeCheckAnswersBtnText(1, submitConstants4Btn);
             submitConstants4Btn.disabled = true;
             // slowly loop thru
-            for (let i=1; i<4; ++i) {
+            for (let i=1; i<5; ++i) {
               console.log("here!"); // this block not working...
               // convert int to string
               let intAsString = i.toString();
